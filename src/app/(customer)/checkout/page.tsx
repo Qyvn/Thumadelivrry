@@ -41,9 +41,10 @@ export default async function CheckoutPage({
   const serviceFee = settings?.serviceFeeCents ?? 500;
   const totals = summariseBasket(basket.items, deliveryFee, serviceFee);
   const idempotencyKey = `chk_${customerId}_${Date.now()}`;
+  const eligibleAddresses = addresses.filter((a) => a.inServiceArea);
 
   return (
-    <div className="min-h-full">
+    <div className="min-h-full bg-[#F5F0E6]">
       <DevBanner />
       <CustomerNav
         user={user}
@@ -55,8 +56,9 @@ export default async function CheckoutPage({
           Checkout
         </h1>
         <p className="mt-2 text-sm text-[#18221B]/65">
-          Payment uses a mock South African provider. An order is only confirmed
-          after a verified server-side payment callback — not a browser redirect.
+          Delivery is limited to the administrator-configured Cornubia Flats
+          zone. Full price is shown before you pay. Payment uses a mock SA
+          provider until live credentials are configured.
         </p>
 
         {error && (
@@ -67,12 +69,27 @@ export default async function CheckoutPage({
 
         {addresses.length === 0 ? (
           <div className="mt-8 rounded-2xl border border-dashed border-[#18221B]/20 bg-white px-5 py-10 text-center">
-            <p className="font-medium">Add a delivery address first</p>
+            <p className="font-medium">Add a Cornubia Flats delivery address</p>
             <Link
               href="/account/addresses"
               className="mt-4 inline-block text-sm font-semibold underline"
             >
               Manage addresses
+            </Link>
+          </div>
+        ) : eligibleAddresses.length === 0 ? (
+          <div className="mt-8 rounded-2xl border border-dashed border-red-200 bg-red-50 px-5 py-10 text-center">
+            <p className="font-medium text-red-900">
+              No eligible address inside Cornubia Flats
+            </p>
+            <p className="mt-2 text-sm text-red-800/80">
+              Checkout is blocked for destinations outside the launch zone.
+            </p>
+            <Link
+              href="/account/addresses"
+              className="mt-4 inline-block text-sm font-semibold underline"
+            >
+              Update address
             </Link>
           </div>
         ) : (
@@ -84,26 +101,33 @@ export default async function CheckoutPage({
               {addresses.map((addr) => (
                 <label
                   key={addr.id}
-                  className="flex cursor-pointer gap-3 rounded-xl border border-[#18221B]/10 bg-white p-4"
+                  className={`flex cursor-pointer gap-3 rounded-xl border p-4 ${
+                    addr.inServiceArea
+                      ? "border-[#18221B]/10 bg-white"
+                      : "border-red-200 bg-red-50/50 opacity-70"
+                  }`}
                 >
                   <input
                     type="radio"
                     name="addressId"
                     value={addr.id}
-                    defaultChecked={addr.isDefault}
+                    defaultChecked={addr.isDefault && addr.inServiceArea}
                     required
+                    disabled={!addr.inServiceArea}
                     className="mt-1"
                   />
                   <span>
                     <span className="block font-medium">
-                      {addr.label} · {addr.line1}
+                      {addr.label}
+                      {addr.building ? ` · ${addr.building}` : ""}
+                      {addr.unitNumber ? ` · Unit ${addr.unitNumber}` : ""}
                     </span>
                     <span className="block text-sm text-[#18221B]/60">
-                      {addr.suburb}, {addr.city}
+                      {addr.line1}, {addr.suburb}, {addr.city}
                     </span>
                     {!addr.inServiceArea && (
                       <span className="mt-1 block text-xs font-semibold text-red-700">
-                        Outside current service area
+                        Outside Cornubia Flats service area — cannot checkout
                       </span>
                     )}
                   </span>
@@ -112,23 +136,20 @@ export default async function CheckoutPage({
             </fieldset>
 
             <div>
-              <label
-                htmlFor="customerNotes"
-                className="text-sm font-semibold"
-              >
-                Special instructions
+              <label htmlFor="customerNotes" className="text-sm font-semibold">
+                Delivery instructions
               </label>
               <Textarea
                 id="customerNotes"
                 name="customerNotes"
                 className="mt-2"
-                placeholder="Gate code, allergies, substitution notes…"
+                placeholder="Gate code, floor, allergies, substitution notes…"
               />
             </div>
 
             <div className="space-y-2 rounded-2xl bg-white p-5 text-sm">
               <div className="flex justify-between">
-                <span>Items</span>
+                <span>Subtotal</span>
                 <span>{formatZar(totals.itemTotalCents)}</span>
               </div>
               <div className="flex justify-between">
@@ -148,8 +169,9 @@ export default async function CheckoutPage({
             <div className="rounded-2xl border border-[#18221B]/10 bg-[#ebe4d4]/50 p-4 text-sm">
               <p className="font-semibold">Mock payment (development)</p>
               <p className="mt-1 text-[#18221B]/65">
-                Provider: {settings?.paymentProvider ?? "mock_payfast"}. No card
-                details are stored.
+                Provider: {settings?.paymentProvider ?? "mock_payfast"}. Never
+                marks paid from a browser redirect alone. Cash on delivery is
+                not enabled.
               </p>
               <label className="mt-3 flex items-center gap-2">
                 <input

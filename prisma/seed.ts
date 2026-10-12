@@ -34,6 +34,7 @@ async function main() {
   await prisma.basket.deleteMany();
   await prisma.productVariant.deleteMany();
   await prisma.product.deleteMany();
+  await prisma.promotion.deleteMany();
   await prisma.merchantStaff.deleteMany();
   await prisma.merchant.deleteMany();
   await prisma.merchantApplication.deleteMany();
@@ -111,6 +112,7 @@ async function main() {
         type: "radius",
         center: { lat: -29.7005, lng: 31.0685 },
         radiusKm: 3,
+        allowedSuburbs: ["cornubia", "cornubia flats"],
         note: "Placeholder boundary for development — replace with admin-configured polygon before launch",
       }),
       hoursJson: JSON.stringify({
@@ -187,7 +189,9 @@ async function main() {
     data: {
       customerId: customerUser.customerProfile!.id,
       label: "Home",
-      line1: "Block A, Cornubia Flats",
+      line1: "Cornubia Flats",
+      building: "Block A",
+      unitNumber: "12",
       suburb: "Cornubia",
       city: "Umhlanga",
       province: "KwaZulu-Natal",
@@ -197,6 +201,16 @@ async function main() {
       isDefault: true,
       inServiceArea: true,
       notes: "Development sample address inside launch zone",
+    },
+  });
+
+  // No active promotions by default — never show fabricated offers.
+  await prisma.promotion.create({
+    data: {
+      title: "Welcome to Cornubia Flats (draft)",
+      body: "Inactive sample banner — activate only when a real offer exists.",
+      href: "/market",
+      isActive: false,
     },
   });
 
@@ -289,6 +303,8 @@ async function main() {
         slug: "bunny-chow-chicken",
         description: "Sample menu item — quarter loaf with chicken curry.",
         imageUrl: "/images/dev-bunny.svg",
+        packageSize: "1 quarter",
+        browseCategory: "food",
         priceCents: 7500,
         isAvailable: true,
         inventoryOwner: InventoryOwner.MERCHANT,
@@ -303,6 +319,8 @@ async function main() {
         slug: "pap-grilled-chicken",
         description: "Sample plate with pap, grilled chicken, and chakalaka.",
         imageUrl: "/images/dev-pap.svg",
+        packageSize: "1 plate",
+        browseCategory: "food",
         priceCents: 8900,
         isAvailable: true,
         inventoryOwner: InventoryOwner.MERCHANT,
@@ -317,6 +335,8 @@ async function main() {
         slug: "vetkoek-combo",
         description: "Sample combo — two vetkoek with mince filling.",
         imageUrl: "/images/dev-vetkoek.svg",
+        packageSize: "2 pieces",
+        browseCategory: "food",
         priceCents: 5500,
         isAvailable: true,
         inventoryOwner: InventoryOwner.MERCHANT,
@@ -331,6 +351,8 @@ async function main() {
         slug: "fresh-milk-2l",
         description: "Sample dairy product. Merchant-owned stock.",
         imageUrl: "/images/dev-milk.svg",
+        packageSize: "2 L",
+        browseCategory: "groceries",
         priceCents: 3299,
         isAvailable: true,
         inventoryOwner: InventoryOwner.MERCHANT,
@@ -346,6 +368,8 @@ async function main() {
         slug: "white-bread-loaf",
         description: "Sample bakery item.",
         imageUrl: "/images/dev-bread.svg",
+        packageSize: "700 g",
+        browseCategory: "groceries",
         priceCents: 1899,
         isAvailable: true,
         inventoryOwner: InventoryOwner.MERCHANT,
@@ -361,6 +385,8 @@ async function main() {
         slug: "bottled-water-6pack",
         description: "Sample drinks category item.",
         imageUrl: "/images/dev-water.svg",
+        packageSize: "6 × 500 ml",
+        browseCategory: "drinks",
         priceCents: 4999,
         isAvailable: true,
         inventoryOwner: InventoryOwner.MERCHANT,
@@ -376,6 +402,8 @@ async function main() {
         slug: "dishwashing-liquid",
         description: "Sample household essential.",
         imageUrl: "/images/dev-household.svg",
+        packageSize: "750 ml",
+        browseCategory: "household",
         priceCents: 4299,
         isAvailable: true,
         inventoryOwner: InventoryOwner.MERCHANT,
@@ -383,6 +411,23 @@ async function main() {
         isDevSample: true,
         allowsNotes: false,
         sortOrder: 4,
+      },
+      {
+        merchantId: marketMerchant.id,
+        categoryId: market.id,
+        name: "Hand Soap 250ml",
+        slug: "hand-soap-250ml",
+        description: "Sample personal care item.",
+        imageUrl: "/images/dev-household.svg",
+        packageSize: "250 ml",
+        browseCategory: "personal-care",
+        priceCents: 2799,
+        isAvailable: true,
+        inventoryOwner: InventoryOwner.MERCHANT,
+        stockQty: 20,
+        isDevSample: true,
+        allowsNotes: false,
+        sortOrder: 5,
       },
     ],
   });

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { MapPin, Search, ShoppingBasket, UserRound } from "lucide-react";
+import { Bell, ChevronDown, MapPin, Search, ShoppingBasket, UserRound } from "lucide-react";
 import { SessionUser } from "@/lib/auth";
 
 export function CustomerNav({
@@ -22,19 +22,27 @@ export function CustomerNav({
 
         <Link
           href="/account/addresses"
-          className="hidden min-w-0 flex-1 items-center gap-2 rounded-full bg-white/80 px-3 py-2 text-sm text-[#18221B] sm:flex"
+          className="flex min-w-0 flex-1 items-center gap-2 rounded-full bg-white px-3 py-2 text-sm text-[#18221B] shadow-[0_1px_2px_rgba(24,34,27,0.04)]"
         >
           <MapPin className="h-4 w-4 shrink-0 text-[#18221B]" />
-          <span className="truncate">{locationLabel}</span>
+          <span className="min-w-0 flex-1 truncate font-medium">{locationLabel}</span>
+          <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />
         </Link>
 
-        <nav className="flex items-center gap-1">
+        <nav className="flex items-center gap-0.5">
           <Link
             href="/search"
             className="inline-flex h-11 w-11 items-center justify-center rounded-xl text-[#18221B] hover:bg-[#18221B]/5"
             aria-label="Search"
           >
             <Search className="h-5 w-5" />
+          </Link>
+          <Link
+            href="/orders"
+            className="relative inline-flex h-11 w-11 items-center justify-center rounded-xl text-[#18221B] hover:bg-[#18221B]/5"
+            aria-label="Orders and notifications"
+          >
+            <Bell className="h-5 w-5" />
           </Link>
           <Link
             href="/basket"
@@ -51,7 +59,7 @@ export function CustomerNav({
           <Link
             href={user ? "/account" : "/login"}
             className="inline-flex h-11 w-11 items-center justify-center rounded-xl text-[#18221B] hover:bg-[#18221B]/5"
-            aria-label="Account"
+            aria-label="Profile"
           >
             <UserRound className="h-5 w-5" />
           </Link>

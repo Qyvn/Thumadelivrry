@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { CustomerNav } from "@/components/customer-nav";
 import { DevBanner } from "@/components/dev-banner";
+import { ProductCard } from "@/components/product-card";
 import { Input } from "@/components/ui/input";
 import { getCustomerShell } from "@/lib/customer-context";
 import { prisma } from "@/lib/db";
-import { formatZar } from "@/lib/utils";
+import { BROWSE_CATEGORIES } from "@/lib/browse";
 
 export const dynamic = "force-dynamic";
 
@@ -15,7 +16,8 @@ export default async function SearchPage({
 }) {
   const { q } = await searchParams;
   const query = (q ?? "").trim();
-  const { user, basketCount, locationLabel, zone } = await getCustomerShell();
+  const { user, basketCount, locationLabel, zone, basketQtyByProduct } =
+    await getCustomerShell();
 
   const products =
     query.length >= 2
@@ -26,16 +28,19 @@ export default async function SearchPage({
             OR: [
               { name: { contains: query } },
               { description: { contains: query } },
+              { browseCategory: { contains: query.toLowerCase() } },
               { merchant: { name: { contains: query } } },
             ],
           },
-          include: { merchant: true, category: true },
-          take: 30,
+          include: { merchant: true },
+          take: 40,
         })
       : [];
 
+  const suggestions = BROWSE_CATEGORIES.slice(0, 4);
+
   return (
-    <div className="min-h-full">
+    <div className="min-h-full bg-[#F5F0E6]">
       <DevBanner />
       <CustomerNav
         user={user}
@@ -50,10 +55,32 @@ export default async function SearchPage({
           <Input
             name="q"
             defaultValue={query}
-            placeholder="Search meals, shops, essentials…"
+            placeholder="Search groceries, meals and essentials"
             aria-label="Search"
+            autoFocus
           />
         </form>
+
+        {query.length === 0 && (
+          <div className="mt-8">
+            <p className="text-sm font-semibold">Try a category</p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {suggestions.map((s) => (
+                <Link
+                  key={s.slug}
+                  href={`/browse/${s.slug}`}
+                  className="rounded-full border border-[#18221B]/10 bg-white px-3 py-1.5 text-sm font-medium"
+                >
+                  {s.name}
+                </Link>
+              ))}
+            </div>
+            <p className="mt-6 text-sm text-[#18221B]/60">
+              Search products, merchants or aisles across approved Cornubia Flats
+              catalogue items.
+            </p>
+          </div>
+        )}
 
         {query.length > 0 && query.length < 2 && (
           <p className="mt-6 text-sm text-[#18221B]/65">
@@ -64,27 +91,26 @@ export default async function SearchPage({
         {query.length >= 2 && products.length === 0 && (
           <div className="mt-8 rounded-2xl border border-dashed border-[#18221B]/20 bg-white/70 px-5 py-10 text-center">
             <p className="font-medium">No results for “{query}”</p>
+            <p className="mt-2 text-sm text-[#18221B]/65">
+              Try another product name, merchant, or browse a category.
+            </p>
+            <Link href="/browse/groceries" className="mt-4 inline-block text-sm font-semibold underline">
+              Browse groceries
+            </Link>
           </div>
         )}
 
-        <ul className="mt-6 space-y-3">
-          {products.map((p) => (
-            <li key={p.id}>
-              <Link
-                href={`/shops/${p.merchant.slug}`}
-                className="flex items-center justify-between gap-3 rounded-xl border border-[#18221B]/8 bg-white px-4 py-3"
-              >
-                <div>
-                  <p className="font-medium">{p.name}</p>
-                  <p className="text-sm text-[#18221B]/55">
-                    {p.merchant.name} · {p.category.name}
-                  </p>
-                </div>
-                <p className="text-sm font-semibold">{formatZar(p.priceCents)}</p>
-              </Link>
-            </li>
-          ))}
-        </ul>
+        {products.length > 0 && (
+          <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+            {products.map((p) => (
+              <ProductCard
+                key={p.id}
+                product={p}
+                initialQty={basketQtyByProduct[p.id] ?? 0}
+              />
+            ))}
+          </div>
+        )}
       </main>
     </div>
   );

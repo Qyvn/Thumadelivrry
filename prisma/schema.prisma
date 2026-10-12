@@ -67,6 +67,8 @@ model Address {
   label          String
   line1          String
   line2          String?
+  building       String?
+  unitNumber     String?
   suburb         String
   city           String
   province       String   @default("KwaZulu-Natal")
@@ -192,6 +194,9 @@ model Product {
   slug            String
   description     String?
   imageUrl        String?
+  packageSize     String?
+  // Customer browse aisle: groceries, food, drinks, household, personal-care, local
+  browseCategory  String              @default("groceries")
   priceCents      Int
   currency        String              @default("ZAR")
   isAvailable     Boolean             @default(true)
@@ -211,6 +216,21 @@ model Product {
   basketItems     BasketItem[]
 
   @@unique([merchantId, slug])
+  @@index([browseCategory])
+}
+
+model Promotion {
+  id          String   @id @default(cuid())
+  title       String
+  body        String?
+  href        String?
+  imageUrl    String?
+  isActive    Boolean  @default(false)
+  startsAt    DateTime?
+  endsAt      DateTime?
+  zoneId      String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model ProductVariant {

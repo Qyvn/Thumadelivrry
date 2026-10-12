@@ -8,8 +8,63 @@ import {
   addToBasket,
   checkoutOrder,
   clearBasket,
+  getOrCreateBasket,
   updateBasketItem,
 } from "@/lib/orders";
+
+export type QuietBasketResult =
+  | { ok: true; quantity: number }
+  | { ok: false; error: string; needsAuth?: boolean };
+
+export async function addToBasketQuietAction(params: {
+  productId: string;
+  quantityDelta: number;
+  absoluteQuantity?: number;
+}): Promise<QuietBasketResult> {
+  const user = await getCurrentUser();
+  if (!user) return { ok: false, error: "Sign in to shop", needsAuth: true };
+
+  const profile = await prisma.customerProfile.findUnique({
+    where: { userId: user.id },
+  });
+  if (!profile) return { ok: false, error: "Sign in to shop", needsAuth: true };
+
+  try {
+    const basket = await getOrCreateBasket(profile.id);
+    const existing = basket.items.find((i) => i.productId === params.productId);
+
+    if (params.absoluteQuantity === 0 && existing) {
+      await updateBasketItem(profile.id, existing.id, 0);
+      revalidatePath("/");
+      revalidatePath("/basket");
+      return { ok: true, quantity: 0 };
+    }
+
+    if (params.quantityDelta > 0) {
+      const updated = await addToBasket({
+        customerId: profile.id,
+        productId: params.productId,
+        quantity: params.quantityDelta,
+      });
+      const item = updated.items.find((i) => i.productId === params.productId);
+      revalidatePath("/");
+      revalidatePath("/basket");
+      return { ok: true, quantity: item?.quantity ?? 0 };
+    }
+
+    if (params.quantityDelta < 0 && existing) {
+      const next = existing.quantity + params.quantityDelta;
+      await updateBasketItem(profile.id, existing.id, next);
+      revalidatePath("/");
+      revalidatePath("/basket");
+      return { ok: true, quantity: Math.max(0, next) };
+    }
+
+    return { ok: true, quantity: existing?.quantity ?? 0 };
+  } catch (e) {
+    return { ok: false, error: (e as Error).message };
+  }
+}
 
 export async function addToBasketAction(formData: FormData) {
   const user = await getCurrentUser();
@@ -52,6 +107,7 @@ export async function updateBasketItemAction(formData: FormData) {
   const quantity = Number(formData.get("quantity") ?? 0);
   await updateBasketItem(profile.id, itemId, quantity);
   revalidatePath("/basket");
+  revalidatePath("/");
 }
 
 export async function clearBasketAction() {
@@ -63,6 +119,7 @@ export async function clearBasketAction() {
   if (!profile) redirect("/login");
   await clearBasket(profile.id);
   revalidatePath("/basket");
+  revalidatePath("/");
 }
 
 export async function checkoutAction(formData: FormData) {

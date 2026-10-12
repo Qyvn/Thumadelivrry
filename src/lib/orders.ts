@@ -6,6 +6,7 @@ import {
   Role,
 } from "@/lib/constants";
 import { prisma } from "./db";
+import { isAddressInServiceArea } from "./eligibility";
 import { assertTransition } from "./order-lifecycle";
 import { confirmPaymentFromProvider, createPaymentIntent } from "./payments";
 import { writeAudit } from "./audit";
@@ -160,11 +161,6 @@ export async function checkoutOrder(params: {
     where: { id: params.addressId, customerId: params.customerId },
   });
   if (!address) throw new Error("Address not found");
-  if (!address.inServiceArea) {
-    throw new Error(
-      "This address is outside the current THUMA delivery area. Cornubia Flats launch zone only.",
-    );
-  }
 
   const merchantId = basket.items[0].product.merchantId;
   const merchant = await prisma.merchant.findUniqueOrThrow({
@@ -182,6 +178,22 @@ export async function checkoutOrder(params: {
   });
   if (!zone.isActive) {
     throw new Error("Delivery zone is not active");
+  }
+
+  const eligible = isAddressInServiceArea(
+    {
+      line1: address.line1,
+      suburb: address.suburb,
+      city: address.city,
+      building: address.building,
+      unitNumber: address.unitNumber,
+    },
+    zone.boundaryJson,
+  );
+  if (!eligible) {
+    throw new Error(
+      "This address is outside the current THUMA delivery area. Cornubia Flats launch zone only.",
+    );
   }
 
   const settings = await prisma.platformSettings.findUnique({

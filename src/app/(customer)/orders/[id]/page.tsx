@@ -131,7 +131,20 @@ export default async function OrderDetailPage({
         <div className="mt-4 rounded-2xl bg-white p-5 text-sm">
           <p className="font-semibold">Delivery</p>
           <p className="mt-1 text-[#18221B]/65">
-            {order.address.line1}, {order.address.suburb}
+            {[
+              order.address.building,
+              order.address.unitNumber
+                ? `Unit ${order.address.unitNumber}`
+                : null,
+              order.address.line1,
+              order.address.suburb,
+            ]
+              .filter(Boolean)
+              .join(" · ")}
+          </p>
+          <p className="mt-3 text-xs text-[#18221B]/45">
+            Estimated arrival is shown only when the system can calculate a
+            reliable time — none is invented here.
           </p>
           <p className="mt-3 font-semibold">Payment</p>
           <p className="mt-1 text-[#18221B]/65">
@@ -140,12 +153,18 @@ export default async function OrderDetailPage({
           </p>
           {order.delivery?.courier && (
             <>
-              <p className="mt-3 font-semibold">Courier</p>
+              <p className="mt-3 font-semibold">Delivery partner</p>
               <p className="mt-1 text-[#18221B]/65">
-                Assigned for this delivery
+                Assigned for this delivery. Live map tracking is not shown
+                without real location data.
               </p>
             </>
           )}
+          <p className="mt-3 font-semibold">Support</p>
+          <p className="mt-1 text-[#18221B]/65">
+            Need help with a missing, incorrect or delayed order? Contact THUMA
+            support via your account once support channels are enabled.
+          </p>
         </div>
 
         {canCancel && (

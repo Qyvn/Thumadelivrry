@@ -1,33 +1,78 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, Search, ShoppingBasket, UtensilsCrossed } from "lucide-react";
+import {
+  ArrowRight,
+  Heart,
+  Home,
+  ShoppingBasket,
+  Store,
+  CupSoda,
+  UtensilsCrossed,
+} from "lucide-react";
 import { CustomerNav } from "@/components/customer-nav";
 import { DevBanner } from "@/components/dev-banner";
+import { ProductCard } from "@/components/product-card";
 import { getCustomerShell } from "@/lib/customer-context";
+import { BROWSE_CATEGORIES } from "@/lib/browse";
 import { prisma } from "@/lib/db";
-import { formatZar } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
-export default async function HomePage() {
-  const { user, basketCount, locationLabel, zone } = await getCustomerShell();
+const CATEGORY_ICONS = {
+  cart: ShoppingBasket,
+  utensils: UtensilsCrossed,
+  cup: CupSoda,
+  home: Home,
+  heart: Heart,
+  store: Store,
+} as const;
 
-  const categories = await prisma.serviceCategory.findMany({
-    where: { isEnabled: true },
-    orderBy: { sortOrder: "asc" },
+export default async function HomePage() {
+  const { user, basketCount, locationLabel, zone, basketQtyByProduct } =
+    await getCustomerShell();
+
+  const now = new Date();
+  const promotions = await prisma.promotion.findMany({
+    where: {
+      isActive: true,
+      OR: [{ startsAt: null }, { startsAt: { lte: now } }],
+      AND: [{ OR: [{ endsAt: null }, { endsAt: { gte: now } }] }],
+    },
+    orderBy: { updatedAt: "desc" },
+    take: 3,
   });
+
+  const approvedProducts = await prisma.product.findMany({
+    where: {
+      isActive: true,
+      isAvailable: true,
+      merchant: { status: "APPROVED", zoneId: zone?.id },
+    },
+    include: { merchant: true },
+    orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+  });
+
+  const popular = approvedProducts.slice(0, 8);
+  const essentials = approvedProducts.filter((p) =>
+    ["groceries", "household", "drinks", "personal-care"].includes(p.browseCategory),
+  ).slice(0, 8);
 
   const merchants = await prisma.merchant.findMany({
     where: { status: "APPROVED", zoneId: zone?.id },
-    include: {
-      products: {
-        where: { isActive: true, isAvailable: true },
-        take: 3,
-        orderBy: { sortOrder: "asc" },
-      },
-    },
     orderBy: { name: "asc" },
   });
+
+  // Categories with at least one available product (Local Shops only if merchants exist)
+  const categoryCounts = Object.fromEntries(
+    BROWSE_CATEGORIES.map((c) => [
+      c.slug,
+      approvedProducts.filter((p) => p.browseCategory === c.slug).length,
+    ]),
+  );
+
+  const greeting = user
+    ? `Hi ${user.fullName.split(" ")[0]}`
+    : "Welcome to THUMA";
 
   const activeOrders =
     user?.role === "CUSTOMER"
@@ -44,7 +89,7 @@ export default async function HomePage() {
       : [];
 
   return (
-    <div className="flex min-h-full flex-col">
+    <div className="flex min-h-full flex-col bg-[#F5F0E6]">
       <DevBanner />
       <CustomerNav
         user={user}
@@ -52,138 +97,85 @@ export default async function HomePage() {
         locationLabel={locationLabel}
       />
 
-      <main className="flex-1">
-        <section className="thuma-hero-bg thuma-grain relative overflow-hidden">
-          <div className="mx-auto grid max-w-5xl gap-8 px-4 pb-14 pt-10 md:grid-cols-[1.1fr_0.9fr] md:items-end md:pb-16 md:pt-14">
-            <div className="animate-rise space-y-5">
-              <p className="font-[family-name:var(--font-display)] text-5xl font-extrabold tracking-tight text-[#18221B] sm:text-6xl md:text-7xl">
-                THUMA
-              </p>
-              <h1 className="max-w-md text-2xl font-semibold leading-snug text-[#18221B] sm:text-3xl">
-                You need it. We bring it.
-              </h1>
-              <p className="max-w-md text-base leading-relaxed text-[#18221B]/70">
-                Everything-delivery for Cornubia Flats — food, groceries, and
-                everyday essentials from local merchants, when the zone is live.
-              </p>
-              <div className="flex flex-wrap gap-3 pt-1">
-                <Link
-                  href="/eats"
-                  className="inline-flex h-12 items-center gap-2 rounded-xl bg-[#D0F27B] px-5 text-sm font-bold text-[#18221B] transition hover:bg-[#c3e86a]"
-                >
-                  Browse food
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-                <Link
-                  href="/market"
-                  className="inline-flex h-12 items-center gap-2 rounded-xl bg-[#18221B] px-5 text-sm font-bold text-[#D0F27B] transition hover:bg-[#243029]"
-                >
-                  Browse essentials
-                </Link>
-              </div>
-            </div>
-
-            <div className="animate-fade relative min-h-[220px] overflow-hidden rounded-none md:min-h-[320px]">
-              <div className="absolute inset-0 bg-[#18221B]">
-                <Image
-                  src="/images/hero-cornubia.svg"
-                  alt="Cornubia Flats evening streetscape illustration for THUMA delivery"
-                  fill
-                  className="object-cover opacity-95"
-                  priority
-                />
-              </div>
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#18221B] via-[#18221B]/40 to-transparent p-5">
-                <p className="text-xs font-medium uppercase tracking-[0.18em] text-[#D0F27B]/80">
-                  Launch zone
-                </p>
-                <p className="mt-1 font-[family-name:var(--font-display)] text-xl font-semibold text-white">
-                  Cornubia Flats, KZN
-                </p>
-              </div>
-            </div>
-          </div>
+      <main className="mx-auto w-full max-w-5xl flex-1 px-4 pb-16 pt-5">
+        <section className="animate-rise">
+          <p className="text-sm font-medium text-[#18221B]/55">{greeting}</p>
+          <h1 className="mt-1 font-[family-name:var(--font-display)] text-3xl font-bold tracking-tight text-[#18221B] sm:text-4xl">
+            What do you need today?
+          </h1>
+          <p className="mt-2 max-w-md text-sm text-[#18221B]/65">
+            Your neighbourhood essentials, delivered.
+          </p>
+          <p className="mt-1 text-xs font-semibold uppercase tracking-[0.14em] text-[#18221B]/40">
+            You need it. We bring it. · Cornubia Flats
+          </p>
         </section>
 
-        <section className="mx-auto max-w-5xl px-4 py-8">
-          <div className="flex flex-wrap gap-3">
-            <Link
-              href="/account/addresses"
-              className="inline-flex min-h-11 flex-1 items-center gap-2 rounded-xl border border-[#18221B]/10 bg-white px-4 text-sm font-medium text-[#18221B] sm:flex-none"
+        <form action="/search" className="mt-5 animate-fade">
+          <label htmlFor="home-search" className="sr-only">
+            Search
+          </label>
+          <div className="flex items-center gap-3 rounded-2xl border border-[#18221B]/10 bg-white px-4 py-3 shadow-[0_1px_2px_rgba(24,34,27,0.04)]">
+            <svg
+              className="h-5 w-5 shrink-0 text-[#18221B]/45"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
             >
-              Confirm location
-            </Link>
-            <Link
-              href="/search"
-              className="inline-flex min-h-11 flex-1 items-center gap-2 rounded-xl border border-[#18221B]/10 bg-white px-4 text-sm font-medium text-[#18221B] sm:flex-none"
-            >
-              <Search className="h-4 w-4" />
-              Search
-            </Link>
-            <Link
-              href="/basket"
-              className="inline-flex min-h-11 flex-1 items-center gap-2 rounded-xl border border-[#18221B]/10 bg-white px-4 text-sm font-medium text-[#18221B] sm:flex-none"
-            >
-              <ShoppingBasket className="h-4 w-4" />
-              Basket
-            </Link>
-            <Link
-              href="/orders"
-              className="inline-flex min-h-11 flex-1 items-center gap-2 rounded-xl border border-[#18221B]/10 bg-white px-4 text-sm font-medium text-[#18221B] sm:flex-none"
-            >
-              Active orders
-            </Link>
+              <circle cx="11" cy="11" r="7" />
+              <path d="m20 20-3.5-3.5" />
+            </svg>
+            <input
+              id="home-search"
+              name="q"
+              placeholder="Search groceries, meals and essentials"
+              className="w-full bg-transparent text-sm text-[#18221B] outline-none placeholder:text-[#18221B]/40"
+            />
           </div>
+        </form>
 
-          {activeOrders[0] && (
-            <Link
-              href={`/orders/${activeOrders[0].id}`}
-              className="mt-4 flex items-center justify-between rounded-xl bg-[#18221B] px-4 py-3 text-sm text-white animate-pulse-soft"
-            >
-              <span>
-                Order {activeOrders[0].orderNumber} ·{" "}
-                {activeOrders[0].status.replaceAll("_", " ").toLowerCase()}
-              </span>
-              <ArrowRight className="h-4 w-4 text-[#D0F27B]" />
-            </Link>
-          )}
-        </section>
+        {activeOrders[0] && (
+          <Link
+            href={`/orders/${activeOrders[0].id}`}
+            className="mt-4 flex items-center justify-between rounded-2xl bg-[#18221B] px-4 py-3 text-sm text-white"
+          >
+            <span>
+              Order {activeOrders[0].orderNumber} ·{" "}
+              {activeOrders[0].status.replaceAll("_", " ").toLowerCase()}
+            </span>
+            <ArrowRight className="h-4 w-4 text-[#D0F27B]" />
+          </Link>
+        )}
 
-        <section className="mx-auto max-w-5xl px-4 pb-10">
-          <div className="mb-4 flex items-end justify-between gap-3">
-            <div>
-              <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold">
-                Services
-              </h2>
-              <p className="mt-1 text-sm text-[#18221B]/65">
-                Food and essentials first. Local and Express come later.
-              </p>
-            </div>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {categories.map((cat) => {
-              const href =
-                cat.code === "EATS"
-                  ? "/eats"
-                  : cat.code === "MARKET"
-                    ? "/market"
-                    : "#";
-              const Icon =
-                cat.code === "EATS" ? UtensilsCrossed : ShoppingBasket;
+        <section className="mt-8">
+          <h2 className="font-[family-name:var(--font-display)] text-xl font-bold">
+            Shop by category
+          </h2>
+          <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
+            {BROWSE_CATEGORIES.map((cat) => {
+              const Icon = CATEGORY_ICONS[cat.icon];
+              const count = categoryCounts[cat.slug] ?? 0;
+              const disabled = cat.slug === "local" ? merchants.length === 0 : count === 0;
               return (
                 <Link
-                  key={cat.id}
-                  href={href}
-                  className="group flex items-start gap-4 rounded-2xl border border-[#18221B]/8 bg-white p-5 transition hover:border-[#18221B]/20"
+                  key={cat.slug}
+                  href={disabled ? "#" : `/browse/${cat.slug}`}
+                  aria-disabled={disabled}
+                  className={`rounded-2xl border border-[#18221B]/8 bg-white p-4 transition ${
+                    disabled
+                      ? "pointer-events-none opacity-45"
+                      : "hover:border-[#18221B]/20"
+                  }`}
                 >
-                  <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#D0F27B] text-[#18221B]">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#D0F27B] text-[#18221B]">
                     <Icon className="h-5 w-5" />
                   </span>
-                  <span>
-                    <span className="block font-semibold">{cat.name}</span>
-                    <span className="mt-1 block text-sm text-[#18221B]/65">
-                      {cat.description}
-                    </span>
+                  <span className="mt-3 block text-sm font-semibold leading-snug">
+                    {cat.name}
+                  </span>
+                  <span className="mt-1 block text-xs text-[#18221B]/55">
+                    {disabled ? "Coming when available" : cat.description}
                   </span>
                 </Link>
               );
@@ -191,74 +183,110 @@ export default async function HomePage() {
           </div>
         </section>
 
-        <section className="mx-auto max-w-5xl px-4 pb-16">
-          <div className="mb-4">
-            <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold">
-              Nearby (sample catalogue)
+        {promotions.length > 0 && (
+          <section className="mt-8">
+            <h2 className="font-[family-name:var(--font-display)] text-xl font-bold">
+              Offers
             </h2>
-            <p className="mt-1 text-sm text-[#18221B]/65">
-              Development sample merchants only — not confirmed live partners.
+            <p className="mt-1 text-xs text-[#18221B]/55">
+              Only verified, administrator-activated promotions appear here.
             </p>
-          </div>
+            <div className="mt-3 space-y-3">
+              {promotions.map((promo) => (
+                <Link
+                  key={promo.id}
+                  href={promo.href || "/"}
+                  className="block rounded-2xl bg-[#18221B] px-5 py-4 text-white"
+                >
+                  <p className="font-semibold text-[#D0F27B]">{promo.title}</p>
+                  {promo.body && (
+                    <p className="mt-1 text-sm text-white/75">{promo.body}</p>
+                  )}
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
 
-          {merchants.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-[#18221B]/20 bg-white/60 px-5 py-10 text-center">
-              <p className="font-semibold">No approved merchants yet</p>
-              <p className="mt-2 text-sm text-[#18221B]/65">
-                Administrators must approve merchants before they appear here.
+        <section className="mt-8">
+          <div className="flex items-end justify-between gap-3">
+            <div>
+              <h2 className="font-[family-name:var(--font-display)] text-xl font-bold">
+                Popular products
+              </h2>
+              <p className="mt-1 text-xs text-[#18221B]/55">
+                From approved sample catalogue — not fabricated ratings.
               </p>
             </div>
+            <Link href="/browse/groceries" className="text-sm font-semibold underline">
+              See all
+            </Link>
+          </div>
+          {popular.length === 0 ? (
+            <EmptyBlock message="No products available in Cornubia Flats yet." />
           ) : (
-            <div className="space-y-6">
-              {merchants.map((merchant) => (
-                <div
-                  key={merchant.id}
-                  className="overflow-hidden rounded-2xl border border-[#18221B]/8 bg-white"
+            <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+              {popular.map((p) => (
+                <ProductCard
+                  key={p.id}
+                  product={p}
+                  initialQty={basketQtyByProduct[p.id] ?? 0}
+                />
+              ))}
+            </div>
+          )}
+        </section>
+
+        <section className="mt-10">
+          <h2 className="font-[family-name:var(--font-display)] text-xl font-bold">
+            Everyday essentials
+          </h2>
+          <p className="mt-1 text-xs text-[#18221B]/55">
+            Groceries, drinks, household and personal care.
+          </p>
+          <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+            {essentials.map((p) => (
+              <ProductCard
+                key={p.id}
+                product={p}
+                initialQty={basketQtyByProduct[p.id] ?? 0}
+              />
+            ))}
+          </div>
+        </section>
+
+        <section className="mt-10">
+          <h2 className="font-[family-name:var(--font-display)] text-xl font-bold">
+            Nearby merchants
+          </h2>
+          <p className="mt-1 text-xs text-[#18221B]/55">
+            Approved merchants only. Sample partners are labelled.
+          </p>
+          {merchants.length === 0 ? (
+            <EmptyBlock message="No approved merchants in this zone yet." />
+          ) : (
+            <div className="mt-4 space-y-3">
+              {merchants.map((m) => (
+                <Link
+                  key={m.id}
+                  href={`/shops/${m.slug}`}
+                  className="flex items-center gap-4 rounded-2xl border border-[#18221B]/8 bg-white p-3"
                 >
-                  <div className="flex items-center justify-between gap-3 border-b border-[#18221B]/6 px-5 py-4">
-                    <div>
-                      <h3 className="font-semibold">{merchant.name}</h3>
-                      <p className="text-sm text-[#18221B]/60">
-                        {merchant.suburb}
-                        {merchant.isDevSample ? " · DEV SAMPLE" : ""}
-                      </p>
-                    </div>
-                    <Link
-                      href={`/shops/${merchant.slug}`}
-                      className="text-sm font-semibold text-[#18221B] underline-offset-4 hover:underline"
-                    >
-                      View shop
-                    </Link>
+                  <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-[#ebe4d4]">
+                    {m.imageUrl && (
+                      <Image src={m.imageUrl} alt={m.name} fill className="object-cover" />
+                    )}
                   </div>
-                  <div className="grid gap-3 p-4 sm:grid-cols-3">
-                    {merchant.products.map((product) => (
-                      <Link
-                        key={product.id}
-                        href={`/shops/${merchant.slug}`}
-                        className="flex gap-3 rounded-xl p-2 hover:bg-[#F5F0E6]"
-                      >
-                        <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-[#ebe4d4]">
-                          {product.imageUrl && (
-                            <Image
-                              src={product.imageUrl}
-                              alt={product.name}
-                              fill
-                              className="object-cover"
-                            />
-                          )}
-                        </div>
-                        <div className="min-w-0">
-                          <p className="truncate text-sm font-medium">
-                            {product.name}
-                          </p>
-                          <p className="mt-1 text-sm font-semibold">
-                            {formatZar(product.priceCents)}
-                          </p>
-                        </div>
-                      </Link>
-                    ))}
+                  <div className="min-w-0">
+                    <p className="font-semibold">{m.name}</p>
+                    <p className="mt-0.5 line-clamp-2 text-sm text-[#18221B]/60">
+                      {m.description}
+                    </p>
+                    <p className="mt-1 text-[11px] font-semibold uppercase tracking-wide text-[#18221B]/40">
+                      {m.isDevSample ? "Dev sample" : "Approved"} · {m.suburb}
+                    </p>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           )}
@@ -272,12 +300,12 @@ export default async function HomePage() {
               THUMA
             </p>
             <p className="text-sm text-[#D0F27B]/70">
-              You need it. We bring it. · Cornubia Flats
+              You need it. We bring it. · Cornubia Flats only for now
             </p>
           </div>
           <div className="flex flex-wrap gap-4 text-sm">
             <Link href="/merchant" className="hover:underline">
-              Merchant portal
+              Merchant
             </Link>
             <Link href="/courier" className="hover:underline">
               Courier
@@ -288,6 +316,14 @@ export default async function HomePage() {
           </div>
         </div>
       </footer>
+    </div>
+  );
+}
+
+function EmptyBlock({ message }: { message: string }) {
+  return (
+    <div className="mt-4 rounded-2xl border border-dashed border-[#18221B]/20 bg-white/70 px-5 py-10 text-center text-sm text-[#18221B]/65">
+      {message}
     </div>
   );
 }
