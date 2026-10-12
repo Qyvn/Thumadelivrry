@@ -47,6 +47,7 @@ prisma/dev.db
 prisma/dev.db-journal
 *.db
 *.db-journal
+!data/demo.db
 
 # vercel
 .vercel

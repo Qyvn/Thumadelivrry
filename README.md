@@ -34,7 +34,17 @@ Do not change the name, tagline, or core colours without approval.
 | Courier | `/courier` | Claim jobs, pickup, deliver with proof |
 | Admin | `/admin` | Cornubia metrics, applications, dispatch/refunds |
 
-## Quick start
+## Publish to the web (Cursor)
+
+No GitHub required:
+
+1. In this Cloud Agent chat, click **Create repo** (above the input) → name it `thuma-delivery` → create the Origin repo.
+2. Connect **Vercel** if prompted (**Add Vercel**).
+3. Click **Publish**.
+
+Cursor deploys the default branch and returns a public URL. The Vercel deploy uses a seeded SQLite snapshot (`data/demo.db`) copied to `/tmp` for demos. For a durable production DB, set `DATABASE_URL` to PostgreSQL on the Vercel project and switch the Prisma provider.
+
+## Quick start (local)
 
 ```bash
 npm install
