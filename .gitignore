@@ -24,6 +24,12 @@
 .DS_Store
 *.pem
 
+# local tooling scaffolds (not part of THUMA app)
+.agents/
+.claude/
+.windsurf/
+skills-lock.json
+
 # debug
 npm-debug.log*
 yarn-debug.log*
