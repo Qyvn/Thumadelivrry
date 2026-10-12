@@ -107,6 +107,20 @@ export const CUSTOMER_VISIBLE_STEPS: OrderStatus[] = [
   OrderStatus.DELIVERED,
 ];
 
+/** Statuses where the customer no longer needs live refresh. */
+export const TERMINAL_ORDER_STATUSES: OrderStatus[] = [
+  OrderStatus.DELIVERED,
+  OrderStatus.CANCELLED,
+  OrderStatus.REFUNDED,
+  OrderStatus.PAYMENT_FAILED,
+  OrderStatus.REJECTED,
+  OrderStatus.MERCHANT_UNAVAILABLE,
+];
+
+export function isTerminalOrderStatus(status: string): boolean {
+  return TERMINAL_ORDER_STATUSES.includes(status as OrderStatus);
+}
+
 export function statusLabel(status: string): string {
   const labels: Record<OrderStatus, string> = {
     BASKET: "Basket",

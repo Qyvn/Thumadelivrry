@@ -16,6 +16,7 @@ import { getCustomerShell } from "@/lib/customer-context";
 import { BROWSE_CATEGORIES } from "@/lib/browse";
 import { prisma } from "@/lib/db";
 import { getNearbyApprovedMerchants } from "@/lib/nearby";
+import { statusLabel } from "@/lib/order-lifecycle";
 
 export const dynamic = "force-dynamic";
 
@@ -172,7 +173,7 @@ export default async function HomePage() {
           >
             <span>
               Order {activeOrders[0].orderNumber} ·{" "}
-              {activeOrders[0].status.replaceAll("_", " ").toLowerCase()}
+              {statusLabel(activeOrders[0].status)}
             </span>
             <ArrowRight className="h-4 w-4 text-[#D0F27B]" />
           </Link>

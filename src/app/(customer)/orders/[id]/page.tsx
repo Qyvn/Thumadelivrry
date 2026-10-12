@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { CustomerNav } from "@/components/customer-nav";
 import { DevBanner } from "@/components/dev-banner";
+import { OrderLiveRefresh } from "@/components/order-live-refresh";
 import { Button } from "@/components/ui/button";
 import { cancelOrderAction } from "@/app/actions/orders";
 import { requireUser } from "@/lib/auth";
@@ -74,6 +75,7 @@ export default async function OrderDetailPage({
         <p className="mt-3 text-lg font-semibold">
           {statusLabel(order.status)}
         </p>
+        <OrderLiveRefresh status={order.status} />
 
         {error && (
           <p className="mt-4 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-800">
@@ -155,8 +157,13 @@ export default async function OrderDetailPage({
             <>
               <p className="mt-3 font-semibold">Delivery partner</p>
               <p className="mt-1 text-[#18221B]/65">
-                Assigned for this delivery. Live map tracking is not shown
-                without real location data.
+                {order.delivery.courier.user.fullName}
+                {order.delivery.courier.vehicleType
+                  ? ` · ${order.delivery.courier.vehicleType}`
+                  : ""}
+              </p>
+              <p className="mt-1 text-xs text-[#18221B]/45">
+                Live map tracking is not shown without real location data.
               </p>
             </>
           )}

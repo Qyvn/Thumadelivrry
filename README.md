@@ -90,7 +90,7 @@ Documented in `.env.example`. Not wired for live traffic yet:
 
 ## Honest status
 
-**Working in this build:** auth + roles, Cornubia zone config, sample catalogue browse, basket, checkout with mock payment callback, merchant accept/prepare, courier claim/deliver, admin metrics + manual dispatch + refunds, audit events.
+**Working in this build:** auth + roles, Cornubia zone config, sample catalogue browse, basket, checkout with mock payment callback, merchant accept/prepare, courier claim/deliver, live order status refresh on the customer tracking page, admin metrics + manual dispatch + refunds, audit events.
 
 **Not production-ready:** real payment capture, POPIA compliance programme, SMS/push, automated dispatch algorithms, multi-zone live launch, legal merchant agreements, load/security hardening at scale.
 
