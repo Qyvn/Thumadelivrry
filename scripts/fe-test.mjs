@@ -127,19 +127,47 @@ try {
     fail("add-and-quantity", `no Add/qty on milk card: ${html.slice(0, 180)}`);
   }
 
-  // 5. Basket
+  // 5. Basket — under R200 minimum must block delivery
   await page.goto(`${BASE}/basket`, { waitUntil: "networkidle" });
   const basketHeading = await page.getByRole("heading", { name: "Basket" }).isVisible();
   const hasLine = await page.getByText(/Fresh Milk|Milk/i).first().isVisible().catch(() => false);
   const hasTotal = await page.locator("span", { hasText: /^Total$/ }).isVisible();
-  const checkoutLink = page.getByRole("link", { name: /Go to checkout/i });
-  if (basketHeading && hasLine && hasTotal && (await checkoutLink.isVisible())) {
-    pass("basket", await shot(page, "06-basket"));
+  const minOrderMsg = page.getByText(/We do not deliver under/i);
+  const addMore = page.getByRole("link", { name: /Add more items/i });
+  const checkoutBlocked = !(await page.getByRole("link", { name: /Go to checkout/i }).isVisible().catch(() => false));
+  if (
+    basketHeading &&
+    hasLine &&
+    hasTotal &&
+    (await minOrderMsg.isVisible()) &&
+    (await addMore.isVisible()) &&
+    checkoutBlocked
+  ) {
+    pass("basket-min-order-blocked", await shot(page, "06-basket-min-order"));
   } else {
     fail(
-      "basket",
-      `heading=${basketHeading} line=${hasLine} total=${hasTotal} checkout=${await checkoutLink.isVisible().catch(() => false)}`,
+      "basket-min-order-blocked",
+      `heading=${basketHeading} line=${hasLine} total=${hasTotal} min=${await minOrderMsg.isVisible().catch(() => false)} addMore=${await addMore.isVisible().catch(() => false)} blocked=${checkoutBlocked}`,
     );
+  }
+
+  // Raise merchandise subtotal to ≥ R200 (Fresh Milk 2L @ R32.99 → qty 7)
+  await page.goto(`${BASE}/browse/groceries`, { waitUntil: "networkidle" });
+  const milkForMin = page.locator("article").filter({ hasText: "Fresh Milk 2L" }).first();
+  await milkForMin.waitFor({ state: "visible", timeout: 8000 });
+  for (let i = 0; i < 5; i++) {
+    const plus = milkForMin.getByRole("button", { name: "Increase quantity" });
+    if (await plus.isVisible().catch(() => false)) {
+      await plus.click();
+      await page.waitForTimeout(400);
+    }
+  }
+  await page.goto(`${BASE}/basket`, { waitUntil: "networkidle" });
+  const checkoutLink = page.getByRole("link", { name: /Go to checkout/i });
+  if (await checkoutLink.isVisible()) {
+    pass("basket-meets-minimum", await shot(page, "06b-basket-ready"));
+  } else {
+    fail("basket-meets-minimum", "checkout still blocked after raising qty");
   }
 
   // 6. Checkout
