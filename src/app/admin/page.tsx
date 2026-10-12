@@ -1,9 +1,14 @@
 import Link from "next/link";
 import { logoutAction } from "@/app/actions/auth";
-import { approveMerchantAction } from "@/app/admin/actions";
+import {
+  approveMerchantAction,
+  updateZoneRadiusAction,
+} from "@/app/admin/actions";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { parseZoneGeo } from "@/lib/geo";
 import { formatZar } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -130,9 +135,46 @@ export default async function AdminDashboardPage() {
           <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-[#18221B]/45">
             Zone: {zone?.name ?? "Not configured"} ·{" "}
             {zone?.isActive ? "Active (config)" : "Inactive"} · Base fee{" "}
-            {zone ? formatZar(zone.baseFeeCents) : "—"}
+            {zone ? formatZar(zone.baseFeeCents) : "—"} · Store radius{" "}
+            {zone ? `${parseZoneGeo(zone.boundaryJson).radiusKm} km` : "—"}
           </p>
         </section>
+
+        {zone && (
+          <section className="rounded-2xl border border-[#18221B]/8 bg-white p-5">
+            <h2 className="font-semibold">Nearest-store radius</h2>
+            <p className="mt-1 text-sm text-[#18221B]/65">
+              Customers only see and can order from approved stores within this
+              distance of their delivery pin (or the zone centre if no address
+              is set).
+            </p>
+            <form
+              action={updateZoneRadiusAction}
+              className="mt-4 flex flex-wrap items-end gap-3"
+            >
+              <input type="hidden" name="zoneId" value={zone.id} />
+              <div>
+                <label htmlFor="radiusKm" className="text-xs font-semibold">
+                  Radius (km)
+                </label>
+                <Input
+                  id="radiusKm"
+                  name="radiusKm"
+                  type="number"
+                  min={0.1}
+                  max={50}
+                  step={0.1}
+                  defaultValue={parseZoneGeo(zone.boundaryJson).radiusKm}
+                  className="mt-1 w-36"
+                  required
+                />
+              </div>
+              <Button type="submit" size="sm">
+                Save radius
+              </Button>
+            </form>
+          </section>
+        )}
 
         <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <Metric label="Completed orders" value={String(completedOrders.length)} />

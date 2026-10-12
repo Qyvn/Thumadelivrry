@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { getCustomerShell } from "@/lib/customer-context";
 import { prisma } from "@/lib/db";
 import { BROWSE_CATEGORIES } from "@/lib/browse";
+import { getNearbyApprovedMerchants } from "@/lib/nearby";
 
 export const dynamic = "force-dynamic";
 
@@ -16,15 +17,31 @@ export default async function SearchPage({
 }) {
   const { q } = await searchParams;
   const query = (q ?? "").trim();
-  const { user, basketCount, locationLabel, zone, basketQtyByProduct } =
-    await getCustomerShell();
+  const {
+    user,
+    basketCount,
+    locationLabel,
+    zone,
+    basketQtyByProduct,
+    origin,
+    originSource,
+    radiusKm,
+  } = await getCustomerShell();
+
+  const nearby = await getNearbyApprovedMerchants({
+    zoneId: zone?.id,
+    zoneBoundaryJson: zone?.boundaryJson,
+    origin,
+    radiusKm,
+    originSource,
+  });
 
   const products =
-    query.length >= 2
+    query.length >= 2 && nearby.merchantIds.length > 0
       ? await prisma.product.findMany({
           where: {
             isActive: true,
-            merchant: { status: "APPROVED", zoneId: zone?.id },
+            merchantId: { in: nearby.merchantIds },
             OR: [
               { name: { contains: query } },
               { description: { contains: query } },

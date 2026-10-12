@@ -15,6 +15,7 @@ import { ProductCard } from "@/components/product-card";
 import { getCustomerShell } from "@/lib/customer-context";
 import { BROWSE_CATEGORIES } from "@/lib/browse";
 import { prisma } from "@/lib/db";
+import { getNearbyApprovedMerchants } from "@/lib/nearby";
 
 export const dynamic = "force-dynamic";
 
@@ -28,8 +29,25 @@ const CATEGORY_ICONS = {
 } as const;
 
 export default async function HomePage() {
-  const { user, basketCount, locationLabel, zone, basketQtyByProduct } =
-    await getCustomerShell();
+  const {
+    user,
+    basketCount,
+    locationLabel,
+    zone,
+    basketQtyByProduct,
+    origin,
+    originSource,
+    radiusKm,
+  } = await getCustomerShell();
+
+  const nearby = await getNearbyApprovedMerchants({
+    zoneId: zone?.id,
+    zoneBoundaryJson: zone?.boundaryJson,
+    origin,
+    radiusKm,
+    originSource,
+  });
+  const nearbyIds = nearby.merchantIds;
 
   const now = new Date();
   const promotions = await prisma.promotion.findMany({
@@ -42,25 +60,37 @@ export default async function HomePage() {
     take: 3,
   });
 
-  const approvedProducts = await prisma.product.findMany({
-    where: {
-      isActive: true,
-      isAvailable: true,
-      merchant: { status: "APPROVED", zoneId: zone?.id },
-    },
-    include: { merchant: true },
-    orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+  const approvedProducts =
+    nearbyIds.length === 0
+      ? []
+      : await prisma.product.findMany({
+          where: {
+            isActive: true,
+            isAvailable: true,
+            merchantId: { in: nearbyIds },
+          },
+          include: { merchant: true },
+          orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+        });
+
+  // Prefer products from the nearest store first
+  const nearestId = nearbyIds[0];
+  const sortedProducts = [...approvedProducts].sort((a, b) => {
+    if (a.merchantId === nearestId && b.merchantId !== nearestId) return -1;
+    if (b.merchantId === nearestId && a.merchantId !== nearestId) return 1;
+    return 0;
   });
 
-  const popular = approvedProducts.slice(0, 8);
-  const essentials = approvedProducts.filter((p) =>
-    ["groceries", "household", "drinks", "personal-care"].includes(p.browseCategory),
-  ).slice(0, 8);
+  const popular = sortedProducts.slice(0, 8);
+  const essentials = sortedProducts
+    .filter((p) =>
+      ["groceries", "household", "drinks", "personal-care"].includes(
+        p.browseCategory,
+      ),
+    )
+    .slice(0, 8);
 
-  const merchants = await prisma.merchant.findMany({
-    where: { status: "APPROVED", zoneId: zone?.id },
-    orderBy: { name: "asc" },
-  });
+  const merchants = nearby.merchants;
 
   // Categories with at least one available product (Local Shops only if merchants exist)
   const categoryCounts = Object.fromEntries(
@@ -256,17 +286,25 @@ export default async function HomePage() {
         </section>
 
         <section className="mt-10">
-          <h2 className="font-[family-name:var(--font-display)] text-xl font-bold">
-            Nearby merchants
-          </h2>
-          <p className="mt-1 text-xs text-[#18221B]/55">
-            Approved merchants only. Sample partners are labelled.
-          </p>
+          <div className="flex items-end justify-between gap-3">
+            <div>
+              <h2 className="font-[family-name:var(--font-display)] text-xl font-bold">
+                Nearest stores
+              </h2>
+              <p className="mt-1 text-xs text-[#18221B]/55">
+                Within {nearby.radiusKm} km of{" "}
+                {nearby.originSource === "address"
+                  ? "your delivery address"
+                  : "the Cornubia Flats zone centre"}
+                . Closest first.
+              </p>
+            </div>
+          </div>
           {merchants.length === 0 ? (
-            <EmptyBlock message="No approved merchants in this zone yet." />
+            <EmptyBlock message="No approved stores within the delivery radius." />
           ) : (
             <div className="mt-4 space-y-3">
-              {merchants.map((m) => (
+              {merchants.map((m, index) => (
                 <Link
                   key={m.id}
                   href={`/shops/${m.slug}`}
@@ -274,11 +312,22 @@ export default async function HomePage() {
                 >
                   <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-[#ebe4d4]">
                     {m.imageUrl && (
-                      <Image src={m.imageUrl} alt={m.name} fill className="object-cover" />
+                      <Image
+                        src={m.imageUrl}
+                        alt={m.name}
+                        fill
+                        className="object-cover"
+                      />
                     )}
                   </div>
-                  <div className="min-w-0">
-                    <p className="font-semibold">{m.name}</p>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-start justify-between gap-2">
+                      <p className="font-semibold">{m.name}</p>
+                      <span className="shrink-0 rounded-full bg-[#D0F27B] px-2 py-0.5 text-[11px] font-bold text-[#18221B]">
+                        {index === 0 ? "Nearest · " : ""}
+                        {m.distanceLabel}
+                      </span>
+                    </div>
                     <p className="mt-0.5 line-clamp-2 text-sm text-[#18221B]/60">
                       {m.description}
                     </p>

@@ -79,3 +79,45 @@ export async function toggleZoneAction(formData: FormData) {
   revalidatePath("/admin");
   redirect("/admin");
 }
+
+/** Update nearest-store delivery radius (km) on the Cornubia Flats zone. */
+export async function updateZoneRadiusAction(formData: FormData) {
+  const user = await requireUser(["ADMIN"]);
+  const zoneId = String(formData.get("zoneId") ?? "");
+  const radiusKm = Number(formData.get("radiusKm") ?? 0);
+  if (!zoneId || !Number.isFinite(radiusKm) || radiusKm <= 0 || radiusKm > 50) {
+    redirect("/admin?error=Radius+must+be+between+0.1+and+50+km");
+  }
+
+  const zone = await prisma.deliveryZone.findUnique({ where: { id: zoneId } });
+  if (!zone) redirect("/admin?error=Zone+not+found");
+
+  let boundary: Record<string, unknown> = {};
+  try {
+    boundary = zone.boundaryJson ? JSON.parse(zone.boundaryJson) : {};
+  } catch {
+    boundary = {};
+  }
+  boundary.type = boundary.type ?? "radius";
+  boundary.radiusKm = radiusKm;
+  if (!boundary.center) {
+    boundary.center = { lat: -29.7005, lng: 31.0685 };
+  }
+
+  await prisma.deliveryZone.update({
+    where: { id: zoneId },
+    data: { boundaryJson: JSON.stringify(boundary) },
+  });
+
+  await writeAudit({
+    actorId: user.id,
+    entityType: "ZONE",
+    entityId: zoneId,
+    action: "ZONE_RADIUS_UPDATED",
+    detail: { radiusKm },
+  });
+
+  revalidatePath("/admin");
+  revalidatePath("/");
+  redirect("/admin");
+}

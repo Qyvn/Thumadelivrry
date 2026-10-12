@@ -12,7 +12,7 @@
     "db:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts",
     "db:reset": "prisma migrate reset --force",
-    "test:unit": "tsx src/lib/order-lifecycle.test.ts && tsx src/lib/eligibility.test.ts",
+    "test:unit": "tsx src/lib/order-lifecycle.test.ts && tsx src/lib/eligibility.test.ts && tsx src/lib/geo.test.ts",
     "test:e2e": "tsx scripts/e2e-smoke.ts",
     "postinstall": "prisma generate"
   },

@@ -7,6 +7,7 @@ import {
 } from "@/lib/constants";
 import { prisma } from "./db";
 import { isAddressInServiceArea } from "./eligibility";
+import { distanceKm, parseZoneGeo } from "./geo";
 import { assertTransition } from "./order-lifecycle";
 import { confirmPaymentFromProvider, createPaymentIntent } from "./payments";
 import { writeAudit } from "./audit";
@@ -57,6 +58,41 @@ export async function addToBasket(params: {
   }
   if (product.merchant.status !== "APPROVED") {
     throw new Error("Merchant is not orderable");
+  }
+
+  // Enforce nearest-store radius against the customer's default delivery pin
+  const customer = await prisma.customerProfile.findUnique({
+    where: { id: params.customerId },
+    include: { addresses: { where: { isDefault: true }, take: 1 } },
+  });
+  const delivery = customer?.addresses[0];
+  const zone = product.merchant.zoneId
+    ? await prisma.deliveryZone.findUnique({
+        where: { id: product.merchant.zoneId },
+      })
+    : await prisma.deliveryZone.findUnique({
+        where: { slug: "cornubia-flats" },
+      });
+  if (zone && delivery?.latitude != null && delivery?.longitude != null) {
+    const geo = parseZoneGeo(zone.boundaryJson);
+    const radiusKm = geo.radiusKm ?? 3;
+    if (
+      product.merchant.latitude == null ||
+      product.merchant.longitude == null
+    ) {
+      throw new Error(
+        "This store has no map location yet and cannot be ordered within the delivery radius.",
+      );
+    }
+    const km = distanceKm(
+      { lat: delivery.latitude, lng: delivery.longitude },
+      { lat: product.merchant.latitude, lng: product.merchant.longitude },
+    );
+    if (km > radiusKm) {
+      throw new Error(
+        `This store is ${km.toFixed(1)} km away — outside the ${radiusKm} km delivery radius from your address.`,
+      );
+    }
   }
 
   const basket = await getOrCreateBasket(params.customerId);

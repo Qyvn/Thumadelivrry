@@ -6,6 +6,7 @@ import { ProductCard } from "@/components/product-card";
 import { getCustomerShell } from "@/lib/customer-context";
 import { prisma } from "@/lib/db";
 import { browseCategoryBySlug } from "@/lib/browse";
+import { distanceKm, formatDistanceKm, parseZoneGeo } from "@/lib/geo";
 
 export const dynamic = "force-dynamic";
 
@@ -39,8 +40,15 @@ export default async function ShopPage({
 }) {
   const { slug } = await params;
   const { aisle, q } = await searchParams;
-  const { user, basketCount, locationLabel, basketQtyByProduct } =
-    await getCustomerShell();
+  const {
+    user,
+    basketCount,
+    locationLabel,
+    basketQtyByProduct,
+    origin,
+    radiusKm,
+    zone,
+  } = await getCustomerShell();
 
   const merchant = await prisma.merchant.findUnique({
     where: { slug },
@@ -66,6 +74,17 @@ export default async function ShopPage({
   if (!merchant || merchant.status !== "APPROVED") notFound();
 
   const open = isOpenNow(merchant.hoursJson);
+  const zoneGeo = parseZoneGeo(zone?.boundaryJson);
+  const effectiveRadius = radiusKm ?? zoneGeo.radiusKm ?? 3;
+  const storeDistance =
+    merchant.latitude != null && merchant.longitude != null
+      ? distanceKm(origin, {
+          lat: merchant.latitude,
+          lng: merchant.longitude,
+        })
+      : null;
+  const withinRadius =
+    storeDistance != null ? storeDistance <= effectiveRadius : false;
   const aisles = Array.from(
     new Set(
       (
@@ -119,6 +138,18 @@ export default async function ShopPage({
           Merchant pickup location is separate from your Cornubia Flats delivery
           address.
         </p>
+        {storeDistance != null && (
+          <p
+            className={`mt-2 text-sm font-semibold ${
+              withinRadius ? "text-emerald-800" : "text-red-700"
+            }`}
+          >
+            {formatDistanceKm(storeDistance)} from your delivery pin ·{" "}
+            {withinRadius
+              ? `inside ${effectiveRadius} km radius`
+              : `outside ${effectiveRadius} km radius — ordering blocked`}
+          </p>
+        )}
 
         <form className="mt-4">
           <input type="hidden" name="aisle" value={aisle ?? ""} />

@@ -6,6 +6,7 @@ import { ProductCard } from "@/components/product-card";
 import { browseCategoryBySlug } from "@/lib/browse";
 import { getCustomerShell } from "@/lib/customer-context";
 import { prisma } from "@/lib/db";
+import { getNearbyApprovedMerchants } from "@/lib/nearby";
 
 export const dynamic = "force-dynamic";
 
@@ -21,8 +22,24 @@ export default async function BrowseCategoryPage({
   const category = browseCategoryBySlug(slug);
   if (!category) notFound();
 
-  const { user, basketCount, locationLabel, zone, basketQtyByProduct } =
-    await getCustomerShell();
+  const {
+    user,
+    basketCount,
+    locationLabel,
+    zone,
+    basketQtyByProduct,
+    origin,
+    originSource,
+    radiusKm,
+  } = await getCustomerShell();
+
+  const nearby = await getNearbyApprovedMerchants({
+    zoneId: zone?.id,
+    zoneBoundaryJson: zone?.boundaryJson,
+    origin,
+    radiusKm,
+    originSource,
+  });
 
   const orderBy =
     sort === "price-asc"
@@ -33,15 +50,18 @@ export default async function BrowseCategoryPage({
           ? { name: "asc" as const }
           : { sortOrder: "asc" as const };
 
-  const products = await prisma.product.findMany({
-    where: {
-      browseCategory: slug,
-      isActive: true,
-      merchant: { status: "APPROVED", zoneId: zone?.id },
-    },
-    include: { merchant: true },
-    orderBy,
-  });
+  const products =
+    nearby.merchantIds.length === 0
+      ? []
+      : await prisma.product.findMany({
+          where: {
+            browseCategory: slug,
+            isActive: true,
+            merchantId: { in: nearby.merchantIds },
+          },
+          include: { merchant: true },
+          orderBy,
+        });
 
   return (
     <div className="min-h-full bg-[#F5F0E6]">
@@ -57,6 +77,10 @@ export default async function BrowseCategoryPage({
           {category.name}
         </h1>
         <p className="mt-2 text-sm text-[#18221B]/65">{category.description}</p>
+        <p className="mt-1 text-xs text-[#18221B]/50">
+          Showing stores within {nearby.radiusKm} km · nearest first when you
+          shop.
+        </p>
 
         <div className="mt-5 flex flex-wrap gap-2 text-sm">
           {[

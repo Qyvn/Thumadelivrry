@@ -1,5 +1,6 @@
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { resolveCustomerOrigin } from "@/lib/geo";
 import { getOrCreateBasket } from "@/lib/orders";
 
 export async function getCustomerShell() {
@@ -7,6 +8,8 @@ export async function getCustomerShell() {
   let basketCount = 0;
   let locationLabel = "Cornubia Flats";
   let customerId: string | null = null;
+  let deliveryLat: number | null = null;
+  let deliveryLng: number | null = null;
   const basketQtyByProduct: Record<string, number> = {};
 
   if (user?.role === "CUSTOMER") {
@@ -27,6 +30,8 @@ export async function getCustomerShell() {
       if (addr) {
         const unit = addr.unitNumber ? ` · Unit ${addr.unitNumber}` : "";
         locationLabel = `${addr.building ? `${addr.building}, ` : ""}${addr.suburb || "Cornubia Flats"}${unit}`;
+        deliveryLat = addr.latitude;
+        deliveryLng = addr.longitude;
       }
     }
   }
@@ -35,5 +40,21 @@ export async function getCustomerShell() {
     where: { slug: "cornubia-flats" },
   });
 
-  return { user, basketCount, locationLabel, customerId, zone, basketQtyByProduct };
+  const { origin, source, radiusKm } = resolveCustomerOrigin({
+    addressLat: deliveryLat,
+    addressLng: deliveryLng,
+    zoneBoundaryJson: zone?.boundaryJson,
+  });
+
+  return {
+    user,
+    basketCount,
+    locationLabel,
+    customerId,
+    zone,
+    basketQtyByProduct,
+    origin,
+    originSource: source,
+    radiusKm,
+  };
 }

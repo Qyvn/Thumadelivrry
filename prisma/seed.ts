@@ -259,6 +259,9 @@ async function main() {
       addressLine1: "Near Cornubia Boulevard",
       suburb: "Cornubia",
       city: "Umhlanga",
+      // ~0.9 km from Cornubia Flats sample centre
+      latitude: -29.7058,
+      longitude: 31.0742,
       zoneId: zone.id,
       commissionBps: 1500,
       hoursJson: JSON.stringify({
@@ -289,6 +292,44 @@ async function main() {
       addressLine1: "Cornubia retail strip (sample)",
       suburb: "Cornubia",
       city: "Umhlanga",
+      // Closest sample store ~0.3 km from centre
+      latitude: -29.7018,
+      longitude: 31.0702,
+      zoneId: zone.id,
+      commissionBps: 1200,
+    },
+  });
+
+  // Outside the 3 km radius — must not appear in nearest-store results
+  const farApp = await prisma.merchantApplication.create({
+    data: {
+      businessName: "[DEV] Outside Radius Spaza",
+      contactName: "Sample Far",
+      contactEmail: "far@thuma.local",
+      contactPhone: "+27000000006",
+      categoryCodes: "MARKET",
+      addressLine1: "Outside sample radius",
+      suburb: "Mount Edgecombe",
+      city: "Umhlanga",
+      notes: "DEVELOPMENT SAMPLE — beyond configured radiusKm",
+      status: MerchantStatus.APPROVED,
+    },
+  });
+  await prisma.merchant.create({
+    data: {
+      applicationId: farApp.id,
+      name: "[DEV] Outside Radius Spaza",
+      slug: "dev-outside-radius",
+      description:
+        "Sample merchant outside the 3 km radius — excluded from nearest-store lists.",
+      imageUrl: "/images/dev-market.svg",
+      status: MerchantStatus.APPROVED,
+      isDevSample: true,
+      addressLine1: "Outside sample radius",
+      suburb: "Mount Edgecombe",
+      city: "Umhlanga",
+      latitude: -29.7485,
+      longitude: 31.035,
       zoneId: zone.id,
       commissionBps: 1200,
     },
