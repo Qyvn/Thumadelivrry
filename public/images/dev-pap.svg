@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" fill="none">
+  <rect width="400" height="400" fill="#ebe4d4"/>
+  <rect x="40" y="40" width="320" height="320" rx="24" fill="#18221B"/>
+  <circle cx="200" cy="170" r="54" fill="#D0F27B"/>
+  <text x="200" y="280" text-anchor="middle" fill="#D0F27B" font-family="Arial,sans-serif" font-size="22" font-weight="700">THUMA</text>
+  <text x="200" y="310" text-anchor="middle" fill="#F5F0E6" font-family="Arial,sans-serif" font-size="14">dev-pap</text>
+</svg>

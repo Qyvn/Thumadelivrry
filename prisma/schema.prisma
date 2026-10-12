@@ -1,0 +1,463 @@
+// THUMA — data model for Cornubia Flats everything-delivery platform
+// Money amounts are stored in integer minor units (ZAR cents).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+
+
+
+
+
+
+
+
+
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  fullName     String
+  phone        String?
+  role         String   @default("CUSTOMER")
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  customerProfile CustomerProfile?
+  merchantStaff   MerchantStaff[]
+  courierProfile  CourierProfile?
+  sessions        Session[]
+  supportTickets  SupportTicket[]  @relation("TicketCustomer")
+  assignedTickets SupportTicket[]  @relation("TicketAssignee")
+  auditEvents     AuditEvent[]
+  notifications   Notification[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model CustomerProfile {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  addresses Address[]
+  baskets   Basket[]
+  orders    Order[]
+}
+
+model Address {
+  id             String   @id @default(cuid())
+  customerId     String
+  label          String
+  line1          String
+  line2          String?
+  suburb         String
+  city           String
+  province       String   @default("KwaZulu-Natal")
+  postalCode     String?
+  latitude       Float?
+  longitude      Float?
+  notes          String?
+  isDefault      Boolean  @default(false)
+  inServiceArea  Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  customer       CustomerProfile @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  orders         Order[]
+}
+
+model DeliveryZone {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  isActive    Boolean  @default(false)
+  // Geo boundary as JSON polygon / radius config — configurable, not hard-coded
+  boundaryJson String?
+  baseFeeCents Int     @default(2500)
+  // Operating hours as JSON { mon: {open, close}, ... }
+  hoursJson   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  merchants   Merchant[]
+  orders      Order[]
+  zoneServices ZoneService[]
+}
+
+model ServiceCategory {
+  id          String              @id @default(cuid())
+  code        String              @unique
+  name        String
+  description String?
+  isEnabled   Boolean             @default(true)
+  sortOrder   Int                 @default(0)
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  products    Product[]
+  zoneServices ZoneService[]
+}
+
+model ZoneService {
+  id         String @id @default(cuid())
+  zoneId     String
+  categoryId String
+  isEnabled  Boolean @default(true)
+  zone       DeliveryZone   @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+  category   ServiceCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@unique([zoneId, categoryId])
+}
+
+model MerchantApplication {
+  id              String         @id @default(cuid())
+  businessName    String
+  contactName     String
+  contactEmail    String
+  contactPhone    String
+  categoryCodes   String // comma-separated for sqlite simplicity
+  addressLine1    String
+  suburb          String
+  city            String
+  notes           String?
+  status          String         @default("PENDING_REVIEW")
+  reviewNotes     String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  merchant        Merchant?
+}
+
+model Merchant {
+  id              String         @id @default(cuid())
+  applicationId   String?        @unique
+  name            String
+  slug            String         @unique
+  description     String?
+  imageUrl        String?
+  phone           String?
+  email           String?
+  status          String         @default("DRAFT")
+  // DEVELOPMENT SAMPLE flag — never present as live inventory
+  isDevSample     Boolean        @default(false)
+  addressLine1    String?
+  suburb          String?
+  city            String?
+  latitude        Float?
+  longitude       Float?
+  hoursJson       String?
+  commissionBps   Int            @default(1500) // basis points, configurable policy
+  zoneId          String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  application     MerchantApplication? @relation(fields: [applicationId], references: [id])
+  zone            DeliveryZone?  @relation(fields: [zoneId], references: [id])
+  staff           MerchantStaff[]
+  products        Product[]
+  orders          Order[]
+  commissionRecords MerchantCommission[]
+}
+
+model MerchantStaff {
+  id         String   @id @default(cuid())
+  merchantId String
+  userId     String
+  isOwner    Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  merchant   Merchant @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([merchantId, userId])
+}
+
+model Product {
+  id              String              @id @default(cuid())
+  merchantId      String
+  categoryId      String
+  name            String
+  slug            String
+  description     String?
+  imageUrl        String?
+  priceCents      Int
+  currency        String              @default("ZAR")
+  isAvailable     Boolean             @default(true)
+  isActive        Boolean             @default(true)
+  inventoryOwner  String              @default("MERCHANT")
+  stockQty        Int?
+  // Food customisation hints
+  allowsNotes     Boolean             @default(true)
+  // DEVELOPMENT SAMPLE
+  isDevSample     Boolean             @default(false)
+  sortOrder       Int                 @default(0)
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+  merchant        Merchant            @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+  category        ServiceCategory     @relation(fields: [categoryId], references: [id])
+  variants        ProductVariant[]
+  basketItems     BasketItem[]
+
+  @@unique([merchantId, slug])
+}
+
+model ProductVariant {
+  id         String  @id @default(cuid())
+  productId  String
+  name       String
+  priceDeltaCents Int @default(0)
+  isAvailable Boolean @default(true)
+  product    Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Basket {
+  id         String   @id @default(cuid())
+  customerId String
+  zoneId     String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  customer   CustomerProfile @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  items      BasketItem[]
+}
+
+model BasketItem {
+  id            String  @id @default(cuid())
+  basketId      String
+  productId     String
+  quantity      Int     @default(1)
+  notes         String?
+  unitPriceCents Int
+  basket        Basket  @relation(fields: [basketId], references: [id], onDelete: Cascade)
+  product       Product @relation(fields: [productId], references: [id])
+
+  @@unique([basketId, productId])
+}
+
+model Order {
+  id                String      @id @default(cuid())
+  orderNumber       String      @unique
+  customerId        String
+  merchantId        String
+  zoneId            String
+  addressId         String
+  status            String      @default("SUBMITTED")
+  // Immutable commercial snapshot at checkout
+  itemTotalCents    Int
+  deliveryFeeCents  Int
+  serviceFeeCents   Int         @default(0)
+  discountCents     Int         @default(0)
+  taxCents          Int         @default(0)
+  totalCents        Int
+  currency          String      @default("ZAR")
+  customerNotes     String?
+  rejectReason      String?
+  cancelReason      String?
+  idempotencyKey    String?     @unique
+  placedAt          DateTime    @default(now())
+  acceptedAt        DateTime?
+  readyAt           DateTime?
+  deliveredAt       DateTime?
+  cancelledAt       DateTime?
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  customer          CustomerProfile @relation(fields: [customerId], references: [id])
+  merchant          Merchant    @relation(fields: [merchantId], references: [id])
+  zone              DeliveryZone @relation(fields: [zoneId], references: [id])
+  address           Address     @relation(fields: [addressId], references: [id])
+  items             OrderItem[]
+  events            OrderEvent[]
+  payment           Payment?
+  delivery          DeliveryAssignment?
+  supportTickets    SupportTicket[]
+  commission        MerchantCommission?
+}
+
+model OrderItem {
+  id              String @id @default(cuid())
+  orderId         String
+  productId       String?
+  // Snapshot fields — immutable after order creation
+  name            String
+  description     String?
+  quantity        Int
+  unitPriceCents  Int
+  lineTotalCents  Int
+  notes           String?
+  inventoryOwner  String @default("MERCHANT")
+  order           Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
+
+model OrderEvent {
+  id        String      @id @default(cuid())
+  orderId   String
+  fromStatus String?
+  toStatus  String
+  actorRole String?
+  actorId   String?
+  note      String?
+  createdAt DateTime    @default(now())
+  order     Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
+
+model Payment {
+  id                String        @id @default(cuid())
+  orderId           String        @unique
+  provider          String        @default("mock_payfast")
+  providerRef       String?
+  status            String        @default("NOT_STARTED")
+  amountCents       Int
+  currency          String        @default("ZAR")
+  idempotencyKey    String        @unique
+  failureReason     String?
+  paidAt            DateTime?
+  refundedAt        DateTime?
+  rawCallbackJson   String? // never store card details; provider payload only
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  order             Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  refunds           Refund[]
+}
+
+model Refund {
+  id          String   @id @default(cuid())
+  paymentId   String
+  amountCents Int
+  reason      String?
+  status      String        @default("REFUND_PENDING")
+  providerRef String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  payment     Payment  @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+}
+
+model CourierProfile {
+  id              String        @id @default(cuid())
+  userId          String        @unique
+  status          String        @default("PENDING_REVIEW")
+  vehicleType     String?
+  licenceNumber   String?
+  isAvailable     Boolean       @default(false)
+  // DEVELOPMENT SAMPLE
+  isDevSample     Boolean       @default(false)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  assignments     DeliveryAssignment[]
+  earnings        CourierEarning[]
+}
+
+model DeliveryAssignment {
+  id              String                   @id @default(cuid())
+  orderId         String                   @unique
+  courierId       String?
+  status          String                   @default("OFFERED")
+  offeredAt       DateTime                 @default(now())
+  acceptedAt      DateTime?
+  pickedUpAt      DateTime?
+  deliveredAt     DateTime?
+  failedAt        DateTime?
+  failureReason   String?
+  proofOfDelivery String?
+  createdAt       DateTime                 @default(now())
+  updatedAt       DateTime                 @updatedAt
+  order           Order                    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  courier         CourierProfile?          @relation(fields: [courierId], references: [id])
+  events          DeliveryEvent[]
+}
+
+model DeliveryEvent {
+  id           String   @id @default(cuid())
+  assignmentId String
+  status       String
+  note         String?
+  latitude     Float?
+  longitude    Float?
+  createdAt    DateTime @default(now())
+  assignment   DeliveryAssignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+}
+
+model MerchantCommission {
+  id              String   @id @default(cuid())
+  orderId         String   @unique
+  merchantId      String
+  orderTotalCents Int
+  rateBps         Int
+  commissionCents Int
+  netPayoutCents  Int
+  settled         Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  order           Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  merchant        Merchant @relation(fields: [merchantId], references: [id])
+}
+
+model CourierEarning {
+  id           String   @id @default(cuid())
+  courierId    String
+  orderId      String   @unique
+  amountCents  Int
+  settled      Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  courier      CourierProfile @relation(fields: [courierId], references: [id])
+}
+
+model PlatformSettings {
+  id                    String @id @default("default")
+  serviceFeeCents       Int    @default(500)
+  defaultDeliveryFeeCents Int  @default(2500)
+  defaultCommissionBps  Int    @default(1500)
+  courierFlatFeeCents   Int    @default(2000)
+  paymentProvider       String @default("mock_payfast")
+  launchZoneSlug        String @default("cornubia-flats")
+  // Policies are configurable — not hard-coded commercial terms in UI copy
+  cancellationPolicyJson String?
+  updatedAt             DateTime @updatedAt
+}
+
+model SupportTicket {
+  id          String              @id @default(cuid())
+  customerId  String?
+  orderId     String?
+  subject     String
+  description String
+  status      String              @default("OPEN")
+  assigneeId  String?
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  customer    User?               @relation("TicketCustomer", fields: [customerId], references: [id])
+  assignee    User?               @relation("TicketAssignee", fields: [assigneeId], references: [id])
+  order       Order?              @relation(fields: [orderId], references: [id])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  body      String
+  read      Boolean  @default(false)
+  linkUrl   String?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AuditEvent {
+  id         String          @id @default(cuid())
+  actorId    String?
+  entityType String
+  entityId   String
+  action     String
+  detailJson String?
+  createdAt  DateTime        @default(now())
+  actor      User?           @relation(fields: [actorId], references: [id])
+}
