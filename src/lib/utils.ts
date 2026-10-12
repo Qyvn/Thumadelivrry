@@ -5,12 +5,14 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+/** Deterministic ZAR formatting (avoids SSR/client locale hydration drift). */
 export function formatZar(cents: number): string {
-  const value = cents / 100;
-  return new Intl.NumberFormat("en-ZA", {
-    style: "currency",
-    currency: "ZAR",
-  }).format(value);
+  const negative = cents < 0;
+  const abs = Math.abs(cents);
+  const whole = Math.floor(abs / 100);
+  const frac = String(abs % 100).padStart(2, "0");
+  const grouped = String(whole).replace(/\B(?=(\d{3})+(?!\d))/g, "\u00a0");
+  return `${negative ? "-" : ""}R\u00a0${grouped},${frac}`;
 }
 
 export function slugify(input: string): string {
