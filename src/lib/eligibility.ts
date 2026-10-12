@@ -41,6 +41,20 @@ export function isAddressInServiceArea(
   return suburbs.some((s) => haystack.includes(s));
 }
 
+/** Merchandise subtotal must meet this before a delivery order can be placed. */
+export function meetsMinimumOrder(
+  itemTotalCents: number,
+  minOrderCents: number,
+): { ok: boolean; shortfallCents: number; minOrderCents: number } {
+  if (minOrderCents < 0) throw new Error("Minimum order cannot be negative");
+  const shortfallCents = Math.max(0, minOrderCents - itemTotalCents);
+  return {
+    ok: itemTotalCents >= minOrderCents,
+    shortfallCents,
+    minOrderCents,
+  };
+}
+
 export function basketLineTotal(unitPriceCents: number, quantity: number): number {
   if (!Number.isInteger(unitPriceCents) || unitPriceCents < 0) {
     throw new Error("Invalid unit price");

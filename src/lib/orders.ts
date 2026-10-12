@@ -6,7 +6,7 @@ import {
   Role,
 } from "@/lib/constants";
 import { prisma } from "./db";
-import { isAddressInServiceArea } from "./eligibility";
+import { isAddressInServiceArea, meetsMinimumOrder } from "./eligibility";
 import { distanceKm, parseZoneGeo } from "./geo";
 import { assertTransition } from "./order-lifecycle";
 import { confirmPaymentFromProvider, createPaymentIntent } from "./payments";
@@ -243,6 +243,14 @@ export async function checkoutOrder(params: {
     deliveryFeeCents,
     serviceFeeCents,
   );
+
+  const minOrderCents = settings?.minOrderCents ?? 20000;
+  const minimum = meetsMinimumOrder(totals.itemTotalCents, minOrderCents);
+  if (!minimum.ok) {
+    throw new Error(
+      `Minimum order is R${(minOrderCents / 100).toFixed(0)}. Add R${(minimum.shortfallCents / 100).toFixed(2)} more in items before delivery.`,
+    );
+  }
 
   const order = await prisma.$transaction(async (tx) => {
     const created = await tx.order.create({

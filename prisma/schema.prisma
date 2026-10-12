@@ -436,6 +436,8 @@ model PlatformSettings {
   id                    String @id @default("default")
   serviceFeeCents       Int    @default(500)
   defaultDeliveryFeeCents Int  @default(2500)
+  // Minimum merchandise subtotal before delivery is allowed (R200 default)
+  minOrderCents         Int    @default(20000)
   defaultCommissionBps  Int    @default(1500)
   courierFlatFeeCents   Int    @default(2000)
   paymentProvider       String @default("mock_payfast")

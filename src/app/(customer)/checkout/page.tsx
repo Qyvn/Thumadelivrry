@@ -8,6 +8,7 @@ import { checkoutAction } from "@/app/actions/basket";
 import { requireUser } from "@/lib/auth";
 import { getCustomerShell } from "@/lib/customer-context";
 import { prisma } from "@/lib/db";
+import { meetsMinimumOrder } from "@/lib/eligibility";
 import { getOrCreateBasket, summariseBasket } from "@/lib/orders";
 import { formatZar } from "@/lib/utils";
 
@@ -39,9 +40,19 @@ export default async function CheckoutPage({
   const deliveryFee =
     zone?.baseFeeCents ?? settings?.defaultDeliveryFeeCents ?? 2500;
   const serviceFee = settings?.serviceFeeCents ?? 500;
+  const minOrderCents = settings?.minOrderCents ?? 20000;
   const totals = summariseBasket(basket.items, deliveryFee, serviceFee);
+  const minimum = meetsMinimumOrder(totals.itemTotalCents, minOrderCents);
   const idempotencyKey = `chk_${customerId}_${Date.now()}`;
   const eligibleAddresses = addresses.filter((a) => a.inServiceArea);
+
+  if (!minimum.ok) {
+    redirect(
+      `/basket?error=${encodeURIComponent(
+        `Minimum order is ${formatZar(minOrderCents)}. Add ${formatZar(minimum.shortfallCents)} more in items — we do not deliver under ${formatZar(minOrderCents)}.`,
+      )}`,
+    );
+  }
 
   return (
     <div className="min-h-full bg-[#F5F0E6]">

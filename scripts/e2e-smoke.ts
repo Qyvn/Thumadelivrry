@@ -23,10 +23,11 @@ async function main() {
   await prisma.basketItem.deleteMany({
     where: { basket: { customerId: customer.customerProfile.id } },
   });
+  // Meet R200 minimum merchandise subtotal (bunny chow = R75 → qty 3)
   await addToBasket({
     customerId: customer.customerProfile.id,
     productId: product.id,
-    quantity: 1,
+    quantity: 3,
   });
 
   const address = customer.customerProfile.addresses[0];

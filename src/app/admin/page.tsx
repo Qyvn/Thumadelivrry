@@ -2,6 +2,7 @@ import Link from "next/link";
 import { logoutAction } from "@/app/actions/auth";
 import {
   approveMerchantAction,
+  updateMinOrderAction,
   updateZoneRadiusAction,
 } from "@/app/admin/actions";
 import { Button } from "@/components/ui/button";
@@ -25,6 +26,7 @@ export default async function AdminDashboardPage() {
     zone,
     tickets,
     commissions,
+    settings,
   ] = await Promise.all([
     prisma.order.findMany({ where: { status: "DELIVERED" } }),
     prisma.order.findMany(),
@@ -39,6 +41,7 @@ export default async function AdminDashboardPage() {
       where: { status: { in: ["OPEN", "IN_PROGRESS"] } },
     }),
     prisma.merchantCommission.findMany(),
+    prisma.platformSettings.findUnique({ where: { id: "default" } }),
   ]);
 
   const accepted = allOrders.filter((o) =>
@@ -140,41 +143,75 @@ export default async function AdminDashboardPage() {
           </p>
         </section>
 
-        {zone && (
-          <section className="rounded-2xl border border-[#18221B]/8 bg-white p-5">
-            <h2 className="font-semibold">Nearest-store radius</h2>
+        <section className="grid gap-4 lg:grid-cols-2">
+          {zone && (
+            <div className="rounded-2xl border border-[#18221B]/8 bg-white p-5">
+              <h2 className="font-semibold">Nearest-store radius</h2>
+              <p className="mt-1 text-sm text-[#18221B]/65">
+                Customers only see and can order from approved stores within this
+                distance of their delivery pin (or the zone centre if no address
+                is set).
+              </p>
+              <form
+                action={updateZoneRadiusAction}
+                className="mt-4 flex flex-wrap items-end gap-3"
+              >
+                <input type="hidden" name="zoneId" value={zone.id} />
+                <div>
+                  <label htmlFor="radiusKm" className="text-xs font-semibold">
+                    Radius (km)
+                  </label>
+                  <Input
+                    id="radiusKm"
+                    name="radiusKm"
+                    type="number"
+                    min={0.1}
+                    max={50}
+                    step={0.1}
+                    defaultValue={parseZoneGeo(zone.boundaryJson).radiusKm}
+                    className="mt-1 w-36"
+                    required
+                  />
+                </div>
+                <Button type="submit" size="sm">
+                  Save radius
+                </Button>
+              </form>
+            </div>
+          )}
+
+          <div className="rounded-2xl border border-[#18221B]/8 bg-white p-5">
+            <h2 className="font-semibold">Minimum order for delivery</h2>
             <p className="mt-1 text-sm text-[#18221B]/65">
-              Customers only see and can order from approved stores within this
-              distance of their delivery pin (or the zone centre if no address
-              is set).
+              THUMA does not deliver when the item subtotal is under this amount.
+              Current: {formatZar(settings?.minOrderCents ?? 20000)}.
             </p>
             <form
-              action={updateZoneRadiusAction}
+              action={updateMinOrderAction}
               className="mt-4 flex flex-wrap items-end gap-3"
             >
-              <input type="hidden" name="zoneId" value={zone.id} />
               <div>
-                <label htmlFor="radiusKm" className="text-xs font-semibold">
-                  Radius (km)
+                <label htmlFor="minOrderRand" className="text-xs font-semibold">
+                  Minimum (R)
                 </label>
                 <Input
-                  id="radiusKm"
-                  name="radiusKm"
+                  id="minOrderRand"
+                  name="minOrderRand"
                   type="number"
-                  min={0.1}
-                  max={50}
-                  step={0.1}
-                  defaultValue={parseZoneGeo(zone.boundaryJson).radiusKm}
+                  min={0}
+                  max={10000}
+                  step={1}
+                  defaultValue={Math.round((settings?.minOrderCents ?? 20000) / 100)}
                   className="mt-1 w-36"
                   required
                 />
               </div>
               <Button type="submit" size="sm">
-                Save radius
+                Save minimum
               </Button>
             </form>
-          </section>
-        )}
+          </div>
+        </section>
 
         <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <Metric label="Completed orders" value={String(completedOrders.length)} />

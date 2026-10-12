@@ -174,6 +174,7 @@ async function main() {
       id: "default",
       serviceFeeCents: 500,
       defaultDeliveryFeeCents: 2500,
+      minOrderCents: 20000,
       defaultCommissionBps: 1500,
       courierFlatFeeCents: 2000,
       paymentProvider: "mock_payfast",

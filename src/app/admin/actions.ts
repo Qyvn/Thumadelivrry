@@ -80,6 +80,31 @@ export async function toggleZoneAction(formData: FormData) {
   redirect("/admin");
 }
 
+/** Update minimum merchandise subtotal required for delivery (ZAR cents). */
+export async function updateMinOrderAction(formData: FormData) {
+  const user = await requireUser(["ADMIN"]);
+  const rand = Number(formData.get("minOrderRand") ?? 0);
+  if (!Number.isFinite(rand) || rand < 0 || rand > 10000) {
+    redirect("/admin?error=Minimum+order+must+be+between+0+and+10000");
+  }
+  const minOrderCents = Math.round(rand * 100);
+  await prisma.platformSettings.update({
+    where: { id: "default" },
+    data: { minOrderCents },
+  });
+  await writeAudit({
+    actorId: user.id,
+    entityType: "SETTINGS",
+    entityId: "default",
+    action: "MIN_ORDER_UPDATED",
+    detail: { minOrderCents },
+  });
+  revalidatePath("/admin");
+  revalidatePath("/basket");
+  revalidatePath("/checkout");
+  redirect("/admin");
+}
+
 /** Update nearest-store delivery radius (km) on the Cornubia Flats zone. */
 export async function updateZoneRadiusAction(formData: FormData) {
   const user = await requireUser(["ADMIN"]);

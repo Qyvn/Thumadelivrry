@@ -76,6 +76,7 @@ Seeded merchants and products are **DEVELOPMENT SAMPLE** data. They are not conf
 - Inventory ownership distinguishes `MERCHANT` vs `THUMA` stock.
 - Delivery zones, fees, commissions, and courier flat fees are configurable via `DeliveryZone` / `PlatformSettings`.
 - **Nearest store:** customers only see/order from approved merchants within the zone `radiusKm` (haversine) of their delivery pin; admins can change the radius in `/admin`.
+- **Minimum order:** deliveries require an item subtotal of at least **R200** (`PlatformSettings.minOrderCents`); under that, checkout is blocked.
 - Service categories include Eats + Market (enabled) and Local + Express (schema-ready, disabled).
 
 ## Integrations requiring credentials

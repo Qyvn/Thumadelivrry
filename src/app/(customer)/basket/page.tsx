@@ -9,6 +9,7 @@ import {
 } from "@/app/actions/basket";
 import { getCustomerShell } from "@/lib/customer-context";
 import { prisma } from "@/lib/db";
+import { meetsMinimumOrder } from "@/lib/eligibility";
 import { getOrCreateBasket, summariseBasket } from "@/lib/orders";
 import { formatZar } from "@/lib/utils";
 
@@ -52,7 +53,9 @@ export default async function BasketPage({
   });
   const deliveryFee = zone?.baseFeeCents ?? settings?.defaultDeliveryFeeCents ?? 2500;
   const serviceFee = settings?.serviceFeeCents ?? 500;
+  const minOrderCents = settings?.minOrderCents ?? 20000;
   const totals = summariseBasket(basket.items, deliveryFee, serviceFee);
+  const minimum = meetsMinimumOrder(totals.itemTotalCents, minOrderCents);
   const merchantName = basket.items[0]?.product.merchant.name;
 
   return (
@@ -177,12 +180,30 @@ export default async function BasketPage({
               </p>
             </div>
 
-            <Link
-              href="/checkout"
-              className="mt-6 flex h-12 w-full items-center justify-center rounded-xl bg-[#D0F27B] text-sm font-bold text-[#18221B]"
-            >
-              Go to checkout
-            </Link>
+            {!minimum.ok ? (
+              <div className="mt-4 rounded-2xl border border-[#18221B]/10 bg-[#ebe4d4]/60 px-4 py-3 text-sm">
+                <p className="font-semibold text-[#18221B]">
+                  Minimum order {formatZar(minOrderCents)}
+                </p>
+                <p className="mt-1 text-[#18221B]/70">
+                  We do not deliver under {formatZar(minOrderCents)}. Add{" "}
+                  {formatZar(minimum.shortfallCents)} more in items to continue.
+                </p>
+                <Link
+                  href="/browse/groceries"
+                  className="mt-3 inline-flex h-11 items-center rounded-xl bg-[#18221B] px-4 text-sm font-bold text-[#D0F27B]"
+                >
+                  Add more items
+                </Link>
+              </div>
+            ) : (
+              <Link
+                href="/checkout"
+                className="mt-6 flex h-12 w-full items-center justify-center rounded-xl bg-[#D0F27B] text-sm font-bold text-[#18221B]"
+              >
+                Go to checkout
+              </Link>
+            )}
           </>
         )}
       </main>
