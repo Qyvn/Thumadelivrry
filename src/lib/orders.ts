@@ -281,9 +281,9 @@ export async function checkoutOrder(params: {
     await transitionOrder({
       orderId: order.id,
       toStatus: OrderStatus.PAYMENT_FAILED,
-      actorRole: Role.CUSTOMER,
       actorId: params.userId,
       note: confirmed.error,
+      system: true,
     });
     throw new Error(confirmed.error ?? "Payment failed");
   }
@@ -291,16 +291,16 @@ export async function checkoutOrder(params: {
   await transitionOrder({
     orderId: order.id,
     toStatus: OrderStatus.SUBMITTED,
-    actorRole: Role.CUSTOMER,
     actorId: params.userId,
     note: "Payment captured via provider callback",
+    system: true,
   });
   await transitionOrder({
     orderId: order.id,
     toStatus: OrderStatus.MERCHANT_PENDING,
-    actorRole: Role.ADMIN,
     actorId: params.userId,
     note: "Awaiting merchant acceptance",
+    system: true,
   });
 
   await writeAudit({
@@ -326,18 +326,24 @@ export async function checkoutOrder(params: {
 export async function transitionOrder(params: {
   orderId: string;
   toStatus: OrderStatus;
-  actorRole: Role;
-  actorId: string;
+  actorRole?: Role;
+  actorId?: string;
   note?: string;
   rejectReason?: string;
   cancelReason?: string;
+  /** Trusted server/payment paths may omit role checks */
+  system?: boolean;
 }) {
   const order = await prisma.order.findUniqueOrThrow({
     where: { id: params.orderId },
     include: { payment: true, merchant: true, delivery: true },
   });
 
-  assertTransition(order.status, params.toStatus, params.actorRole);
+  assertTransition(
+    order.status,
+    params.toStatus,
+    params.system ? undefined : params.actorRole,
+  );
 
   const data: Prisma.OrderUpdateInput = {
     status: params.toStatus,

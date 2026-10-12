@@ -56,6 +56,7 @@ const ROLE_ACTIONS: Partial<Record<Role, OrderStatus[]>> = {
     OrderStatus.READY_FOR_COLLECTION,
   ],
   COURIER: [
+    OrderStatus.COURIER_ASSIGNED,
     OrderStatus.COLLECTED,
     OrderStatus.IN_TRANSIT,
     OrderStatus.DELIVERED,
