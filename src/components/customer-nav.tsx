@@ -11,7 +11,7 @@ export function CustomerNav({
   basketCount: number;
   locationLabel: string;
 }) {
-  const label = locationLabel?.trim() || "Cornubia Flats";
+  const label = locationLabel?.trim() || "Durban";
 
   return (
     <header className="sticky top-0 z-40 border-b border-[#18221B]/8 bg-[#F5F0E6]/95 backdrop-blur">

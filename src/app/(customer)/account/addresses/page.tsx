@@ -9,6 +9,7 @@ import { writeAudit } from "@/lib/audit";
 import { getCustomerShell } from "@/lib/customer-context";
 import { isAddressInServiceArea } from "@/lib/eligibility";
 import { prisma } from "@/lib/db";
+import { getLaunchZone } from "@/lib/zones";
 
 export const dynamic = "force-dynamic";
 
@@ -22,21 +23,32 @@ async function saveAddressAction(formData: FormData) {
 
   const line1 = String(formData.get("line1") ?? "").trim();
   const suburb = String(formData.get("suburb") ?? "").trim();
-  const city = String(formData.get("city") ?? "").trim() || "Umhlanga";
+  const city = String(formData.get("city") ?? "").trim() || "Durban";
   const label = String(formData.get("label") ?? "Home").trim() || "Home";
   const building = String(formData.get("building") ?? "").trim() || undefined;
   const unitNumber = String(formData.get("unitNumber") ?? "").trim() || undefined;
   const notes = String(formData.get("notes") ?? "") || undefined;
+  const latRaw = String(formData.get("latitude") ?? "").trim();
+  const lngRaw = String(formData.get("longitude") ?? "").trim();
+  const latitude = latRaw === "" ? null : Number(latRaw);
+  const longitude = lngRaw === "" ? null : Number(lngRaw);
 
   if (!line1 || !suburb) {
     redirect("/account/addresses?error=Address+line+and+suburb+required");
   }
+  if (
+    (latitude != null && !Number.isFinite(latitude)) ||
+    (longitude != null && !Number.isFinite(longitude))
+  ) {
+    redirect("/account/addresses?error=Latitude+and+longitude+must+be+valid+numbers");
+  }
+  if ((latitude == null) !== (longitude == null)) {
+    redirect("/account/addresses?error=Provide+both+latitude+and+longitude+or+neither");
+  }
 
-  const zone = await prisma.deliveryZone.findUnique({
-    where: { slug: "cornubia-flats" },
-  });
+  const zone = await getLaunchZone();
   const inServiceArea = isAddressInServiceArea(
-    { line1, suburb, city, building, unitNumber },
+    { line1, suburb, city, building, unitNumber, latitude, longitude },
     zone?.boundaryJson,
   );
 
@@ -58,8 +70,8 @@ async function saveAddressAction(formData: FormData) {
       notes,
       isDefault: true,
       inServiceArea,
-      latitude: inServiceArea ? -29.7005 : null,
-      longitude: inServiceArea ? 31.0685 : null,
+      latitude,
+      longitude,
     },
   });
 
@@ -103,8 +115,9 @@ export default async function AddressesPage({
           Delivery addresses
         </h1>
         <p className="mt-2 text-sm text-[#18221B]/65">
-          THUMA delivers to Cornubia Flats only for now. Include building/block
-          and flat/unit so couriers can find you.
+          THUMA delivers anywhere within the Greater Durban radius. Add suburb
+          and optional map pins (lat/lng) so we can place you precisely — you
+          can update locations anytime.
         </p>
 
         {error && (
@@ -131,13 +144,18 @@ export default async function AddressesPage({
               <p className="text-sm text-[#18221B]/65">
                 {addr.suburb}, {addr.city}
               </p>
+              {addr.latitude != null && addr.longitude != null && (
+                <p className="mt-1 text-xs text-[#18221B]/45">
+                  Pin {addr.latitude.toFixed(5)}, {addr.longitude.toFixed(5)}
+                </p>
+              )}
               <p
                 className={`mt-2 text-xs font-semibold ${
                   addr.inServiceArea ? "text-emerald-800" : "text-red-700"
                 }`}
               >
                 {addr.inServiceArea
-                  ? "Inside Cornubia Flats launch zone"
+                  ? "Inside Greater Durban delivery radius"
                   : "Outside current service area — checkout blocked"}
               </p>
             </li>
@@ -157,19 +175,17 @@ export default async function AddressesPage({
           <Input name="label" placeholder="Label (Home, Work…)" defaultValue="Home" />
           <Input name="building" placeholder="Building or block" />
           <Input name="unitNumber" placeholder="Flat or unit number" />
-          <Input
-            name="line1"
-            placeholder="Street / complex name"
-            required
-            defaultValue="Cornubia Flats"
-          />
-          <Input
-            name="suburb"
-            placeholder="Suburb"
-            required
-            defaultValue="Cornubia"
-          />
-          <Input name="city" placeholder="City" defaultValue="Umhlanga" />
+          <Input name="line1" placeholder="Street / complex name" required />
+          <Input name="suburb" placeholder="Suburb" required />
+          <Input name="city" placeholder="City" defaultValue="Durban" />
+          <div className="grid grid-cols-2 gap-3">
+            <Input name="latitude" placeholder="Latitude (optional)" inputMode="decimal" />
+            <Input name="longitude" placeholder="Longitude (optional)" inputMode="decimal" />
+          </div>
+          <p className="text-xs text-[#18221B]/50">
+            Lat/lng preferred for radius checks. Without pins we use suburb/city
+            against the Durban metro list until you add coordinates.
+          </p>
           <Input name="notes" placeholder="Delivery notes (optional)" />
           <Button type="submit" className="w-full">
             Save address

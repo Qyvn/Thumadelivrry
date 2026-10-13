@@ -3,6 +3,11 @@
  * Uses haversine kilometres. Coordinates come from saved addresses / merchant profiles.
  */
 
+import {
+  DEFAULT_DURBAN_RADIUS_KM,
+  DURBAN_CENTER,
+} from "@/lib/zones-constants";
+
 export type LatLng = { lat: number; lng: number };
 
 export type ZoneGeoConfig = {
@@ -10,6 +15,7 @@ export type ZoneGeoConfig = {
   center?: LatLng;
   radiusKm?: number;
   allowedSuburbs?: string[];
+  allowedCities?: string[];
   note?: string;
 };
 
@@ -19,29 +25,30 @@ export function parseZoneGeo(boundaryJson: string | null | undefined): ZoneGeoCo
   if (!boundaryJson) {
     return {
       type: "radius",
-      center: { lat: -29.7005, lng: 31.0685 },
-      radiusKm: 3,
-      allowedSuburbs: ["cornubia", "cornubia flats"],
+      center: { ...DURBAN_CENTER },
+      radiusKm: DEFAULT_DURBAN_RADIUS_KM,
+      allowedCities: ["durban"],
     };
   }
   try {
     const parsed = JSON.parse(boundaryJson) as ZoneGeoConfig;
     return {
       type: parsed.type ?? "radius",
-      center: parsed.center ?? { lat: -29.7005, lng: 31.0685 },
+      center: parsed.center ?? { ...DURBAN_CENTER },
       radiusKm:
         typeof parsed.radiusKm === "number" && parsed.radiusKm > 0
           ? parsed.radiusKm
-          : 3,
+          : DEFAULT_DURBAN_RADIUS_KM,
       allowedSuburbs: parsed.allowedSuburbs,
+      allowedCities: parsed.allowedCities,
       note: parsed.note,
     };
   } catch {
     return {
       type: "radius",
-      center: { lat: -29.7005, lng: 31.0685 },
-      radiusKm: 3,
-      allowedSuburbs: ["cornubia", "cornubia flats"],
+      center: { ...DURBAN_CENTER },
+      radiusKm: DEFAULT_DURBAN_RADIUS_KM,
+      allowedCities: ["durban"],
     };
   }
 }
@@ -125,7 +132,7 @@ export function resolveCustomerOrigin(params: {
   zoneBoundaryJson?: string | null;
 }): { origin: LatLng; source: "address" | "zone_center"; radiusKm: number } {
   const geo = parseZoneGeo(params.zoneBoundaryJson);
-  const radiusKm = geo.radiusKm ?? 3;
+  const radiusKm = geo.radiusKm ?? DEFAULT_DURBAN_RADIUS_KM;
   if (
     typeof params.addressLat === "number" &&
     typeof params.addressLng === "number"
@@ -137,7 +144,7 @@ export function resolveCustomerOrigin(params: {
     };
   }
   return {
-    origin: geo.center ?? { lat: -29.7005, lng: 31.0685 },
+    origin: geo.center ?? { ...DURBAN_CENTER },
     source: "zone_center",
     radiusKm,
   };

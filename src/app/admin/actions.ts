@@ -6,6 +6,8 @@ import { requireUser } from "@/lib/auth";
 import { writeAudit } from "@/lib/audit";
 import { prisma } from "@/lib/db";
 import { slugify } from "@/lib/utils";
+import { DURBAN_CENTER } from "@/lib/zones-constants";
+import { getLaunchZone } from "@/lib/zones";
 
 export async function approveMerchantAction(formData: FormData) {
   const user = await requireUser(["ADMIN"]);
@@ -15,9 +17,7 @@ export async function approveMerchantAction(formData: FormData) {
   });
   if (!app) redirect("/admin");
 
-  const zone = await prisma.deliveryZone.findUnique({
-    where: { slug: "cornubia-flats" },
-  });
+  const zone = await getLaunchZone();
 
   await prisma.$transaction(async (tx) => {
     await tx.merchantApplication.update({
@@ -105,13 +105,13 @@ export async function updateMinOrderAction(formData: FormData) {
   redirect("/admin");
 }
 
-/** Update nearest-store delivery radius (km) on the Cornubia Flats zone. */
+/** Update delivery / nearest-store radius (km) on the launch zone. */
 export async function updateZoneRadiusAction(formData: FormData) {
   const user = await requireUser(["ADMIN"]);
   const zoneId = String(formData.get("zoneId") ?? "");
   const radiusKm = Number(formData.get("radiusKm") ?? 0);
-  if (!zoneId || !Number.isFinite(radiusKm) || radiusKm <= 0 || radiusKm > 50) {
-    redirect("/admin?error=Radius+must+be+between+0.1+and+50+km");
+  if (!zoneId || !Number.isFinite(radiusKm) || radiusKm <= 0 || radiusKm > 100) {
+    redirect("/admin?error=Radius+must+be+between+0.1+and+100+km");
   }
 
   const zone = await prisma.deliveryZone.findUnique({ where: { id: zoneId } });
@@ -126,7 +126,7 @@ export async function updateZoneRadiusAction(formData: FormData) {
   boundary.type = boundary.type ?? "radius";
   boundary.radiusKm = radiusKm;
   if (!boundary.center) {
-    boundary.center = { lat: -29.7005, lng: 31.0685 };
+    boundary.center = { ...DURBAN_CENTER };
   }
 
   await prisma.deliveryZone.update({

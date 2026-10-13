@@ -20,7 +20,7 @@ export default function RegisterPage() {
         </p>
         <h1 className="mt-2 text-xl font-semibold">Create your account</h1>
         <p className="mt-1 text-sm text-[#18221B]/65">
-          Cornubia Flats customers — register to save addresses and order.
+          Durban customers — register to save addresses and order.
         </p>
 
         <form action={formAction} className="mt-6 space-y-4">

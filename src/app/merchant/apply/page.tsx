@@ -99,7 +99,7 @@ export default async function MerchantApplyPage({
               <option value="EATS,MARKET">Both Eats & Market</option>
             </select>
             <Input name="addressLine1" placeholder="Business address" required />
-            <Input name="suburb" placeholder="Suburb" defaultValue="Cornubia" required />
+            <Input name="suburb" placeholder="Suburb" defaultValue="Durban" required />
             <Input name="city" placeholder="City" defaultValue="Umhlanga" />
             <Textarea name="notes" placeholder="Tell us about your business" />
             <Button type="submit" className="w-full">

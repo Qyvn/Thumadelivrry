@@ -16,7 +16,7 @@ import {
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log("Seeding THUMA development data (Cornubia Flats)...");
+  console.log("Seeding THUMA development data (Greater Durban)...");
 
   await prisma.auditEvent.deleteMany();
   await prisma.notification.deleteMany();
@@ -102,18 +102,40 @@ async function main() {
 
   const zone = await prisma.deliveryZone.create({
     data: {
-      name: "Cornubia Flats",
-      slug: "cornubia-flats",
+      name: "Greater Durban",
+      slug: "durban",
       description:
-        "Initial THUMA launch zone. Delivery availability is configurable and must be confirmed before go-live.",
+        "THUMA delivery anywhere within the configured radius of Durban. Centre and radius are admin-configurable — confirm coverage before go-live.",
       isActive: true,
       baseFeeCents: 2500,
       boundaryJson: JSON.stringify({
         type: "radius",
-        center: { lat: -29.7005, lng: 31.0685 },
-        radiusKm: 3,
-        allowedSuburbs: ["cornubia", "cornubia flats"],
-        note: "Placeholder boundary for development — replace with admin-configured polygon before launch",
+        center: { lat: -29.8587, lng: 31.0218 },
+        radiusKm: 40,
+        allowedCities: [
+          "durban",
+          "umhlanga",
+          "pinetown",
+          "ballito",
+          "westville",
+          "chatsworth",
+          "phoenix",
+          "hillcrest",
+          "amanzimtoti",
+          "kwamashu",
+          "umlazi",
+          "queensburgh",
+          "new germany",
+          "berea",
+          "morningside",
+          "cornubia",
+          "mount edgecombe",
+          "la lucia",
+          "durban north",
+          "bluff",
+          "isipingo",
+        ],
+        note: "Greater Durban radius — adjust centre/radius in admin; set address lat/lng when you change locations",
       }),
       hoursJson: JSON.stringify({
         mon: { open: "08:00", close: "21:00" },
@@ -178,7 +200,7 @@ async function main() {
       defaultCommissionBps: 1500,
       courierFlatFeeCents: 2000,
       paymentProvider: "mock_payfast",
-      launchZoneSlug: "cornubia-flats",
+      launchZoneSlug: "durban",
       cancellationPolicyJson: JSON.stringify({
         freeCancelUntil: "MERCHANT_ACCEPTED",
         note: "Configurable policy — not final commercial terms",
@@ -190,7 +212,7 @@ async function main() {
     data: {
       customerId: customerUser.customerProfile!.id,
       label: "Home",
-      line1: "Cornubia Flats",
+      line1: "Sample street",
       building: "Block A",
       unitNumber: "12",
       suburb: "Cornubia",
@@ -201,14 +223,14 @@ async function main() {
       longitude: 31.0685,
       isDefault: true,
       inServiceArea: true,
-      notes: "Development sample address inside launch zone",
+      notes: "Development sample address inside Greater Durban radius — change lat/lng as you like",
     },
   });
 
   // No active promotions by default — never show fabricated offers.
   await prisma.promotion.create({
     data: {
-      title: "Welcome to Cornubia Flats (draft)",
+      title: "Welcome to Durban (draft)",
       body: "Inactive sample banner — activate only when a real offer exists.",
       href: "/market",
       isActive: false,
@@ -301,7 +323,7 @@ async function main() {
     },
   });
 
-  // Outside the 3 km radius — must not appear in nearest-store results
+  // Outside the 40 km Durban radius — must not appear in nearest-store results
   const farApp = await prisma.merchantApplication.create({
     data: {
       businessName: "[DEV] Outside Radius Spaza",
@@ -309,10 +331,10 @@ async function main() {
       contactEmail: "far@thuma.local",
       contactPhone: "+27000000006",
       categoryCodes: "MARKET",
-      addressLine1: "Outside sample radius",
-      suburb: "Mount Edgecombe",
-      city: "Umhlanga",
-      notes: "DEVELOPMENT SAMPLE — beyond configured radiusKm",
+      addressLine1: "Outside Durban metro sample",
+      suburb: "Pietermaritzburg CBD",
+      city: "Pietermaritzburg",
+      notes: "DEVELOPMENT SAMPLE — beyond configured Durban radiusKm",
       status: MerchantStatus.APPROVED,
     },
   });
@@ -322,15 +344,16 @@ async function main() {
       name: "[DEV] Outside Radius Spaza",
       slug: "dev-outside-radius",
       description:
-        "Sample merchant outside the 3 km radius — excluded from nearest-store lists.",
+        "Sample merchant outside the Greater Durban radius — excluded from nearest-store lists.",
       imageUrl: "/images/dev-market.svg",
       status: MerchantStatus.APPROVED,
       isDevSample: true,
-      addressLine1: "Outside sample radius",
-      suburb: "Mount Edgecombe",
-      city: "Umhlanga",
-      latitude: -29.7485,
-      longitude: 31.035,
+      addressLine1: "Outside Durban metro sample",
+      suburb: "Pietermaritzburg CBD",
+      city: "Pietermaritzburg",
+      // ~70 km from Durban CBD — outside 40 km metro radius
+      latitude: -29.6009,
+      longitude: 30.3796,
       zoneId: zone.id,
       commissionBps: 1200,
     },

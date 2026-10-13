@@ -8,7 +8,7 @@ import { checkoutAction } from "@/app/actions/basket";
 import { requireUser } from "@/lib/auth";
 import { getCustomerShell } from "@/lib/customer-context";
 import { prisma } from "@/lib/db";
-import { meetsMinimumOrder } from "@/lib/eligibility";
+import { isAddressInServiceArea, meetsMinimumOrder } from "@/lib/eligibility";
 import { getOrCreateBasket, summariseBasket } from "@/lib/orders";
 import { formatZar } from "@/lib/utils";
 
@@ -44,7 +44,22 @@ export default async function CheckoutPage({
   const totals = summariseBasket(basket.items, deliveryFee, serviceFee);
   const minimum = meetsMinimumOrder(totals.itemTotalCents, minOrderCents);
   const idempotencyKey = `chk_${customerId}_${Date.now()}`;
-  const eligibleAddresses = addresses.filter((a) => a.inServiceArea);
+  const addressed = addresses.map((a) => ({
+    ...a,
+    inServiceArea: isAddressInServiceArea(
+      {
+        line1: a.line1,
+        suburb: a.suburb,
+        city: a.city,
+        building: a.building,
+        unitNumber: a.unitNumber,
+        latitude: a.latitude,
+        longitude: a.longitude,
+      },
+      zone?.boundaryJson,
+    ),
+  }));
+  const eligibleAddresses = addressed.filter((a) => a.inServiceArea);
 
   if (!minimum.ok) {
     redirect(
@@ -67,9 +82,9 @@ export default async function CheckoutPage({
           Checkout
         </h1>
         <p className="mt-2 text-sm text-[#18221B]/65">
-          Delivery is limited to the administrator-configured Cornubia Flats
-          zone. Full price is shown before you pay. Payment uses a mock SA
-          provider until live credentials are configured.
+          Delivery is available anywhere within the administrator-configured
+          Greater Durban radius. Full price is shown before you pay. Payment uses
+          a mock SA provider until live credentials are configured.
         </p>
 
         {error && (
@@ -78,9 +93,9 @@ export default async function CheckoutPage({
           </p>
         )}
 
-        {addresses.length === 0 ? (
+        {addressed.length === 0 ? (
           <div className="mt-8 rounded-2xl border border-dashed border-[#18221B]/20 bg-white px-5 py-10 text-center">
-            <p className="font-medium">Add a Cornubia Flats delivery address</p>
+            <p className="font-medium">Add a Durban delivery address</p>
             <Link
               href="/account/addresses"
               className="mt-4 inline-block text-sm font-semibold underline"
@@ -91,10 +106,10 @@ export default async function CheckoutPage({
         ) : eligibleAddresses.length === 0 ? (
           <div className="mt-8 rounded-2xl border border-dashed border-red-200 bg-red-50 px-5 py-10 text-center">
             <p className="font-medium text-red-900">
-              No eligible address inside Cornubia Flats
+              No eligible address inside the Durban delivery radius
             </p>
             <p className="mt-2 text-sm text-red-800/80">
-              Checkout is blocked for destinations outside the launch zone.
+              Checkout is blocked for destinations outside the configured radius.
             </p>
             <Link
               href="/account/addresses"
@@ -109,7 +124,7 @@ export default async function CheckoutPage({
 
             <fieldset className="space-y-3">
               <legend className="text-sm font-semibold">Delivery address</legend>
-              {addresses.map((addr) => (
+              {addressed.map((addr) => (
                 <label
                   key={addr.id}
                   className={`flex cursor-pointer gap-3 rounded-xl border p-4 ${
@@ -138,7 +153,7 @@ export default async function CheckoutPage({
                     </span>
                     {!addr.inServiceArea && (
                       <span className="mt-1 block text-xs font-semibold text-red-700">
-                        Outside Cornubia Flats service area — cannot checkout
+                        Outside Durban delivery radius — cannot checkout
                       </span>
                     )}
                   </span>

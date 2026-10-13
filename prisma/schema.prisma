@@ -1,4 +1,4 @@
-// THUMA — data model for Cornubia Flats everything-delivery platform
+// THUMA — data model for Greater Durban everything-delivery platform
 // Money amounts are stored in integer minor units (ZAR cents).
 
 generator client {

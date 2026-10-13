@@ -11,6 +11,7 @@ import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { parseZoneGeo } from "@/lib/geo";
 import { formatZar } from "@/lib/utils";
+import { getLaunchZone } from "@/lib/zones";
 
 export const dynamic = "force-dynamic";
 
@@ -36,7 +37,7 @@ export default async function AdminDashboardPage() {
       where: { status: "PENDING_REVIEW" },
       orderBy: { createdAt: "desc" },
     }),
-    prisma.deliveryZone.findUnique({ where: { slug: "cornubia-flats" } }),
+    getLaunchZone(),
     prisma.supportTicket.findMany({
       where: { status: { in: ["OPEN", "IN_PROGRESS"] } },
     }),
@@ -129,11 +130,11 @@ export default async function AdminDashboardPage() {
       <main className="mx-auto max-w-6xl space-y-8 px-4 py-8">
         <section>
           <h1 className="font-[family-name:var(--font-display)] text-3xl font-bold">
-            Cornubia Flats operations
+            Greater Durban operations
           </h1>
           <p className="mt-2 text-sm text-[#18221B]/65">
             Metrics focus on fulfilled orders and unit economics — not downloads
-            or registrations alone.
+            or registrations alone. Delivery covers the configured Durban radius.
           </p>
           <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-[#18221B]/45">
             Zone: {zone?.name ?? "Not configured"} ·{" "}
@@ -146,11 +147,11 @@ export default async function AdminDashboardPage() {
         <section className="grid gap-4 lg:grid-cols-2">
           {zone && (
             <div className="rounded-2xl border border-[#18221B]/8 bg-white p-5">
-              <h2 className="font-semibold">Nearest-store radius</h2>
+              <h2 className="font-semibold">Durban delivery radius</h2>
               <p className="mt-1 text-sm text-[#18221B]/65">
-                Customers only see and can order from approved stores within this
-                distance of their delivery pin (or the zone centre if no address
-                is set).
+                Customers can receive delivery and see approved stores within this
+                distance of their pin (or the Durban zone centre). Raise this to
+                open more of the metro — max 100 km.
               </p>
               <form
                 action={updateZoneRadiusAction}
@@ -166,7 +167,7 @@ export default async function AdminDashboardPage() {
                     name="radiusKm"
                     type="number"
                     min={0.1}
-                    max={50}
+                    max={100}
                     step={0.1}
                     defaultValue={parseZoneGeo(zone.boundaryJson).radiusKm}
                     className="mt-1 w-36"

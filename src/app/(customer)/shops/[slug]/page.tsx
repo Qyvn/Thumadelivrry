@@ -135,7 +135,7 @@ export default async function ShopPage({
 
         <p className="text-sm text-[#18221B]/65">
           Single-merchant baskets only — add from this shop, then checkout.
-          Merchant pickup location is separate from your Cornubia Flats delivery
+          Merchant pickup location is separate from your Durban delivery
           address.
         </p>
         {storeDistance != null && (

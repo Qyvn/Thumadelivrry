@@ -173,7 +173,7 @@ try {
   // 6. Checkout
   await page.goto(`${BASE}/checkout`, { waitUntil: "networkidle" });
   const checkoutHeading = await page.getByRole("heading", { name: "Checkout" }).isVisible();
-  const addressOk = await page.getByText(/Inside Cornubia|Cornubia|Unit/i).first().isVisible().catch(() => false);
+  const addressOk = await page.getByText(/Inside Greater Durban|Durban|Cornubia|Unit/i).first().isVisible().catch(() => false);
   const totalDue = await page.getByText(/Total due/i).isVisible();
   const placeOrder = page.getByRole("button", { name: /Place order/i });
   if (checkoutHeading && totalDue && (await placeOrder.isVisible())) {

@@ -1,8 +1,12 @@
 /**
- * Cornubia Flats delivery eligibility helpers.
- * Boundary rules come from DeliveryZone.boundaryJson / suburb matching —
- * administrators configure the zone; this logic does not hard-code live coverage claims.
+ * Delivery eligibility helpers.
+ * Service area is driven by DeliveryZone.boundaryJson (radius around a centre,
+ * plus optional city/suburb allowlists). Administrators configure coverage —
+ * this logic does not hard-code live launch claims.
  */
+
+import { distanceKm, parseZoneGeo, type LatLng } from "./geo";
+import { DEFAULT_DURBAN_CITIES } from "./zones-constants";
 
 export type AddressInput = {
   line1: string;
@@ -10,35 +14,77 @@ export type AddressInput = {
   city?: string;
   building?: string | null;
   unitNumber?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
 };
 
 export type ZoneBoundary = {
   type?: string;
+  center?: LatLng;
+  radiusKm?: number;
   allowedSuburbs?: string[];
+  allowedCities?: string[];
   note?: string;
 };
 
-export function parseZoneBoundary(boundaryJson: string | null | undefined): ZoneBoundary {
-  if (!boundaryJson) {
-    return { allowedSuburbs: ["cornubia", "cornubia flats"] };
-  }
-  try {
-    return JSON.parse(boundaryJson) as ZoneBoundary;
-  } catch {
-    return { allowedSuburbs: ["cornubia", "cornubia flats"] };
-  }
+export function parseZoneBoundary(
+  boundaryJson: string | null | undefined,
+): ZoneBoundary {
+  const geo = parseZoneGeo(boundaryJson);
+  return {
+    type: geo.type,
+    center: geo.center,
+    radiusKm: geo.radiusKm,
+    allowedSuburbs: geo.allowedSuburbs,
+    allowedCities: (geo as ZoneBoundary).allowedCities,
+    note: geo.note,
+  };
 }
 
+function haystackIncludes(
+  haystack: string,
+  needles: string[] | undefined,
+): boolean {
+  if (!needles?.length) return false;
+  return needles.some((n) => haystack.includes(n.toLowerCase()));
+}
+
+/**
+ * True when the address is inside the configured Durban (or other) delivery area.
+ * Prefers lat/lng distance to the zone centre; falls back to city/suburb allowlists
+ * when coordinates are not set yet (so you can fill pins later).
+ */
 export function isAddressInServiceArea(
   address: AddressInput,
   boundaryJson?: string | null,
 ): boolean {
   const boundary = parseZoneBoundary(boundaryJson);
-  const suburbs = (boundary.allowedSuburbs ?? ["cornubia", "cornubia flats"]).map((s) =>
-    s.toLowerCase(),
-  );
-  const haystack = `${address.suburb} ${address.line1} ${address.city ?? ""}`.toLowerCase();
-  return suburbs.some((s) => haystack.includes(s));
+  const center = boundary.center;
+  const radiusKm = boundary.radiusKm ?? 40;
+
+  if (
+    typeof address.latitude === "number" &&
+    typeof address.longitude === "number" &&
+    center
+  ) {
+    return (
+      distanceKm(
+        { lat: address.latitude, lng: address.longitude },
+        center,
+      ) <= radiusKm
+    );
+  }
+
+  const haystack =
+    `${address.suburb} ${address.line1} ${address.city ?? ""}`.toLowerCase();
+
+  const cities = boundary.allowedCities?.length
+    ? boundary.allowedCities
+    : [...DEFAULT_DURBAN_CITIES];
+  const suburbs = boundary.allowedSuburbs ?? [];
+
+  // Text fallback until you set lat/lng on the address
+  return haystackIncludes(haystack, cities) || haystackIncludes(haystack, suburbs);
 }
 
 /** Merchandise subtotal must meet this before a delivery order can be placed. */

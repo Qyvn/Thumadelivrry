@@ -11,6 +11,7 @@ import { distanceKm, parseZoneGeo } from "./geo";
 import { assertTransition } from "./order-lifecycle";
 import { confirmPaymentFromProvider, createPaymentIntent } from "./payments";
 import { writeAudit } from "./audit";
+import { getLaunchZone } from "./zones";
 
 function orderNumber(): string {
   const n = Date.now().toString(36).toUpperCase();
@@ -70,12 +71,10 @@ export async function addToBasket(params: {
     ? await prisma.deliveryZone.findUnique({
         where: { id: product.merchant.zoneId },
       })
-    : await prisma.deliveryZone.findUnique({
-        where: { slug: "cornubia-flats" },
-      });
+    : await getLaunchZone();
   if (zone && delivery?.latitude != null && delivery?.longitude != null) {
     const geo = parseZoneGeo(zone.boundaryJson);
-    const radiusKm = geo.radiusKm ?? 3;
+    const radiusKm = geo.radiusKm ?? 40;
     if (
       product.merchant.latitude == null ||
       product.merchant.longitude == null
@@ -223,12 +222,14 @@ export async function checkoutOrder(params: {
       city: address.city,
       building: address.building,
       unitNumber: address.unitNumber,
+      latitude: address.latitude,
+      longitude: address.longitude,
     },
     zone.boundaryJson,
   );
   if (!eligible) {
     throw new Error(
-      "This address is outside the current THUMA delivery area. Cornubia Flats launch zone only.",
+      "This address is outside the current THUMA delivery area (Greater Durban radius).",
     );
   }
 

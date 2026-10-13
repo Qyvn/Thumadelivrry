@@ -2,11 +2,12 @@ import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { resolveCustomerOrigin } from "@/lib/geo";
 import { getOrCreateBasket } from "@/lib/orders";
+import { getLaunchZone } from "@/lib/zones";
 
 export async function getCustomerShell() {
   const user = await getCurrentUser();
   let basketCount = 0;
-  let locationLabel = "Cornubia Flats";
+  let locationLabel = "Durban";
   let customerId: string | null = null;
   let deliveryLat: number | null = null;
   let deliveryLng: number | null = null;
@@ -29,16 +30,14 @@ export async function getCustomerShell() {
       const addr = profile.addresses[0];
       if (addr) {
         const unit = addr.unitNumber ? ` · Unit ${addr.unitNumber}` : "";
-        locationLabel = `${addr.building ? `${addr.building}, ` : ""}${addr.suburb || "Cornubia Flats"}${unit}`;
+        locationLabel = `${addr.building ? `${addr.building}, ` : ""}${addr.suburb || addr.city || "Durban"}${unit}`;
         deliveryLat = addr.latitude;
         deliveryLng = addr.longitude;
       }
     }
   }
 
-  const zone = await prisma.deliveryZone.findUnique({
-    where: { slug: "cornubia-flats" },
-  });
+  const zone = await getLaunchZone();
 
   const { origin, source, radiusKm } = resolveCustomerOrigin({
     addressLat: deliveryLat,

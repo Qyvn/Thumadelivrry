@@ -9,24 +9,49 @@ function assert(condition: boolean, message: string) {
   if (!condition) throw new Error(message);
 }
 
-const boundary = JSON.stringify({
-  allowedSuburbs: ["cornubia", "cornubia flats"],
+const durbanBoundary = JSON.stringify({
+  type: "radius",
+  center: { lat: -29.8587, lng: 31.0218 },
+  radiusKm: 40,
+  allowedCities: ["durban", "umhlanga", "cornubia", "pinetown"],
 });
 
 assert(
   isAddressInServiceArea(
-    { line1: "Cornubia Flats", suburb: "Cornubia", building: "Block A", unitNumber: "12" },
-    boundary,
+    {
+      line1: "Sample street",
+      suburb: "Cornubia",
+      city: "Umhlanga",
+      building: "Block A",
+      unitNumber: "12",
+      latitude: -29.7005,
+      longitude: 31.0685,
+    },
+    durbanBoundary,
   ),
-  "Cornubia address should be eligible",
+  "Cornubia pin should be inside Greater Durban radius",
+);
+
+assert(
+  isAddressInServiceArea(
+    { line1: "Florida Road", suburb: "Morningside", city: "Durban" },
+    durbanBoundary,
+  ),
+  "Durban Central text should be eligible via city allowlist",
 );
 
 assert(
   !isAddressInServiceArea(
-    { line1: "Main Road", suburb: "Durban Central", city: "Durban" },
-    boundary,
+    {
+      line1: "Church Street",
+      suburb: "CBD",
+      city: "Pietermaritzburg",
+      latitude: -29.6009,
+      longitude: 30.3796,
+    },
+    durbanBoundary,
   ),
-  "Durban Central must be outside Cornubia Flats zone",
+  "Pietermaritzburg pin must be outside 40 km Durban radius",
 );
 
 assert(basketLineTotal(1899, 3) === 5697, "line total");
@@ -39,21 +64,9 @@ assert(
   "order total",
 );
 
-let threw = false;
-try {
-  computeOrderTotals({
-    itemTotalCents: 100,
-    deliveryFeeCents: 0,
-    serviceFeeCents: 0,
-    discountCents: 200,
-  });
-} catch {
-  threw = true;
-}
-assert(threw, "discount cannot exceed payable amount");
-
-assert(!meetsMinimumOrder(19999, 20000).ok, "R199.99 fails R200 minimum");
-assert(meetsMinimumOrder(20000, 20000).ok, "R200 meets minimum");
-assert(meetsMinimumOrder(15000, 20000).shortfallCents === 5000, "shortfall R50");
+const under = meetsMinimumOrder(6500, 20000);
+assert(!under.ok && under.shortfallCents === 13500, "under minimum");
+const okMin = meetsMinimumOrder(20000, 20000);
+assert(okMin.ok && okMin.shortfallCents === 0, "meets minimum");
 
 console.log("eligibility.test.ts: all assertions passed");

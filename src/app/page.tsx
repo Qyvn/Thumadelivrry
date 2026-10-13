@@ -138,7 +138,7 @@ export default async function HomePage() {
             Your neighbourhood essentials, delivered.
           </p>
           <p className="mt-1 text-xs font-semibold uppercase tracking-[0.14em] text-[#18221B]/40">
-            You need it. We bring it. · Cornubia Flats
+            You need it. We bring it. · Greater Durban
           </p>
         </section>
 
@@ -254,7 +254,7 @@ export default async function HomePage() {
             </Link>
           </div>
           {popular.length === 0 ? (
-            <EmptyBlock message="No products available in Cornubia Flats yet." />
+            <EmptyBlock message="No products available in your Durban area yet." />
           ) : (
             <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
               {popular.map((p) => (
@@ -296,7 +296,7 @@ export default async function HomePage() {
                 Within {nearby.radiusKm} km of{" "}
                 {nearby.originSource === "address"
                   ? "your delivery address"
-                  : "the Cornubia Flats zone centre"}
+                  : "the Durban zone centre"}
                 . Closest first.
               </p>
             </div>
@@ -350,7 +350,7 @@ export default async function HomePage() {
               THUMA
             </p>
             <p className="text-sm text-[#D0F27B]/70">
-              You need it. We bring it. · Cornubia Flats only for now
+              You need it. We bring it. · Anywhere in the Durban delivery radius
             </p>
           </div>
           <div className="flex flex-wrap gap-4 text-sm">

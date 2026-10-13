@@ -2,7 +2,7 @@
 
 **You need it. We bring it.**
 
-African-born South African everything-delivery platform. Initial operating location: **Cornubia Flats, KwaZulu-Natal**.
+African-born South African everything-delivery platform. Operating area: **Greater Durban** (configurable radius around Durban CBD), KwaZulu-Natal.
 
 This repository is a functional Stage 1–4 foundation: customer ordering, merchant acceptance, courier delivery, and admin monitoring on a shared backend — not a production launch claim.
 
@@ -32,7 +32,7 @@ Do not change the name, tagline, or core colours without approval.
 | Customer | `/` | Location, Eats, Market, search, basket, checkout, tracking |
 | Merchant | `/merchant` | Accept/reject/prepare orders, view catalogue |
 | Courier | `/courier` | Claim jobs, pickup, deliver with proof |
-| Admin | `/admin` | Cornubia metrics, applications, dispatch/refunds |
+| Admin | `/admin` | Durban metrics, applications, dispatch/refunds |
 
 ## Publish to the web (Cursor)
 
@@ -85,7 +85,7 @@ Seeded merchants and products are **DEVELOPMENT SAMPLE** data. They are not conf
 - Order line items snapshot name/price at checkout so catalogue edits do not rewrite history.
 - Inventory ownership distinguishes `MERCHANT` vs `THUMA` stock.
 - Delivery zones, fees, commissions, and courier flat fees are configurable via `DeliveryZone` / `PlatformSettings`.
-- **Nearest store:** customers only see/order from approved merchants within the zone `radiusKm` (haversine) of their delivery pin; admins can change the radius in `/admin`.
+- **Greater Durban radius:** customers can order anywhere inside the zone `radiusKm` around the Durban centre (default 40 km); nearest stores use the same radius from the delivery pin. Admins change the radius in `/admin`; set address/merchant lat/lng when you update locations.
 - **Minimum order:** deliveries require an item subtotal of at least **R200** (`PlatformSettings.minOrderCents`); under that, checkout is blocked.
 - Service categories include Eats + Market (enabled) and Local + Express (schema-ready, disabled).
 
@@ -100,7 +100,7 @@ Documented in `.env.example`. Not wired for live traffic yet:
 
 ## Honest status
 
-**Working in this build:** auth + roles, Cornubia zone config, sample catalogue browse, basket, checkout with mock payment callback, merchant accept/prepare, courier claim/deliver, live order status refresh on the customer tracking page, admin metrics + manual dispatch + refunds, audit events.
+**Working in this build:** auth + roles, Greater Durban radius zone, sample catalogue browse, basket, checkout with mock payment callback, merchant accept/prepare, courier claim/deliver, live order status refresh on the customer tracking page, admin metrics + manual dispatch + refunds, audit events.
 
 **Not production-ready:** real payment capture, POPIA compliance programme, SMS/push, automated dispatch algorithms, multi-zone live launch, legal merchant agreements, load/security hardening at scale.
 

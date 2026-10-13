@@ -17,7 +17,7 @@ const body = DM_Sans({
 export const metadata: Metadata = {
   title: "THUMA — You need it. We bring it.",
   description:
-    "THUMA is an African-born South African everything-delivery platform launching in Cornubia Flats, KwaZulu-Natal.",
+    "THUMA is an African-born South African everything-delivery platform serving Greater Durban, KwaZulu-Natal.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

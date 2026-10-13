@@ -93,7 +93,7 @@ export default async function SearchPage({
               ))}
             </div>
             <p className="mt-6 text-sm text-[#18221B]/60">
-              Search products, merchants or aisles across approved Cornubia Flats
+              Search products, merchants or aisles across approved Durban
               catalogue items.
             </p>
           </div>
