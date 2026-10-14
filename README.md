@@ -33,6 +33,7 @@ Do not change the name, tagline, or core colours without approval.
 | Merchant | `/merchant` | Accept/reject/prepare orders, view catalogue |
 | Courier | `/courier` | Claim jobs, pickup, deliver with proof |
 | Admin | `/admin` | Durban metrics, applications, dispatch/refunds |
+| Shop backlog | `/admin/shops` | Reserve real shops; upload names, menus, and stock (draft until published) |
 
 ## Publish to the web (Cursor)
 

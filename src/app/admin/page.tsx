@@ -107,6 +107,9 @@ export default async function AdminDashboardPage() {
             <p className="text-sm text-white/70">{user.fullName}</p>
           </div>
           <div className="flex items-center gap-3">
+            <Link href="/admin/shops" className="text-sm text-[#D0F27B]">
+              Shop backlog
+            </Link>
             <Link href="/admin/orders" className="text-sm text-[#D0F27B]">
               Orders
             </Link>
@@ -288,12 +291,10 @@ export default async function AdminDashboardPage() {
                 partners)
               </li>
             </ul>
-            <Link
-              href="/admin/orders"
-              className="mt-4 inline-block text-sm font-semibold underline"
-            >
-              Monitor & dispatch orders
-            </Link>
+            <div className="mt-4 flex flex-wrap gap-4 text-sm font-semibold underline">
+              <Link href="/admin/shops">Shop backlog (names, menus, stock)</Link>
+              <Link href="/admin/orders">Monitor &amp; dispatch orders</Link>
+            </div>
           </div>
         </section>
       </main>
