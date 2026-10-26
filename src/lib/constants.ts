@@ -106,6 +106,7 @@ export const AuditEntityType = {
   PRODUCT: "PRODUCT",
   COURIER: "COURIER",
   SETTINGS: "SETTINGS",
+  PLUS: "PLUS",
 } as const;
 export type AuditEntityType =
   (typeof AuditEntityType)[keyof typeof AuditEntityType];

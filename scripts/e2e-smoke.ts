@@ -23,7 +23,7 @@ async function main() {
   await prisma.basketItem.deleteMany({
     where: { basket: { customerId: customer.customerProfile.id } },
   });
-  // Meet R200 minimum merchandise subtotal (bunny chow = R75 → qty 3)
+  // Bunny chow (FOOD) qty 3 = R225: above R60 food minimum and R100 small-order threshold
   await addToBasket({
     customerId: customer.customerProfile.id,
     productId: product.id,
@@ -36,6 +36,7 @@ async function main() {
     userId: customer.id,
     addressId: address.id,
     idempotencyKey: `e2e_${Date.now()}`,
+    tipCents: 1000,
     simulatePaymentSuccess: true,
     customerNotes: "E2E smoke",
   });
@@ -90,6 +91,30 @@ async function main() {
     actorRole: Role.COURIER,
     actorId: courier.userId,
   });
+  const placed = await prisma.order.findUniqueOrThrow({ where: { id: order.id } });
+  const earning = await prisma.courierEarning.findUniqueOrThrow({ where: { orderId: order.id } });
+  const commission = await prisma.merchantCommission.findUniqueOrThrow({ where: { orderId: order.id } });
+  const expectTotal =
+    placed.itemTotalCents + placed.deliveryFeeCents + placed.serviceFeeCents +
+    placed.smallOrderFeeCents + placed.peakFeeCents + placed.tipCents;
+  if (placed.totalCents !== expectTotal) throw new Error("order total does not add up");
+  if (placed.smallOrderFeeCents !== 0) throw new Error("unexpected small-order fee");
+  if (placed.tipCents !== 1000 || earning.tipCents !== 1000) throw new Error("tip must pass 100% to courier");
+  if (earning.amountCents < 2500 + 1000) throw new Error("courier pay below R25 base + tip");
+  if (commission.rateBps !== 1500) throw new Error(`expected 15% restaurant commission, got ${commission.rateBps}`);
+  console.log(
+    "fees",
+    JSON.stringify({
+      km: placed.deliveryDistanceKm,
+      source: placed.distanceSource,
+      delivery: placed.deliveryFeeCents,
+      service: placed.serviceFeeCents,
+      tip: placed.tipCents,
+      total: placed.totalCents,
+      courierPay: earning.amountCents,
+      commissionBps: commission.rateBps,
+    }),
+  );
   console.log(
     "final",
     delivered.orderNumber,

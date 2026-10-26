@@ -6,7 +6,15 @@ import {
   Role,
 } from "@/lib/constants";
 import { prisma } from "./db";
-import { isAddressInServiceArea, meetsMinimumOrder } from "./eligibility";
+import { isAddressInServiceArea } from "./eligibility";
+import {
+  commissionBps,
+  commissionCents,
+  courierPay,
+  normalisePricingCategory,
+  pricingFromSettings,
+} from "./pricing";
+import { quoteForBasket } from "./pricing-server";
 import { distanceKm, parseZoneGeo } from "./geo";
 import { assertTransition } from "./order-lifecycle";
 import { confirmPaymentFromProvider, createPaymentIntent } from "./payments";
@@ -176,6 +184,8 @@ export async function checkoutOrder(params: {
   addressId: string;
   customerNotes?: string;
   idempotencyKey: string;
+  /** Optional courier tip in cents (100% to courier) */
+  tipCents?: number;
   /** Demo only: simulate successful provider callback after intent creation */
   simulatePaymentSuccess: boolean;
 }) {
@@ -233,25 +243,42 @@ export async function checkoutOrder(params: {
     );
   }
 
-  const settings = await prisma.platformSettings.findUnique({
-    where: { id: "default" },
-  });
-  const deliveryFeeCents =
-    zone.baseFeeCents ?? settings?.defaultDeliveryFeeCents ?? 2500;
-  const serviceFeeCents = settings?.serviceFeeCents ?? 500;
-  const totals = summariseBasket(
-    basket.items,
-    deliveryFeeCents,
-    serviceFeeCents,
+  const itemTotalCents = basket.items.reduce(
+    (sum, i) => sum + i.quantity * i.unitPriceCents,
+    0,
   );
-
-  const minOrderCents = settings?.minOrderCents ?? 20000;
-  const minimum = meetsMinimumOrder(totals.itemTotalCents, minOrderCents);
-  if (!minimum.ok) {
+  const { quote, config } = await quoteForBasket({
+    customerId: params.customerId,
+    itemTotalCents,
+    merchant,
+    address,
+    zoneBoundaryJson: zone.boundaryJson,
+    tipCents: params.tipCents,
+  });
+  if (!quote.meetsMinimum) {
     throw new Error(
-      `Minimum order is R${(minOrderCents / 100).toFixed(0)}. Add R${(minimum.shortfallCents / 100).toFixed(2)} more in items before delivery.`,
+      `Minimum order for this shop is R${(quote.minOrderCents / 100).toFixed(0)}. Add R${(quote.shortfallCents / 100).toFixed(2)} more in items before delivery.`,
     );
   }
+  const commission = commissionBps({
+    category: normalisePricingCategory(merchant.pricingCategory),
+    overrideBps: merchant.commissionBps,
+    isIndependent: merchant.isIndependent,
+    introRateStartedAt: merchant.introRateStartedAt,
+    config,
+  });
+  const courier = courierPay({
+    km: quote.distanceKm,
+    peakFeeCents: quote.peakFeeCents,
+    tipCents: quote.tipCents,
+    config,
+  });
+  const totals = {
+    itemTotalCents: quote.itemTotalCents,
+    deliveryFeeCents: quote.deliveryFeeCents,
+    serviceFeeCents: quote.serviceFeeCents,
+    totalCents: quote.totalCents,
+  };
 
   const order = await prisma.$transaction(async (tx) => {
     const created = await tx.order.create({
@@ -265,6 +292,13 @@ export async function checkoutOrder(params: {
         itemTotalCents: totals.itemTotalCents,
         deliveryFeeCents: totals.deliveryFeeCents,
         serviceFeeCents: totals.serviceFeeCents,
+        smallOrderFeeCents: quote.smallOrderFeeCents,
+        peakFeeCents: quote.peakFeeCents,
+        tipCents: quote.tipCents,
+        deliveryDistanceKm: quote.distanceKm,
+        distanceSource: quote.distanceSource,
+        plusApplied: quote.plusApplied,
+        pricingJson: JSON.stringify({ quote, commission, courier }),
         totalCents: totals.totalCents,
         customerNotes: params.customerNotes,
         idempotencyKey: params.idempotencyKey,
@@ -465,13 +499,25 @@ export async function transitionOrder(params: {
     }
 
     if (params.toStatus === OrderStatus.DELIVERED) {
-      const settings = await tx.platformSettings.findUnique({
-        where: { id: "default" },
-      });
-      const rate = order.merchant.commissionBps;
-      const commissionCents = Math.round(
-        (order.itemTotalCents * rate) / 10000,
+      const config = pricingFromSettings(
+        await tx.platformSettings.findUnique({ where: { id: "default" } }),
       );
+      const snapshot = order.pricingJson
+        ? (JSON.parse(order.pricingJson) as {
+            commission?: { bps: number };
+            courier?: ReturnType<typeof courierPay>;
+          })
+        : {};
+      const rate =
+        snapshot.commission?.bps ??
+        commissionBps({
+          category: normalisePricingCategory(order.merchant.pricingCategory),
+          overrideBps: order.merchant.commissionBps,
+          isIndependent: order.merchant.isIndependent,
+          introRateStartedAt: order.merchant.introRateStartedAt,
+          config,
+        }).bps;
+      const commissionAmount = commissionCents(order.itemTotalCents, rate);
       await tx.merchantCommission.upsert({
         where: { orderId: order.id },
         create: {
@@ -479,19 +525,29 @@ export async function transitionOrder(params: {
           merchantId: order.merchantId,
           orderTotalCents: order.itemTotalCents,
           rateBps: rate,
-          commissionCents,
-          netPayoutCents: order.itemTotalCents - commissionCents,
+          commissionCents: commissionAmount,
+          netPayoutCents: order.itemTotalCents - commissionAmount,
         },
         update: {},
       });
 
       if (order.delivery?.courierId) {
+        const pay =
+          snapshot.courier ??
+          courierPay({
+            km: order.deliveryDistanceKm ?? config.fallbackDistanceKm,
+            peakFeeCents: order.peakFeeCents,
+            tipCents: order.tipCents,
+            config,
+          });
         await tx.courierEarning.upsert({
           where: { orderId: order.id },
           create: {
             courierId: order.delivery.courierId,
             orderId: order.id,
-            amountCents: settings?.courierFlatFeeCents ?? 2000,
+            amountCents: pay.totalCents,
+            tipCents: pay.tipCents,
+            breakdownJson: JSON.stringify(pay),
           },
           update: {},
         });

@@ -2,7 +2,6 @@ import Link from "next/link";
 import { logoutAction } from "@/app/actions/auth";
 import {
   approveMerchantAction,
-  updateMinOrderAction,
   updateZoneRadiusAction,
 } from "@/app/admin/actions";
 import { Button } from "@/components/ui/button";
@@ -10,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { parseZoneGeo } from "@/lib/geo";
+import { pricingFromSettings } from "@/lib/pricing";
 import { formatZar } from "@/lib/utils";
 import { getLaunchZone } from "@/lib/zones";
 
@@ -44,6 +44,7 @@ export default async function AdminDashboardPage() {
     prisma.merchantCommission.findMany(),
     prisma.platformSettings.findUnique({ where: { id: "default" } }),
   ]);
+  const pricing = pricingFromSettings(settings);
 
   const accepted = allOrders.filter((o) =>
     [
@@ -185,35 +186,19 @@ export default async function AdminDashboardPage() {
           )}
 
           <div className="rounded-2xl border border-[#0E3B24]/8 bg-white p-5">
-            <h2 className="font-semibold">Minimum order for delivery</h2>
+            <h2 className="font-semibold">Pricing</h2>
             <p className="mt-1 text-sm text-[#0E3B24]/65">
-              THUMA does not deliver when the item subtotal is under this amount.
-              Current: {formatZar(settings?.minOrderCents ?? 20000)}.
+              Delivery {formatZar(pricing.deliveryBand1Cents)}–{formatZar(pricing.deliveryFeeCapCents)} by
+              distance · service fee {formatZar(pricing.serviceFeeCents)} · minimum{" "}
+              {formatZar(pricing.minOrderFoodCents)} food / {formatZar(pricing.minOrderGroceryCents)} grocery ·
+              peak fee {pricing.peakFeeEnabled ? "ON" : "off"}.
             </p>
-            <form
-              action={updateMinOrderAction}
-              className="mt-4 flex flex-wrap items-end gap-3"
+            <Link
+              href="/admin/settings/pricing"
+              className="mt-4 inline-flex h-10 items-center rounded-xl bg-[#0E3B24] px-4 text-sm font-bold text-[#FFB627]"
             >
-              <div>
-                <label htmlFor="minOrderRand" className="text-xs font-semibold">
-                  Minimum (R)
-                </label>
-                <Input
-                  id="minOrderRand"
-                  name="minOrderRand"
-                  type="number"
-                  min={0}
-                  max={10000}
-                  step={1}
-                  defaultValue={Math.round((settings?.minOrderCents ?? 20000) / 100)}
-                  className="mt-1 w-36"
-                  required
-                />
-              </div>
-              <Button type="submit" size="sm">
-                Save minimum
-              </Button>
-            </form>
+              Edit pricing settings
+            </Link>
           </div>
         </section>
 

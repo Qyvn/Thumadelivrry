@@ -40,6 +40,7 @@ async function main() {
   await prisma.merchantApplication.deleteMany();
   await prisma.zoneService.deleteMany();
   await prisma.address.deleteMany();
+  await prisma.plusSubscription.deleteMany();
   await prisma.customerProfile.deleteMany();
   await prisma.courierProfile.deleteMany();
   await prisma.session.deleteMany();
@@ -196,9 +197,41 @@ async function main() {
       id: "default",
       serviceFeeCents: 500,
       defaultDeliveryFeeCents: 2500,
-      minOrderCents: 20000,
+      // Approved-for-build pricing model (all editable at /admin/settings/pricing).
+      // Remaining pricing fields use the schema defaults; listed here for clarity.
+      minOrderCents: 6000,
       defaultCommissionBps: 1500,
-      courierFlatFeeCents: 2000,
+      courierFlatFeeCents: 2500,
+      deliveryBand1MaxKm: 3,
+      deliveryBand1Cents: 1900,
+      deliveryBand2MaxKm: 6,
+      deliveryBand2Cents: 2500,
+      deliveryBand3MaxKm: 10,
+      deliveryBand3Cents: 3200,
+      deliveryPerKmBeyondCents: 300,
+      deliveryFeeCapCents: 4500,
+      serviceFeeWaiverOverCents: 40000,
+      smallOrderFeeCents: 1000,
+      smallOrderUnderCents: 10000,
+      minOrderFoodCents: 6000,
+      minOrderGroceryCents: 10000,
+      peakFeeEnabled: false,
+      peakFeeCents: 500,
+      commissionRestaurantBps: 1500,
+      commissionGroceryBps: 800,
+      commissionPickupBps: 500,
+      introCommissionEnabled: true,
+      introCommissionBps: 1200,
+      introCommissionMonths: 3,
+      courierBaseCents: 2500,
+      courierPerKmCents: 300,
+      courierBaseCoversKm: 3,
+      courierBatchDropCents: 1200,
+      plusEnabled: true,
+      plusMonthlyPriceCents: 5900,
+      plusFreeDeliveryMaxKm: 6,
+      plusFoodMinCents: 15000,
+      plusGroceryMinCents: 25000,
       paymentProvider: "mock_payfast",
       launchZoneSlug: "durban",
       cancellationPolicyJson: JSON.stringify({
@@ -286,7 +319,7 @@ async function main() {
       latitude: -29.7058,
       longitude: 31.0742,
       zoneId: zone.id,
-      commissionBps: 1500,
+      pricingCategory: "FOOD",
       hoursJson: JSON.stringify({
         mon: { open: "10:00", close: "21:00" },
         tue: { open: "10:00", close: "21:00" },
@@ -319,7 +352,7 @@ async function main() {
       latitude: -29.7018,
       longitude: 31.0702,
       zoneId: zone.id,
-      commissionBps: 1200,
+      pricingCategory: "GROCERY",
     },
   });
 
@@ -355,7 +388,7 @@ async function main() {
       latitude: -29.6009,
       longitude: 30.3796,
       zoneId: zone.id,
-      commissionBps: 1200,
+      pricingCategory: "GROCERY",
     },
   });
 

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { CustomerNav } from "@/components/customer-nav";
 import { DevBanner } from "@/components/dev-banner";
+import { FeeBreakdown } from "@/components/fee-breakdown";
 import { OrderLiveRefresh } from "@/components/order-live-refresh";
 import { Button } from "@/components/ui/button";
 import { cancelOrderAction } from "@/app/actions/orders";
@@ -42,6 +43,12 @@ export default async function OrderDetailPage({
   });
 
   if (!order) notFound();
+  let snapshot: { quote?: { baseDeliveryFeeCents?: number; notes?: string[] } } | null = null;
+  try {
+    snapshot = order.pricingJson ? JSON.parse(order.pricingJson) : null;
+  } catch {
+    snapshot = null;
+  }
   if (user.role === "CUSTOMER" && order.customerId !== customerId) {
     notFound();
   }
@@ -114,20 +121,23 @@ export default async function OrderDetailPage({
               </span>
             </div>
           ))}
-          <div className="border-t border-[#0E3B24]/10 pt-3 text-sm">
-            <div className="flex justify-between">
-              <span>Delivery</span>
-              <span>{formatZar(order.deliveryFeeCents)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Service fee</span>
-              <span>{formatZar(order.serviceFeeCents)}</span>
-            </div>
-            <div className="mt-2 flex justify-between font-bold">
-              <span>Total</span>
-              <span>{formatZar(order.totalCents)}</span>
-            </div>
-          </div>
+        </div>
+
+        <div className="mt-4">
+          <FeeBreakdown
+            itemTotalCents={order.itemTotalCents}
+            deliveryFeeCents={order.deliveryFeeCents}
+            baseDeliveryFeeCents={snapshot?.quote?.baseDeliveryFeeCents}
+            serviceFeeCents={order.serviceFeeCents}
+            smallOrderFeeCents={order.smallOrderFeeCents}
+            peakFeeCents={order.peakFeeCents}
+            tipCents={order.tipCents}
+            totalCents={order.totalCents}
+            distanceKm={order.deliveryDistanceKm}
+            distanceSource={order.distanceSource}
+            plusApplied={order.plusApplied}
+            notes={snapshot?.quote?.notes}
+          />
         </div>
 
         <div className="mt-4 rounded-2xl bg-white p-5 text-sm">

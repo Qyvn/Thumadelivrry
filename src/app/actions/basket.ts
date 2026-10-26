@@ -134,6 +134,9 @@ export async function checkoutAction(formData: FormData) {
   const customerNotes = String(formData.get("customerNotes") ?? "") || undefined;
   const idempotencyKey = String(formData.get("idempotencyKey") ?? "");
   const simulatePayment = formData.get("simulatePayment") === "success";
+  const tipRand = Number(formData.get("tipRand") ?? 0);
+  const tipCents =
+    Number.isFinite(tipRand) && tipRand > 0 ? Math.min(20000, Math.round(tipRand * 100)) : 0;
 
   if (!addressId || !idempotencyKey) {
     redirect("/checkout?error=Missing+checkout+details");
@@ -146,6 +149,7 @@ export async function checkoutAction(formData: FormData) {
       addressId,
       customerNotes,
       idempotencyKey,
+      tipCents,
       simulatePaymentSuccess: simulatePayment,
     });
     revalidatePath("/orders");

@@ -9,8 +9,9 @@ import {
 } from "@/app/actions/basket";
 import { getCustomerShell } from "@/lib/customer-context";
 import { prisma } from "@/lib/db";
-import { meetsMinimumOrder } from "@/lib/eligibility";
-import { getOrCreateBasket, summariseBasket } from "@/lib/orders";
+import { FeeBreakdown } from "@/components/fee-breakdown";
+import { getOrCreateBasket } from "@/lib/orders";
+import { quoteForBasket } from "@/lib/pricing-server";
 import { formatZar } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -48,14 +49,29 @@ export default async function BasketPage({
   }
 
   const basket = await getOrCreateBasket(customerId);
-  const settings = await prisma.platformSettings.findUnique({
-    where: { id: "default" },
+  const firstMerchantId = basket.items[0]?.product.merchantId;
+  const merchant = firstMerchantId
+    ? await prisma.merchant.findUnique({
+        where: { id: firstMerchantId },
+        include: { zone: true },
+      })
+    : null;
+  const defaultAddress = await prisma.address.findFirst({
+    where: { customerId, isDefault: true },
   });
-  const deliveryFee = zone?.baseFeeCents ?? settings?.defaultDeliveryFeeCents ?? 2500;
-  const serviceFee = settings?.serviceFeeCents ?? 500;
-  const minOrderCents = settings?.minOrderCents ?? 20000;
-  const totals = summariseBasket(basket.items, deliveryFee, serviceFee);
-  const minimum = meetsMinimumOrder(totals.itemTotalCents, minOrderCents);
+  const itemTotalCents = basket.items.reduce(
+    (sum, i) => sum + i.quantity * i.unitPriceCents,
+    0,
+  );
+  const { quote: totals, config, hasPlus } = await quoteForBasket({
+    customerId,
+    itemTotalCents,
+    merchant,
+    address: defaultAddress,
+    zoneBoundaryJson: zone?.boundaryJson,
+  });
+  const minOrderCents = totals.minOrderCents;
+  const minimum = { ok: totals.meetsMinimum, shortfallCents: totals.shortfallCents };
   const merchantName = basket.items[0]?.product.merchant.name;
 
   return (
@@ -166,17 +182,23 @@ export default async function BasketPage({
               ))}
             </ul>
 
-            <div className="mt-6 space-y-2 rounded-2xl bg-white p-5 text-sm shadow-[0_1px_2px_rgba(14,59,36,0.04)]">
-              <Row label="Subtotal" value={formatZar(totals.itemTotalCents)} />
-              <Row label="Delivery fee" value={formatZar(totals.deliveryFeeCents)} />
-              <Row label="Service fee" value={formatZar(totals.serviceFeeCents)} />
-              <Row label="Discounts" value={formatZar(0)} />
-              <div className="border-t border-[#0E3B24]/10 pt-3">
-                <Row label="Total" value={formatZar(totals.totalCents)} strong />
-              </div>
-              <p className="pt-1 text-xs text-[#0E3B24]/50">
-                Discounts appear only when an administrator has applied a real
-                promotion.
+            <div className="mt-6">
+              <FeeBreakdown {...totals} />
+              <p className="mt-2 text-xs text-[#0E3B24]/55">
+                Delivery is priced by distance ({formatZar(config.deliveryBand1Cents)} up to{" "}
+                {config.deliveryBand1MaxKm} km, capped at {formatZar(config.deliveryFeeCapCents)}).
+                Service fee waived over {formatZar(config.serviceFeeWaiverOverCents)}; small-order
+                fee applies under {formatZar(config.smallOrderUnderCents)}.
+                {!hasPlus && config.plusEnabled && (
+                  <>
+                    {" "}
+                    <Link href="/account" className="font-semibold underline">
+                      THUMA Plus
+                    </Link>{" "}
+                    removes the service fee and gives free delivery up to{" "}
+                    {config.plusFreeDeliveryMaxKm} km on qualifying orders.
+                  </>
+                )}
               </p>
             </div>
 
@@ -207,25 +229,6 @@ export default async function BasketPage({
           </>
         )}
       </main>
-    </div>
-  );
-}
-
-function Row({
-  label,
-  value,
-  strong,
-}: {
-  label: string;
-  value: string;
-  strong?: boolean;
-}) {
-  return (
-    <div
-      className={`flex items-center justify-between ${strong ? "text-base font-bold" : ""}`}
-    >
-      <span>{label}</span>
-      <span>{value}</span>
     </div>
   );
 }

@@ -145,7 +145,9 @@ export default async function MerchantPortalPage({
               </h2>
               <p className="mt-1 text-sm text-[#0E3B24]/65">
                 {merchant.products.length} products · commission{" "}
-                {(merchant.commissionBps / 100).toFixed(1)}% (configurable policy)
+                {merchant.commissionBps != null
+                  ? `${(merchant.commissionBps / 100).toFixed(1)}% (merchant override)`
+                  : "per admin pricing settings (category default)"}
               </p>
               <ul className="mt-4 divide-y divide-[#0E3B24]/8 rounded-2xl border border-[#0E3B24]/8 bg-white">
                 {merchant.products.map((p) => (

@@ -8,8 +8,11 @@ import { checkoutAction } from "@/app/actions/basket";
 import { requireUser } from "@/lib/auth";
 import { getCustomerShell } from "@/lib/customer-context";
 import { prisma } from "@/lib/db";
-import { isAddressInServiceArea, meetsMinimumOrder } from "@/lib/eligibility";
-import { getOrCreateBasket, summariseBasket } from "@/lib/orders";
+import { createHash } from "crypto";
+import { FeeBreakdown } from "@/components/fee-breakdown";
+import { isAddressInServiceArea } from "@/lib/eligibility";
+import { getOrCreateBasket } from "@/lib/orders";
+import { loadPricingConfig, quoteForBasket } from "@/lib/pricing-server";
 import { formatZar } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -37,13 +40,25 @@ export default async function CheckoutPage({
   const settings = await prisma.platformSettings.findUnique({
     where: { id: "default" },
   });
-  const deliveryFee =
-    zone?.baseFeeCents ?? settings?.defaultDeliveryFeeCents ?? 2500;
-  const serviceFee = settings?.serviceFeeCents ?? 500;
-  const minOrderCents = settings?.minOrderCents ?? 20000;
-  const totals = summariseBasket(basket.items, deliveryFee, serviceFee);
-  const minimum = meetsMinimumOrder(totals.itemTotalCents, minOrderCents);
-  const idempotencyKey = `chk_${customerId}_${Date.now()}`;
+  const merchant = await prisma.merchant.findUnique({
+    where: { id: basket.items[0].product.merchantId },
+    include: { zone: true },
+  });
+  const itemTotalCents = basket.items.reduce(
+    (sum, i) => sum + i.quantity * i.unitPriceCents,
+    0,
+  );
+  const config = await loadPricingConfig();
+  // Deterministic idempotency key: same basket contents => same key (no Date.now in render)
+  const idempotencyKey = `chk_${createHash("sha256")
+    .update(
+      `${customerId}|${basket.id}|${basket.items
+        .map((i) => `${i.id}:${i.quantity}`)
+        .sort()
+        .join(",")}`,
+    )
+    .digest("hex")
+    .slice(0, 32)}`;
   const addressed = addresses.map((a) => ({
     ...a,
     inServiceArea: isAddressInServiceArea(
@@ -60,11 +75,34 @@ export default async function CheckoutPage({
     ),
   }));
   const eligibleAddresses = addressed.filter((a) => a.inServiceArea);
+  const quoteAddress =
+    eligibleAddresses.find((a) => a.isDefault) ?? eligibleAddresses[0] ?? null;
+  const quotes = new Map<string, Awaited<ReturnType<typeof quoteForBasket>>["quote"]>();
+  for (const a of eligibleAddresses) {
+    const { quote } = await quoteForBasket({
+      customerId,
+      itemTotalCents,
+      merchant,
+      address: a,
+      zoneBoundaryJson: zone?.boundaryJson,
+      config,
+    });
+    quotes.set(a.id, quote);
+  }
+  const { quote: fallbackQuote } = await quoteForBasket({
+    customerId,
+    itemTotalCents,
+    merchant,
+    address: null,
+    zoneBoundaryJson: zone?.boundaryJson,
+    config,
+  });
+  const quote = (quoteAddress && quotes.get(quoteAddress.id)) || fallbackQuote;
 
-  if (!minimum.ok) {
+  if (!quote.meetsMinimum) {
     redirect(
       `/basket?error=${encodeURIComponent(
-        `Minimum order is ${formatZar(minOrderCents)}. Add ${formatZar(minimum.shortfallCents)} more in items — we do not deliver under ${formatZar(minOrderCents)}.`,
+        `Minimum order for this shop is ${formatZar(quote.minOrderCents)}. Add ${formatZar(quote.shortfallCents)} more in items.`,
       )}`,
     );
   }
@@ -151,6 +189,14 @@ export default async function CheckoutPage({
                     <span className="block text-sm text-[#0E3B24]/60">
                       {addr.line1}, {addr.suburb}, {addr.city}
                     </span>
+                    {quotes.get(addr.id) && (
+                      <span className="mt-1 block text-xs text-[#0E3B24]/60">
+                        {quotes.get(addr.id)!.distanceKm.toFixed(1)} km · delivery{" "}
+                        {quotes.get(addr.id)!.deliveryFeeCents === 0
+                          ? "free"
+                          : formatZar(quotes.get(addr.id)!.deliveryFeeCents)}
+                      </span>
+                    )}
                     {!addr.inServiceArea && (
                       <span className="mt-1 block text-xs font-semibold text-red-700">
                         Outside Durban delivery radius — cannot checkout
@@ -173,23 +219,34 @@ export default async function CheckoutPage({
               />
             </div>
 
-            <div className="space-y-2 rounded-2xl bg-white p-5 text-sm">
-              <div className="flex justify-between">
-                <span>Subtotal</span>
-                <span>{formatZar(totals.itemTotalCents)}</span>
+            <fieldset className="space-y-2">
+              <legend className="text-sm font-semibold">
+                Courier tip (optional · 100% goes to your courier)
+              </legend>
+              <div className="flex flex-wrap gap-2">
+                {[0, 5, 10, 20].map((r) => (
+                  <label
+                    key={r}
+                    className="flex cursor-pointer items-center gap-2 rounded-xl border border-[#0E3B24]/10 bg-white px-3 py-2 text-sm"
+                  >
+                    <input type="radio" name="tipRand" value={r} defaultChecked={r === 0} />
+                    {r === 0 ? "No tip" : `R${r}`}
+                  </label>
+                ))}
               </div>
-              <div className="flex justify-between">
-                <span>Delivery</span>
-                <span>{formatZar(totals.deliveryFeeCents)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Service fee</span>
-                <span>{formatZar(totals.serviceFeeCents)}</span>
-              </div>
-              <div className="flex justify-between border-t border-[#0E3B24]/10 pt-3 text-base font-bold">
-                <span>Total due</span>
-                <span>{formatZar(totals.totalCents)}</span>
-              </div>
+            </fieldset>
+
+            <div>
+              <h2 className="mb-2 text-sm font-semibold">Fee breakdown</h2>
+              <FeeBreakdown
+                {...quote}
+                totalLabel="Total due (before tip)"
+              />
+              <p className="mt-2 text-xs text-[#0E3B24]/55">
+                Quoted for {quoteAddress ? `“${quoteAddress.label}”` : "your area"}. Fees are
+                recalculated on the server for the address you select; any tip is
+                added on top and passed in full to the courier.
+              </p>
             </div>
 
             <div className="rounded-2xl border border-[#0E3B24]/10 bg-[#efe6d2]/50 p-4 text-sm">
@@ -215,7 +272,7 @@ export default async function CheckoutPage({
             </div>
 
             <Button type="submit" className="w-full" size="lg">
-              Place order · {formatZar(totals.totalCents)}
+              Place order · {formatZar(quote.totalCents)} + tip
             </Button>
           </form>
         )}

@@ -61,6 +61,22 @@ model CustomerProfile {
   addresses Address[]
   baskets   Basket[]
   orders    Order[]
+  plusSubscription PlusSubscription?
+}
+
+// THUMA Plus membership. No real billing yet: billingStatus stays NOT_YET_BILLED
+// until a payment gateway (PayFast/Yoco) subscription is wired up.
+model PlusSubscription {
+  id              String   @id @default(cuid())
+  customerId      String   @unique
+  status          String   @default("ACTIVE") // ACTIVE | CANCELLED
+  priceCents      Int      // snapshot of PlatformSettings.plusMonthlyPriceCents at sign-up
+  billingStatus   String   @default("NOT_YET_BILLED")
+  startedAt       DateTime @default(now())
+  cancelledAt     DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  customer        CustomerProfile @relation(fields: [customerId], references: [id], onDelete: Cascade)
 }
 
 model Address {
@@ -164,7 +180,14 @@ model Merchant {
   latitude        Float?
   longitude       Float?
   hoursJson       String?
-  commissionBps   Int            @default(1500) // basis points, configurable policy
+  // Legacy per-merchant override in basis points. Null = use PlatformSettings category default.
+  commissionBps   Int?
+  // Pricing category drives minimum order + commission default: FOOD | GROCERY | RETAIL
+  pricingCategory String         @default("FOOD")
+  // Independent (non-chain) merchants may get the intro commission rate
+  isIndependent   Boolean        @default(false)
+  // Start of intro-rate window (null = not on intro rate)
+  introRateStartedAt DateTime?
   zoneId          String?
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
@@ -279,6 +302,14 @@ model Order {
   itemTotalCents    Int
   deliveryFeeCents  Int
   serviceFeeCents   Int         @default(0)
+  smallOrderFeeCents Int        @default(0)
+  peakFeeCents      Int         @default(0)
+  tipCents          Int         @default(0)
+  deliveryDistanceKm Float?
+  distanceSource    String?
+  plusApplied       Boolean     @default(false)
+  // Full pricing breakdown JSON snapshot (fees, waivers, courier pay, commission)
+  pricingJson       String?
   discountCents     Int         @default(0)
   taxCents          Int         @default(0)
   totalCents        Int
@@ -429,6 +460,8 @@ model CourierEarning {
   courierId    String
   orderId      String   @unique
   amountCents  Int
+  tipCents     Int      @default(0)
+  breakdownJson String?
   settled      Boolean  @default(false)
   createdAt    DateTime @default(now())
   courier      CourierProfile @relation(fields: [courierId], references: [id])
@@ -439,9 +472,53 @@ model PlatformSettings {
   serviceFeeCents       Int    @default(500)
   defaultDeliveryFeeCents Int  @default(2500)
   // Minimum merchandise subtotal before delivery is allowed (R200 default)
-  minOrderCents         Int    @default(20000)
+  // Legacy single minimum (superseded by minOrderFood/GroceryCents)
+  minOrderCents         Int    @default(6000)
   defaultCommissionBps  Int    @default(1500)
+  // Legacy flat courier fee (superseded by courierBase*/PerKm fields below)
   courierFlatFeeCents   Int    @default(2000)
+
+  // --- Distance-based delivery fee ---
+  deliveryBand1MaxKm    Float  @default(3)
+  deliveryBand1Cents    Int    @default(1900)
+  deliveryBand2MaxKm    Float  @default(6)
+  deliveryBand2Cents    Int    @default(2500)
+  deliveryBand3MaxKm    Float  @default(10)
+  deliveryBand3Cents    Int    @default(3200)
+  deliveryPerKmBeyondCents Int @default(300)
+  deliveryFeeCapCents   Int    @default(4500)
+  // Used when neither merchant nor address coordinates are available
+  fallbackDistanceKm    Float  @default(5)
+
+  // --- Customer fees ---
+  serviceFeeWaiverOverCents Int @default(40000)
+  smallOrderFeeCents    Int    @default(1000)
+  smallOrderUnderCents  Int    @default(10000)
+  minOrderFoodCents     Int    @default(6000)
+  minOrderGroceryCents  Int    @default(10000)
+  peakFeeEnabled        Boolean @default(false)
+  peakFeeCents          Int    @default(500)
+
+  // --- Commission (basis points) ---
+  commissionRestaurantBps Int  @default(1500)
+  commissionGroceryBps  Int    @default(800)
+  commissionPickupBps   Int    @default(500)
+  introCommissionEnabled Boolean @default(true)
+  introCommissionBps    Int    @default(1200)
+  introCommissionMonths Int    @default(3)
+
+  // --- Courier pay ---
+  courierBaseCents      Int    @default(2500)
+  courierPerKmCents     Int    @default(300)
+  courierBaseCoversKm   Float  @default(3)
+  courierBatchDropCents Int    @default(1200)
+
+  // --- THUMA Plus ---
+  plusEnabled           Boolean @default(true)
+  plusMonthlyPriceCents Int    @default(5900)
+  plusFreeDeliveryMaxKm Float  @default(6)
+  plusFoodMinCents      Int    @default(15000)
+  plusGroceryMinCents   Int    @default(25000)
   paymentProvider       String @default("mock_payfast")
   launchZoneSlug        String @default("cornubia-flats")
   // Policies are configurable — not hard-coded commercial terms in UI copy

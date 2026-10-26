@@ -5,12 +5,21 @@ import { Button } from "@/components/ui/button";
 import { logoutAction } from "@/app/actions/auth";
 import { requireUser } from "@/lib/auth";
 import { getCustomerShell } from "@/lib/customer-context";
+import { joinPlusAction, cancelPlusAction } from "@/app/actions/plus";
+import { prisma } from "@/lib/db";
+import { loadPricingConfig } from "@/lib/pricing-server";
+import { formatZar } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
 export default async function AccountPage() {
   const user = await requireUser();
-  const { basketCount, locationLabel } = await getCustomerShell();
+  const { basketCount, locationLabel, customerId } = await getCustomerShell();
+  const config = await loadPricingConfig();
+  const plus = customerId
+    ? await prisma.plusSubscription.findUnique({ where: { customerId } })
+    : null;
+  const plusActive = plus?.status === "ACTIVE";
 
   return (
     <div className="min-h-full">
@@ -31,6 +40,31 @@ export default async function AccountPage() {
             Role: {user.role}
           </p>
         </div>
+
+        {customerId && config.plusEnabled && (
+          <div className="mt-4 rounded-2xl border border-[#FFB627]/60 bg-white p-5" data-testid="plus-card">
+            <p className="font-semibold">
+              THUMA Plus · {formatZar(config.plusMonthlyPriceCents)}/month
+            </p>
+            <p className="mt-1 text-sm text-[#0E3B24]/65">
+              No service fee, and free delivery up to {config.plusFreeDeliveryMaxKm} km on food
+              orders over {formatZar(config.plusFoodMinCents)} or grocery orders over{" "}
+              {formatZar(config.plusGroceryMinCents)}.
+            </p>
+            <p className="mt-2 rounded-lg bg-[#F7F3EA] px-3 py-2 text-xs text-[#0E3B24]/70">
+              Preview: billing is not live yet. Joining now does not charge you; you will be
+              asked to confirm a payment method before any billing starts.
+            </p>
+            <form action={plusActive ? cancelPlusAction : joinPlusAction} className="mt-3">
+              <Button type="submit" size="sm" variant={plusActive ? "outline" : undefined}>
+                {plusActive ? "Cancel Plus" : "Join Plus (not billed yet)"}
+              </Button>
+            </form>
+            {plusActive && (
+              <p className="mt-2 text-xs text-green-800">Plus active · status: not yet billed</p>
+            )}
+          </div>
+        )}
 
         <div className="mt-4 space-y-2">
           <Link
