@@ -7,6 +7,7 @@
  */
 
 import { distanceKm, type LatLng } from "./geo";
+import { isInPeakWindow, parsePeakWindows, type PeakWindow } from "./peak";
 
 export type PricingCategory = "FOOD" | "GROCERY" | "RETAIL";
 export type Fulfilment = "DELIVERY" | "PICKUP";
@@ -45,6 +46,8 @@ export type PricingConfig = {
   plusFreeDeliveryMaxKm: number;
   plusFoodMinCents: number;
   plusGroceryMinCents: number;
+  /** Scheduled peak windows (SAST). Empty = peak fee applies whenever enabled. */
+  peakWindows: PeakWindow[];
 };
 
 export const DEFAULT_PRICING: PricingConfig = {
@@ -80,22 +83,35 @@ export const DEFAULT_PRICING: PricingConfig = {
   plusFreeDeliveryMaxKm: 6,
   plusFoodMinCents: 15000,
   plusGroceryMinCents: 25000,
+  peakWindows: [],
 };
 
-export const PRICING_KEYS = Object.keys(DEFAULT_PRICING) as (keyof PricingConfig)[];
+export const PRICING_KEYS = (Object.keys(DEFAULT_PRICING) as (keyof PricingConfig)[]).filter(
+  (k) => k !== "peakWindows",
+);
 
 /** Pick pricing fields from a PlatformSettings row (or null) with defaults. */
 export function pricingFromSettings(
-  row: Partial<Record<keyof PricingConfig, unknown>> | null | undefined,
+  row: (Partial<Record<keyof PricingConfig, unknown>> & { peakWindowsJson?: string | null }) | null | undefined,
 ): PricingConfig {
-  const out = { ...DEFAULT_PRICING } as Record<string, number | boolean>;
+  const out = { ...DEFAULT_PRICING, peakWindows: parsePeakWindows(row?.peakWindowsJson) } as Record<
+    string,
+    unknown
+  >;
   if (row) {
     for (const key of PRICING_KEYS) {
       const v = row[key];
-      if (typeof v === typeof DEFAULT_PRICING[key]) out[key] = v as number | boolean;
+      if (typeof v === typeof DEFAULT_PRICING[key]) out[key] = v;
     }
   }
   return out as PricingConfig;
+}
+
+/** Peak fee is charged when enabled and (no windows scheduled, or `now` is inside one). */
+export function isPeakActive(config: PricingConfig, now: Date = new Date()): boolean {
+  if (!config.peakFeeEnabled) return false;
+  if (!config.peakWindows || config.peakWindows.length === 0) return true;
+  return isInPeakWindow(config.peakWindows, now);
 }
 
 export function normalisePricingCategory(value: string | null | undefined): PricingCategory {
@@ -213,6 +229,8 @@ export type PriceQuoteInput = {
   distanceSource?: DistanceSource;
   hasPlus?: boolean;
   tipCents?: number;
+  /** Clock used for scheduled peak windows (defaults to now). */
+  now?: Date;
   config: PricingConfig;
 };
 
@@ -264,7 +282,7 @@ export function quoteOrder(input: PriceQuoteInput): PriceQuote {
   }
   const smallOrderFeeCents =
     input.itemTotalCents < config.smallOrderUnderCents ? config.smallOrderFeeCents : 0;
-  const peakFeeCents = config.peakFeeEnabled ? config.peakFeeCents : 0;
+  const peakFeeCents = isPeakActive(config, input.now) ? config.peakFeeCents : 0;
   const minOrderCents = minimumOrderCents(input.category, config);
 
   return {

@@ -12,7 +12,7 @@
     "db:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts",
     "db:reset": "prisma migrate reset --force",
-    "test:unit": "tsx src/lib/pricing.test.ts && tsx src/lib/order-lifecycle.test.ts && tsx src/lib/eligibility.test.ts && tsx src/lib/geo.test.ts",
+    "test:unit": "tsx src/lib/pricing.test.ts && tsx src/lib/order-lifecycle.test.ts && tsx src/lib/eligibility.test.ts && tsx src/lib/geo.test.ts && tsx src/lib/onboarding.test.ts",
     "test:e2e": "tsx scripts/e2e-smoke.ts",
     "test:fe": "node scripts/fe-test.mjs",
     "postinstall": "node scripts/prisma-db.mjs generate",
@@ -21,7 +21,9 @@
     "db:deploy": "node scripts/prisma-db.mjs deploy",
     "db:pg:migrate": "prisma migrate dev --schema prisma/postgres/schema.prisma",
     "db:pg:seed": "tsx prisma/seed.ts",
-    "test": "node scripts/prisma-db.mjs check && THUMA_USE_TMP_DB=1 npm run test:unit && THUMA_USE_TMP_DB=1 npm run test:e2e"
+    "test": "node scripts/prisma-db.mjs check && THUMA_USE_TMP_DB=1 npm run test:unit && THUMA_USE_TMP_DB=1 npm run test:onboarding && THUMA_USE_TMP_DB=1 npm run test:e2e",
+    "test:onboarding": "tsx scripts/onboarding-flow.test.ts",
+    "test:e2e:onboarding": "node scripts/onboarding-e2e.mjs"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

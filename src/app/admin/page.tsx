@@ -1,9 +1,6 @@
 import Link from "next/link";
 import { logoutAction } from "@/app/actions/auth";
-import {
-  approveMerchantAction,
-  updateZoneRadiusAction,
-} from "@/app/admin/actions";
+import { updateZoneRadiusAction } from "@/app/admin/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { requireUser } from "@/lib/auth";
@@ -108,6 +105,12 @@ export default async function AdminDashboardPage() {
             <p className="text-sm text-white/70">{user.fullName}</p>
           </div>
           <div className="flex items-center gap-3">
+            <Link href="/admin/merchants" className="text-sm text-[#FFB627]">
+              Merchants
+            </Link>
+            <Link href="/admin/settings/pricing" className="text-sm text-[#FFB627]">
+              Pricing
+            </Link>
             <Link href="/admin/shops" className="text-sm text-[#FFB627]">
               Shop backlog
             </Link>
@@ -238,18 +241,11 @@ export default async function AdminDashboardPage() {
                   <li key={app.id} className="text-sm">
                     <p className="font-medium">{app.businessName}</p>
                     <p className="text-[#0E3B24]/60">
-                      {app.suburb} · {app.categoryCodes} · {app.contactEmail}
+                      {app.suburb} · {app.pricingCategory} · {app.contactEmail}
                     </p>
-                    <form action={approveMerchantAction} className="mt-2">
-                      <input
-                        type="hidden"
-                        name="applicationId"
-                        value={app.id}
-                      />
-                      <Button type="submit" size="sm">
-                        Approve merchant
-                      </Button>
-                    </form>
+                    <Link href="/admin/merchants" className="mt-1 inline-block text-xs font-semibold underline">
+                      Review application
+                    </Link>
                   </li>
                 ))}
               </ul>

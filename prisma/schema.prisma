@@ -151,12 +151,25 @@ model MerchantApplication {
   contactEmail    String
   contactPhone    String
   categoryCodes   String // comma-separated for sqlite simplicity
+  // Day 2 onboarding fields
+  ownerName       String?
+  whatsappPhone   String?
+  pricingCategory String         @default("FOOD") // FOOD (restaurant) | GROCERY | RETAIL
+  isIndependent   Boolean        @default(false)
+  latitude        Float?
+  longitude       Float?
+  hoursJson       String?
+  logoDataUrl     String?        // small inline image (data: URL), max ~300 KB
+  // bcrypt hash of the password the applicant chose; used to create their merchant login on approval
+  passwordHash    String?
   addressLine1    String
   suburb          String
   city            String
   notes           String?
   status          String         @default("PENDING_REVIEW")
   reviewNotes     String?
+  reviewedAt      DateTime?
+  reviewedById    String?
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
   merchant        Merchant?
@@ -519,6 +532,8 @@ model PlatformSettings {
   plusFreeDeliveryMaxKm Float  @default(6)
   plusFoodMinCents      Int    @default(15000)
   plusGroceryMinCents   Int    @default(25000)
+  // Scheduled peak-fee windows, JSON [{days:[0-6], start:"HH:MM", end:"HH:MM"}] in Africa/Johannesburg
+  peakWindowsJson       String?
   paymentProvider       String @default("mock_payfast")
   launchZoneSlug        String @default("cornubia-flats")
   // Policies are configurable — not hard-coded commercial terms in UI copy

@@ -4,6 +4,7 @@ import { logoutAction } from "@/app/actions/auth";
 import { Button } from "@/components/ui/button";
 import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { merchantForUser } from "@/lib/merchant-onboarding";
 import { statusLabel } from "@/lib/order-lifecycle";
 import { formatZar } from "@/lib/utils";
 
@@ -17,18 +18,13 @@ export default async function MerchantPortalPage({
   const { error } = await searchParams;
   const user = await requireUser(["MERCHANT_STAFF", "ADMIN"]);
 
-  const staff = await prisma.merchantStaff.findFirst({
-    where: { userId: user.id },
-    include: { merchant: true },
-  });
-
+  // Merchant staff only ever see their own merchant; admins may preview the first approved one.
+  const own = await merchantForUser(user);
   const merchantId =
-    staff?.merchantId ??
-    (
-      await prisma.merchant.findFirst({
-        where: { status: "APPROVED" },
-      })
-    )?.id;
+    own?.id ??
+    (user.role === "ADMIN"
+      ? (await prisma.merchant.findFirst({ where: { status: "APPROVED" } }))?.id
+      : undefined);
 
   const merchant = merchantId
     ? await prisma.merchant.findUnique({
@@ -61,13 +57,18 @@ export default async function MerchantPortalPage({
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-3">
           <div>
             <p className="font-[family-name:var(--font-display)] text-xl font-bold text-[#FFB627]">
-              THUMA Merchant
+              Duban Merchant
             </p>
             <p className="text-sm text-white/70">
               {merchant?.name ?? "No merchant linked"}
             </p>
           </div>
           <div className="flex items-center gap-3">
+            {merchant && (
+              <Link href={user.role === "ADMIN" ? `/merchant/catalogue?merchantId=${merchant.id}` : "/merchant/catalogue"} className="text-sm font-semibold text-[#FFB627]">
+                Catalogue
+              </Link>
+            )}
             <Link href="/" className="text-sm text-[#FFB627]">
               Customer app
             </Link>
@@ -91,7 +92,7 @@ export default async function MerchantPortalPage({
           <div className="rounded-2xl border border-dashed border-[#0E3B24]/20 bg-white p-8 text-center">
             <p className="font-semibold">No merchant account linked</p>
             <p className="mt-2 text-sm text-[#0E3B24]/65">
-              Apply to join THUMA or ask an admin to approve your application.
+              Apply to sell on Duban or ask an admin to approve your application.
             </p>
             <Link href="/merchant/apply" className="mt-4 inline-block text-sm font-semibold underline">
               Apply to join
