@@ -26,19 +26,19 @@ export default async function BasketPage({
 
   if (!user || !customerId) {
     return (
-      <div className="min-h-full bg-[#F5F0E6]">
+      <div className="min-h-full bg-[#F7F3EA]">
         <DevBanner />
         <CustomerNav user={user} basketCount={0} locationLabel={locationLabel} />
         <main className="mx-auto max-w-lg px-4 py-16 text-center">
           <h1 className="font-[family-name:var(--font-display)] text-3xl font-bold">
             Your basket
           </h1>
-          <p className="mt-3 text-[#18221B]/65">
+          <p className="mt-3 text-[#0E3B24]/65">
             Sign in to add items and place an order.
           </p>
           <Link
             href="/login"
-            className="mt-6 inline-flex h-11 items-center rounded-xl bg-[#D0F27B] px-5 text-sm font-bold text-[#18221B]"
+            className="mt-6 inline-flex h-11 items-center rounded-xl bg-[#FFB627] px-5 text-sm font-bold text-[#0E3B24]"
           >
             Log in
           </Link>
@@ -59,7 +59,7 @@ export default async function BasketPage({
   const merchantName = basket.items[0]?.product.merchant.name;
 
   return (
-    <div className="min-h-full bg-[#F5F0E6]">
+    <div className="min-h-full bg-[#F7F3EA]">
       <DevBanner />
       <CustomerNav
         user={user}
@@ -73,7 +73,7 @@ export default async function BasketPage({
               Basket
             </h1>
             {merchantName && (
-              <p className="mt-1 text-sm text-[#18221B]/60">
+              <p className="mt-1 text-sm text-[#0E3B24]/60">
                 From {merchantName} · single-merchant order
               </p>
             )}
@@ -94,7 +94,7 @@ export default async function BasketPage({
         )}
 
         {basket.items.length === 0 ? (
-          <div className="mt-10 rounded-2xl border border-dashed border-[#18221B]/20 bg-white/70 px-5 py-12 text-center">
+          <div className="mt-10 rounded-2xl border border-dashed border-[#0E3B24]/20 bg-white/70 px-5 py-12 text-center">
             <p className="font-medium">Your basket is empty</p>
             <Link
               href="/browse/groceries"
@@ -109,9 +109,9 @@ export default async function BasketPage({
               {basket.items.map((item) => (
                 <li
                   key={item.id}
-                  className="flex gap-3 rounded-2xl border border-[#18221B]/8 bg-white p-3"
+                  className="flex gap-3 rounded-2xl border border-[#0E3B24]/8 bg-white p-3"
                 >
-                  <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-[#ebe4d4]">
+                  <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-[#efe6d2]">
                     {item.product.imageUrl && (
                       <Image
                         src={item.product.imageUrl}
@@ -124,7 +124,7 @@ export default async function BasketPage({
                   <div className="min-w-0 flex-1">
                     <p className="font-medium">{item.product.name}</p>
                     {item.product.packageSize && (
-                      <p className="text-xs text-[#18221B]/50">
+                      <p className="text-xs text-[#0E3B24]/50">
                         {item.product.packageSize}
                       </p>
                     )}
@@ -166,32 +166,32 @@ export default async function BasketPage({
               ))}
             </ul>
 
-            <div className="mt-6 space-y-2 rounded-2xl bg-white p-5 text-sm shadow-[0_1px_2px_rgba(24,34,27,0.04)]">
+            <div className="mt-6 space-y-2 rounded-2xl bg-white p-5 text-sm shadow-[0_1px_2px_rgba(14,59,36,0.04)]">
               <Row label="Subtotal" value={formatZar(totals.itemTotalCents)} />
               <Row label="Delivery fee" value={formatZar(totals.deliveryFeeCents)} />
               <Row label="Service fee" value={formatZar(totals.serviceFeeCents)} />
               <Row label="Discounts" value={formatZar(0)} />
-              <div className="border-t border-[#18221B]/10 pt-3">
+              <div className="border-t border-[#0E3B24]/10 pt-3">
                 <Row label="Total" value={formatZar(totals.totalCents)} strong />
               </div>
-              <p className="pt-1 text-xs text-[#18221B]/50">
+              <p className="pt-1 text-xs text-[#0E3B24]/50">
                 Discounts appear only when an administrator has applied a real
                 promotion.
               </p>
             </div>
 
             {!minimum.ok ? (
-              <div className="mt-4 rounded-2xl border border-[#18221B]/10 bg-[#ebe4d4]/60 px-4 py-3 text-sm">
-                <p className="font-semibold text-[#18221B]">
+              <div className="mt-4 rounded-2xl border border-[#0E3B24]/10 bg-[#efe6d2]/60 px-4 py-3 text-sm">
+                <p className="font-semibold text-[#0E3B24]">
                   Minimum order {formatZar(minOrderCents)}
                 </p>
-                <p className="mt-1 text-[#18221B]/70">
+                <p className="mt-1 text-[#0E3B24]/70">
                   We do not deliver under {formatZar(minOrderCents)}. Add{" "}
                   {formatZar(minimum.shortfallCents)} more in items to continue.
                 </p>
                 <Link
                   href="/browse/groceries"
-                  className="mt-3 inline-flex h-11 items-center rounded-xl bg-[#18221B] px-4 text-sm font-bold text-[#D0F27B]"
+                  className="mt-3 inline-flex h-11 items-center rounded-xl bg-[#0E3B24] px-4 text-sm font-bold text-[#FFB627]"
                 >
                   Add more items
                 </Link>
@@ -199,7 +199,7 @@ export default async function BasketPage({
             ) : (
               <Link
                 href="/checkout"
-                className="mt-6 flex h-12 w-full items-center justify-center rounded-xl bg-[#D0F27B] text-sm font-bold text-[#18221B]"
+                className="mt-6 flex h-12 w-full items-center justify-center rounded-xl bg-[#FFB627] text-sm font-bold text-[#0E3B24]"
               >
                 Go to checkout
               </Link>

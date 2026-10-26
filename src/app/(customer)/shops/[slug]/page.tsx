@@ -97,7 +97,7 @@ export default async function ShopPage({
   );
 
   return (
-    <div className="min-h-full bg-[#F5F0E6]">
+    <div className="min-h-full bg-[#F7F3EA]">
       <DevBanner />
       <CustomerNav
         user={user}
@@ -105,7 +105,7 @@ export default async function ShopPage({
         locationLabel={locationLabel}
       />
       <main className="mx-auto max-w-5xl px-4 py-8">
-        <div className="relative mb-6 h-44 overflow-hidden rounded-2xl bg-[#18221B] sm:h-56">
+        <div className="relative mb-6 h-44 overflow-hidden rounded-2xl bg-[#0E3B24] sm:h-56">
           {merchant.imageUrl && (
             <Image
               src={merchant.imageUrl}
@@ -114,7 +114,7 @@ export default async function ShopPage({
               className="object-cover opacity-90"
             />
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#18221B] to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0E3B24] to-transparent" />
           <div className="absolute bottom-0 p-5 text-white">
             <h1 className="font-[family-name:var(--font-display)] text-2xl font-bold sm:text-3xl">
               {merchant.name}
@@ -122,7 +122,7 @@ export default async function ShopPage({
             <p className="mt-1 max-w-xl text-sm text-white/75">
               {merchant.description}
             </p>
-            <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-[#D0F27B]">
+            <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-[#FFB627]">
               {open === null
                 ? "Hours not configured"
                 : open
@@ -133,7 +133,7 @@ export default async function ShopPage({
           </div>
         </div>
 
-        <p className="text-sm text-[#18221B]/65">
+        <p className="text-sm text-[#0E3B24]/65">
           Single-merchant baskets only — add from this shop, then checkout.
           Merchant pickup location is separate from your Durban delivery
           address.
@@ -157,7 +157,7 @@ export default async function ShopPage({
             name="q"
             defaultValue={q ?? ""}
             placeholder="Search this store"
-            className="h-11 w-full rounded-xl border border-[#18221B]/15 bg-white px-4 text-sm"
+            className="h-11 w-full rounded-xl border border-[#0E3B24]/15 bg-white px-4 text-sm"
           />
         </form>
 
@@ -165,7 +165,7 @@ export default async function ShopPage({
           <a
             href={`/shops/${merchant.slug}`}
             className={`rounded-full px-3 py-1.5 text-sm font-medium ${
-              !aisle ? "bg-[#18221B] text-[#D0F27B]" : "bg-white border border-[#18221B]/10"
+              !aisle ? "bg-[#0E3B24] text-[#FFB627]" : "bg-white border border-[#0E3B24]/10"
             }`}
           >
             All
@@ -178,8 +178,8 @@ export default async function ShopPage({
                 href={`/shops/${merchant.slug}?aisle=${a}`}
                 className={`rounded-full px-3 py-1.5 text-sm font-medium ${
                   aisle === a
-                    ? "bg-[#18221B] text-[#D0F27B]"
-                    : "bg-white border border-[#18221B]/10"
+                    ? "bg-[#0E3B24] text-[#FFB627]"
+                    : "bg-white border border-[#0E3B24]/10"
                 }`}
               >
                 {meta?.name ?? a}
@@ -189,7 +189,7 @@ export default async function ShopPage({
         </div>
 
         {merchant.products.length === 0 ? (
-          <div className="mt-10 rounded-2xl border border-dashed border-[#18221B]/20 bg-white/70 px-5 py-12 text-center">
+          <div className="mt-10 rounded-2xl border border-dashed border-[#0E3B24]/20 bg-white/70 px-5 py-12 text-center">
             <p className="font-medium">No matching products in this store</p>
           </div>
         ) : (

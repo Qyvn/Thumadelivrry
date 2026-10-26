@@ -15,9 +15,10 @@ const body = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "THUMA — You need it. We bring it.",
+  title: "Duban Delivery, powered by THUMA",
+  icons: { icon: "/duban-mark.svg" },
   description:
-    "THUMA is an African-born South African everything-delivery platform serving Greater Durban, KwaZulu-Natal.",
+    "Love Durban, Hidden Gems. Discover Durban with Duban, get it delivered with THUMA — Greater Durban, KwaZulu-Natal.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -26,7 +27,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en-ZA"
       className={`${display.variable} ${body.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-[family-name:var(--font-body)] text-[#18221B]">
+      <body className="min-h-full flex flex-col font-[family-name:var(--font-body)] text-[#0E3B24]">
         {children}
       </body>
     </html>

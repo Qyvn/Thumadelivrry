@@ -103,7 +103,7 @@ export default async function HomePage() {
 
   const greeting = user
     ? `Hi ${user.fullName.split(" ")[0]}`
-    : "Welcome to THUMA";
+    : "Welcome to Duban";
 
   const activeOrders =
     user?.role === "CUSTOMER"
@@ -120,7 +120,7 @@ export default async function HomePage() {
       : [];
 
   return (
-    <div className="flex min-h-full flex-col bg-[#F5F0E6]">
+    <div className="flex min-h-full flex-col bg-[#F7F3EA]">
       <DevBanner />
       <CustomerNav
         user={user}
@@ -130,15 +130,15 @@ export default async function HomePage() {
 
       <main className="mx-auto w-full max-w-5xl flex-1 px-4 pb-16 pt-5">
         <section className="animate-rise">
-          <p className="text-sm font-medium text-[#18221B]/55">{greeting}</p>
-          <h1 className="mt-1 font-[family-name:var(--font-display)] text-3xl font-bold tracking-tight text-[#18221B] sm:text-4xl">
+          <p className="text-sm font-medium text-[#0E3B24]/55">{greeting}</p>
+          <h1 className="mt-1 font-[family-name:var(--font-display)] text-3xl font-bold tracking-tight text-[#0E3B24] sm:text-4xl">
             What do you need today?
           </h1>
-          <p className="mt-2 max-w-md text-sm text-[#18221B]/65">
+          <p className="mt-2 max-w-md text-sm text-[#0E3B24]/65">
             Your neighbourhood essentials, delivered.
           </p>
-          <p className="mt-1 text-xs font-semibold uppercase tracking-[0.14em] text-[#18221B]/40">
-            You need it. We bring it. · Greater Durban
+          <p className="mt-1 text-xs font-semibold uppercase tracking-[0.14em] text-[#0E3B24]/40">
+            Love Durban, Hidden Gems · powered by THUMA
           </p>
         </section>
 
@@ -146,9 +146,9 @@ export default async function HomePage() {
           <label htmlFor="home-search" className="sr-only">
             Search
           </label>
-          <div className="flex items-center gap-3 rounded-2xl border border-[#18221B]/10 bg-white px-4 py-3 shadow-[0_1px_2px_rgba(24,34,27,0.04)]">
+          <div className="flex items-center gap-3 rounded-2xl border border-[#0E3B24]/10 bg-white px-4 py-3 shadow-[0_1px_2px_rgba(14,59,36,0.04)]">
             <svg
-              className="h-5 w-5 shrink-0 text-[#18221B]/45"
+              className="h-5 w-5 shrink-0 text-[#0E3B24]/45"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -161,7 +161,7 @@ export default async function HomePage() {
               id="home-search"
               name="q"
               placeholder="Search groceries, meals and essentials"
-              className="w-full bg-transparent text-sm text-[#18221B] outline-none placeholder:text-[#18221B]/40"
+              className="w-full bg-transparent text-sm text-[#0E3B24] outline-none placeholder:text-[#0E3B24]/40"
             />
           </div>
         </form>
@@ -169,13 +169,13 @@ export default async function HomePage() {
         {activeOrders[0] && (
           <Link
             href={`/orders/${activeOrders[0].id}`}
-            className="mt-4 flex items-center justify-between rounded-2xl bg-[#18221B] px-4 py-3 text-sm text-white"
+            className="mt-4 flex items-center justify-between rounded-2xl bg-[#0E3B24] px-4 py-3 text-sm text-white"
           >
             <span>
               Order {activeOrders[0].orderNumber} ·{" "}
               {statusLabel(activeOrders[0].status)}
             </span>
-            <ArrowRight className="h-4 w-4 text-[#D0F27B]" />
+            <ArrowRight className="h-4 w-4 text-[#FFB627]" />
           </Link>
         )}
 
@@ -193,19 +193,19 @@ export default async function HomePage() {
                   key={cat.slug}
                   href={disabled ? "#" : `/browse/${cat.slug}`}
                   aria-disabled={disabled}
-                  className={`rounded-2xl border border-[#18221B]/8 bg-white p-4 transition ${
+                  className={`rounded-2xl border border-[#0E3B24]/8 bg-white p-4 transition ${
                     disabled
                       ? "pointer-events-none opacity-45"
-                      : "hover:border-[#18221B]/20"
+                      : "hover:border-[#0E3B24]/20"
                   }`}
                 >
-                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#D0F27B] text-[#18221B]">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#FFB627] text-[#0E3B24]">
                     <Icon className="h-5 w-5" />
                   </span>
                   <span className="mt-3 block text-sm font-semibold leading-snug">
                     {cat.name}
                   </span>
-                  <span className="mt-1 block text-xs text-[#18221B]/55">
+                  <span className="mt-1 block text-xs text-[#0E3B24]/55">
                     {disabled ? "Coming when available" : cat.description}
                   </span>
                 </Link>
@@ -219,7 +219,7 @@ export default async function HomePage() {
             <h2 className="font-[family-name:var(--font-display)] text-xl font-bold">
               Offers
             </h2>
-            <p className="mt-1 text-xs text-[#18221B]/55">
+            <p className="mt-1 text-xs text-[#0E3B24]/55">
               Only verified, administrator-activated promotions appear here.
             </p>
             <div className="mt-3 space-y-3">
@@ -227,9 +227,9 @@ export default async function HomePage() {
                 <Link
                   key={promo.id}
                   href={promo.href || "/"}
-                  className="block rounded-2xl bg-[#18221B] px-5 py-4 text-white"
+                  className="block rounded-2xl bg-[#0E3B24] px-5 py-4 text-white"
                 >
-                  <p className="font-semibold text-[#D0F27B]">{promo.title}</p>
+                  <p className="font-semibold text-[#FFB627]">{promo.title}</p>
                   {promo.body && (
                     <p className="mt-1 text-sm text-white/75">{promo.body}</p>
                   )}
@@ -245,7 +245,7 @@ export default async function HomePage() {
               <h2 className="font-[family-name:var(--font-display)] text-xl font-bold">
                 Popular products
               </h2>
-              <p className="mt-1 text-xs text-[#18221B]/55">
+              <p className="mt-1 text-xs text-[#0E3B24]/55">
                 From approved sample catalogue — not fabricated ratings.
               </p>
             </div>
@@ -272,7 +272,7 @@ export default async function HomePage() {
           <h2 className="font-[family-name:var(--font-display)] text-xl font-bold">
             Everyday essentials
           </h2>
-          <p className="mt-1 text-xs text-[#18221B]/55">
+          <p className="mt-1 text-xs text-[#0E3B24]/55">
             Groceries, drinks, household and personal care.
           </p>
           <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
@@ -292,7 +292,7 @@ export default async function HomePage() {
               <h2 className="font-[family-name:var(--font-display)] text-xl font-bold">
                 Nearest stores
               </h2>
-              <p className="mt-1 text-xs text-[#18221B]/55">
+              <p className="mt-1 text-xs text-[#0E3B24]/55">
                 Within {nearby.radiusKm} km of{" "}
                 {nearby.originSource === "address"
                   ? "your delivery address"
@@ -309,9 +309,9 @@ export default async function HomePage() {
                 <Link
                   key={m.id}
                   href={`/shops/${m.slug}`}
-                  className="flex items-center gap-4 rounded-2xl border border-[#18221B]/8 bg-white p-3"
+                  className="flex items-center gap-4 rounded-2xl border border-[#0E3B24]/8 bg-white p-3"
                 >
-                  <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-[#ebe4d4]">
+                  <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-[#efe6d2]">
                     {m.imageUrl && (
                       <Image
                         src={m.imageUrl}
@@ -324,15 +324,15 @@ export default async function HomePage() {
                   <div className="min-w-0 flex-1">
                     <div className="flex items-start justify-between gap-2">
                       <p className="font-semibold">{m.name}</p>
-                      <span className="shrink-0 rounded-full bg-[#D0F27B] px-2 py-0.5 text-[11px] font-bold text-[#18221B]">
+                      <span className="shrink-0 rounded-full bg-[#FFB627] px-2 py-0.5 text-[11px] font-bold text-[#0E3B24]">
                         {index === 0 ? "Nearest · " : ""}
                         {m.distanceLabel}
                       </span>
                     </div>
-                    <p className="mt-0.5 line-clamp-2 text-sm text-[#18221B]/60">
+                    <p className="mt-0.5 line-clamp-2 text-sm text-[#0E3B24]/60">
                       {m.description}
                     </p>
-                    <p className="mt-1 text-[11px] font-semibold uppercase tracking-wide text-[#18221B]/40">
+                    <p className="mt-1 text-[11px] font-semibold uppercase tracking-wide text-[#0E3B24]/40">
                       {m.isDevSample ? "Dev sample" : "Approved"} · {m.suburb}
                     </p>
                   </div>
@@ -343,14 +343,14 @@ export default async function HomePage() {
         </section>
       </main>
 
-      <footer className="border-t border-[#18221B]/8 bg-[#18221B] px-4 py-8 text-[#D0F27B]">
+      <footer className="border-t border-[#0E3B24]/8 bg-[#0E3B24] px-4 py-8 text-[#FFB627]">
         <div className="mx-auto flex max-w-5xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="font-[family-name:var(--font-display)] text-xl font-bold">
-              THUMA
+              Duban
             </p>
-            <p className="text-sm text-[#D0F27B]/70">
-              You need it. We bring it. · Anywhere in the Durban delivery radius
+            <p className="text-sm text-[#FFB627]/70">
+              Love Durban, Hidden Gems · Delivery powered by THUMA · WhatsApp +27 64 552 7661
             </p>
           </div>
           <div className="flex flex-wrap gap-4 text-sm">
@@ -372,7 +372,7 @@ export default async function HomePage() {
 
 function EmptyBlock({ message }: { message: string }) {
   return (
-    <div className="mt-4 rounded-2xl border border-dashed border-[#18221B]/20 bg-white/70 px-5 py-10 text-center text-sm text-[#18221B]/65">
+    <div className="mt-4 rounded-2xl border border-dashed border-[#0E3B24]/20 bg-white/70 px-5 py-10 text-center text-sm text-[#0E3B24]/65">
       {message}
     </div>
   );

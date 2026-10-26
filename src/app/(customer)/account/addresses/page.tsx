@@ -103,7 +103,7 @@ export default async function AddressesPage({
   });
 
   return (
-    <div className="min-h-full bg-[#F5F0E6]">
+    <div className="min-h-full bg-[#F7F3EA]">
       <DevBanner />
       <CustomerNav
         user={user}
@@ -114,7 +114,7 @@ export default async function AddressesPage({
         <h1 className="font-[family-name:var(--font-display)] text-3xl font-bold">
           Delivery addresses
         </h1>
-        <p className="mt-2 text-sm text-[#18221B]/65">
+        <p className="mt-2 text-sm text-[#0E3B24]/65">
           THUMA delivers anywhere within the Greater Durban radius. Add suburb
           and optional map pins (lat/lng) so we can place you precisely — you
           can update locations anytime.
@@ -130,22 +130,22 @@ export default async function AddressesPage({
           {addresses.map((addr) => (
             <li
               key={addr.id}
-              className="rounded-2xl border border-[#18221B]/8 bg-white p-4"
+              className="rounded-2xl border border-[#0E3B24]/8 bg-white p-4"
             >
               <p className="font-semibold">
                 {addr.label}
                 {addr.isDefault ? " · Default" : ""}
               </p>
-              <p className="mt-1 text-sm text-[#18221B]/65">
+              <p className="mt-1 text-sm text-[#0E3B24]/65">
                 {[addr.building, addr.unitNumber ? `Unit ${addr.unitNumber}` : null, addr.line1]
                   .filter(Boolean)
                   .join(" · ")}
               </p>
-              <p className="text-sm text-[#18221B]/65">
+              <p className="text-sm text-[#0E3B24]/65">
                 {addr.suburb}, {addr.city}
               </p>
               {addr.latitude != null && addr.longitude != null && (
-                <p className="mt-1 text-xs text-[#18221B]/45">
+                <p className="mt-1 text-xs text-[#0E3B24]/45">
                   Pin {addr.latitude.toFixed(5)}, {addr.longitude.toFixed(5)}
                 </p>
               )}
@@ -161,7 +161,7 @@ export default async function AddressesPage({
             </li>
           ))}
           {addresses.length === 0 && (
-            <li className="rounded-2xl border border-dashed border-[#18221B]/20 px-4 py-8 text-center text-sm text-[#18221B]/65">
+            <li className="rounded-2xl border border-dashed border-[#0E3B24]/20 px-4 py-8 text-center text-sm text-[#0E3B24]/65">
               No saved addresses yet.
             </li>
           )}
@@ -169,7 +169,7 @@ export default async function AddressesPage({
 
         <form
           action={saveAddressAction}
-          className="mt-8 space-y-3 rounded-2xl border border-[#18221B]/8 bg-white p-5"
+          className="mt-8 space-y-3 rounded-2xl border border-[#0E3B24]/8 bg-white p-5"
         >
           <h2 className="font-semibold">Add address</h2>
           <Input name="label" placeholder="Label (Home, Work…)" defaultValue="Home" />
@@ -182,7 +182,7 @@ export default async function AddressesPage({
             <Input name="latitude" placeholder="Latitude (optional)" inputMode="decimal" />
             <Input name="longitude" placeholder="Longitude (optional)" inputMode="decimal" />
           </div>
-          <p className="text-xs text-[#18221B]/50">
+          <p className="text-xs text-[#0E3B24]/50">
             Lat/lng preferred for radius checks. Without pins we use suburb/city
             against the Durban metro list until you add coordinates.
           </p>

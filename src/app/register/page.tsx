@@ -14,12 +14,12 @@ export default function RegisterPage() {
 
   return (
     <div className="thuma-hero-bg flex min-h-full flex-col items-center justify-center px-4 py-12">
-      <div className="w-full max-w-md animate-rise rounded-2xl border border-[#18221B]/8 bg-white/90 p-6 sm:p-8">
+      <div className="w-full max-w-md animate-rise rounded-2xl border border-[#0E3B24]/8 bg-white/90 p-6 sm:p-8">
         <p className="font-[family-name:var(--font-display)] text-3xl font-extrabold">
-          THUMA
+          Duban
         </p>
         <h1 className="mt-2 text-xl font-semibold">Create your account</h1>
-        <p className="mt-1 text-sm text-[#18221B]/65">
+        <p className="mt-1 text-sm text-[#0E3B24]/65">
           Durban customers — register to save addresses and order.
         </p>
 
@@ -71,7 +71,7 @@ export default function RegisterPage() {
           </Button>
         </form>
 
-        <p className="mt-6 text-sm text-[#18221B]/65">
+        <p className="mt-6 text-sm text-[#0E3B24]/65">
           Already have an account?{" "}
           <Link href="/login" className="font-semibold underline">
             Log in

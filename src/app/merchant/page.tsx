@@ -56,11 +56,11 @@ export default async function MerchantPortalPage({
   );
 
   return (
-    <div className="min-h-full bg-[#F5F0E6]">
-      <header className="border-b border-[#18221B]/10 bg-[#18221B] px-4 py-4 text-white">
+    <div className="min-h-full bg-[#F7F3EA]">
+      <header className="border-b border-[#0E3B24]/10 bg-[#0E3B24] px-4 py-4 text-white">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-3">
           <div>
-            <p className="font-[family-name:var(--font-display)] text-xl font-bold text-[#D0F27B]">
+            <p className="font-[family-name:var(--font-display)] text-xl font-bold text-[#FFB627]">
               THUMA Merchant
             </p>
             <p className="text-sm text-white/70">
@@ -68,11 +68,11 @@ export default async function MerchantPortalPage({
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <Link href="/" className="text-sm text-[#D0F27B]">
+            <Link href="/" className="text-sm text-[#FFB627]">
               Customer app
             </Link>
             <form action={logoutAction}>
-              <Button type="submit" size="sm" variant="outline" className="border-[#D0F27B]/40 text-[#D0F27B]">
+              <Button type="submit" size="sm" variant="outline" className="border-[#FFB627]/40 text-[#FFB627]">
                 Log out
               </Button>
             </form>
@@ -88,9 +88,9 @@ export default async function MerchantPortalPage({
         )}
 
         {!merchant && (
-          <div className="rounded-2xl border border-dashed border-[#18221B]/20 bg-white p-8 text-center">
+          <div className="rounded-2xl border border-dashed border-[#0E3B24]/20 bg-white p-8 text-center">
             <p className="font-semibold">No merchant account linked</p>
-            <p className="mt-2 text-sm text-[#18221B]/65">
+            <p className="mt-2 text-sm text-[#0E3B24]/65">
               Apply to join THUMA or ask an admin to approve your application.
             </p>
             <Link href="/merchant/apply" className="mt-4 inline-block text-sm font-semibold underline">
@@ -102,7 +102,7 @@ export default async function MerchantPortalPage({
         {merchant && (
           <>
             {merchant.isDevSample && (
-              <p className="rounded-xl bg-[#18221B] px-4 py-2 text-xs text-[#D0F27B]">
+              <p className="rounded-xl bg-[#0E3B24] px-4 py-2 text-xs text-[#FFB627]">
                 This merchant is DEVELOPMENT SAMPLE data — not a confirmed live partner.
               </p>
             )}
@@ -112,7 +112,7 @@ export default async function MerchantPortalPage({
                 Incoming orders
               </h2>
               {pending.length === 0 ? (
-                <p className="mt-3 text-sm text-[#18221B]/65">
+                <p className="mt-3 text-sm text-[#0E3B24]/65">
                   No orders waiting for acceptance.
                 </p>
               ) : (
@@ -129,7 +129,7 @@ export default async function MerchantPortalPage({
                 In progress
               </h2>
               {active.length === 0 ? (
-                <p className="mt-3 text-sm text-[#18221B]/65">Nothing in the kitchen right now.</p>
+                <p className="mt-3 text-sm text-[#0E3B24]/65">Nothing in the kitchen right now.</p>
               ) : (
                 <div className="mt-4 space-y-4">
                   {active.map((order) => (
@@ -143,11 +143,11 @@ export default async function MerchantPortalPage({
               <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold">
                 Catalogue
               </h2>
-              <p className="mt-1 text-sm text-[#18221B]/65">
+              <p className="mt-1 text-sm text-[#0E3B24]/65">
                 {merchant.products.length} products · commission{" "}
                 {(merchant.commissionBps / 100).toFixed(1)}% (configurable policy)
               </p>
-              <ul className="mt-4 divide-y divide-[#18221B]/8 rounded-2xl border border-[#18221B]/8 bg-white">
+              <ul className="mt-4 divide-y divide-[#0E3B24]/8 rounded-2xl border border-[#0E3B24]/8 bg-white">
                 {merchant.products.map((p) => (
                   <li
                     key={p.id}
@@ -188,14 +188,14 @@ function OrderCard({
   mode: "pending" | "active";
 }) {
   return (
-    <div className="rounded-2xl border border-[#18221B]/8 bg-white p-5">
+    <div className="rounded-2xl border border-[#0E3B24]/8 bg-white p-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="font-semibold">{order.orderNumber}</p>
-          <p className="text-sm text-[#18221B]/60">
+          <p className="text-sm text-[#0E3B24]/60">
             {order.customer.user.fullName} · {statusLabel(order.status)}
           </p>
-          <p className="mt-1 text-xs text-[#18221B]/45">
+          <p className="mt-1 text-xs text-[#0E3B24]/45">
             Payment: {order.payment?.status ?? "n/a"}
           </p>
         </div>
@@ -209,7 +209,7 @@ function OrderCard({
         ))}
       </ul>
       {order.customerNotes && (
-        <p className="mt-2 text-sm text-[#18221B]/65">
+        <p className="mt-2 text-sm text-[#0E3B24]/65">
           Note: {order.customerNotes}
         </p>
       )}

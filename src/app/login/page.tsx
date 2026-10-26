@@ -14,13 +14,13 @@ export default function LoginPage() {
 
   return (
     <div className="thuma-hero-bg flex min-h-full flex-col items-center justify-center px-4 py-12">
-      <div className="w-full max-w-md animate-rise rounded-2xl border border-[#18221B]/8 bg-white/90 p-6 shadow-sm sm:p-8">
+      <div className="w-full max-w-md animate-rise rounded-2xl border border-[#0E3B24]/8 bg-white/90 p-6 shadow-sm sm:p-8">
         <p className="font-[family-name:var(--font-display)] text-3xl font-extrabold tracking-tight">
-          THUMA
+          Duban
         </p>
         <h1 className="mt-2 text-xl font-semibold">Log in</h1>
-        <p className="mt-1 text-sm text-[#18221B]/65">
-          You need it. We bring it.
+        <p className="mt-1 text-sm text-[#0E3B24]/65">
+          Love Durban, Hidden Gems · Delivery powered by THUMA
         </p>
 
         <form action={formAction} className="mt-6 space-y-4">
@@ -60,14 +60,14 @@ export default function LoginPage() {
           </Button>
         </form>
 
-        <p className="mt-6 text-sm text-[#18221B]/65">
+        <p className="mt-6 text-sm text-[#0E3B24]/65">
           New here?{" "}
-          <Link href="/register" className="font-semibold text-[#18221B] underline">
+          <Link href="/register" className="font-semibold text-[#0E3B24] underline">
             Create an account
           </Link>
         </p>
 
-        <div className="mt-6 rounded-xl bg-[#F5F0E6] p-3 text-xs text-[#18221B]/70">
+        <div className="mt-6 rounded-xl bg-[#F7F3EA] p-3 text-xs text-[#0E3B24]/70">
           <p className="font-semibold">Demo accounts</p>
           <p className="mt-1">Password: thuma-demo-2026</p>
           <p>customer@thuma.local · merchant@thuma.local</p>

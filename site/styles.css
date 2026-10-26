@@ -1,4 +1,4 @@
-:root{--g:#18221B;--l:#D0F27B;--c:#F5F0E6;--m:rgba(24,34,27,.62)}
+:root{--g:#0E3B24;--l:#FFB627;--o:#F26B1D;--b:#1E88C8;--gr:#3DBE5A;--k:#0B0F0C;--c:#F7F3EA;--m:rgba(11,15,12,.62)}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;scroll-padding-top:72px}
 body{font-family:"DM Sans",system-ui,sans-serif;background:var(--c);color:var(--g);line-height:1.6}
@@ -19,10 +19,10 @@ nav a:not(.btn):hover{text-decoration:underline}
 .btn{display:inline-block;text-decoration:none;font-weight:600;border-radius:999px;padding:.85rem 1.5rem;transition:transform .15s}
 .btn:hover{transform:translateY(-1px)}
 .btn.sm{padding:.55rem 1.1rem;font-size:.9rem}
-.btn-lime{background:var(--l);color:var(--g)}
+.btn-sun{background:linear-gradient(90deg,var(--l),var(--o));color:var(--k)}
 .btn-ghost{border:1.5px solid rgba(255,255,255,.4);color:#fff}
-.hero{background:var(--g);color:#fff;padding:4.5rem 0}
-.hero-in{display:grid;grid-template-columns:1.1fr 1fr;gap:3rem;align-items:center}
+.hero{position:relative;overflow:hidden;color:#fff;padding:6rem 0 7rem;background:linear-gradient(180deg,#2a1748 0%,#c2410c 45%,#f59e0b 70%,#0b3d5c 71%,#0E3B24 100%)}.sun{position:absolute;width:340px;height:340px;border-radius:50%;right:8%;top:22%;background:radial-gradient(circle,#ffe58a,#ffb627 55%,transparent 70%);opacity:.9}.sea{position:absolute;left:0;right:0;bottom:0;height:30%;background:linear-gradient(180deg,rgba(30,136,200,.55),#0E3B24)}
+.hero-in{position:relative;max-width:1140px}.hero h1,.lead{text-shadow:0 2px 18px rgba(0,0,0,.35)}.powered{margin-top:1.6rem;font-size:.95rem;color:#fff}.powered b{color:var(--l)}.kick{text-transform:uppercase;letter-spacing:.14em;font-size:.78rem;font-weight:700;color:var(--gr);margin-bottom:.4rem}.logo{display:inline-flex;align-items:center;gap:.55rem}.logo small{display:block;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gr);font-weight:700}.logo span{line-height:1}
 .eyebrow{text-transform:uppercase;letter-spacing:.14em;font-size:.8rem;color:var(--l);font-weight:600;margin-bottom:1rem}
 h1{font-size:clamp(2.6rem,6vw,4.4rem);font-weight:800}
 h1 span{color:var(--l)}
@@ -37,9 +37,9 @@ h1 span{color:var(--l)}
 .card,.cat{background:#fff;border:1px solid rgba(24,34,27,.08);border-radius:20px;padding:1.6rem}
 .alt .cat{background:var(--c)}
 .card p,.cat p{color:var(--m)}
-.num{display:inline-flex;width:2.4rem;height:2.4rem;align-items:center;justify-content:center;border-radius:12px;background:var(--l);margin-bottom:1rem;font-family:Outfit}
+.num{color:var(--k);display:inline-flex;width:2.4rem;height:2.4rem;align-items:center;justify-content:center;border-radius:12px;background:var(--l);margin-bottom:1rem;font-family:Outfit}
 .cat i{font-style:normal;font-size:1.4rem;display:inline-flex;width:2.8rem;height:2.8rem;align-items:center;justify-content:center;border-radius:14px;background:var(--l);margin-bottom:1rem}
-.card.dk{background:#243029;border-color:rgba(255,255,255,.08)}
+.card.dk{background:#14502f;border-color:rgba(255,255,255,.08)}
 .card.dk h3{color:var(--l);font-size:1.4rem}
 .card.dk p{color:rgba(255,255,255,.75);margin-bottom:1.4rem}
 .area{display:grid;grid-template-columns:1fr 1.3fr;gap:2.5rem;align-items:start}
@@ -49,7 +49,7 @@ h1 span{color:var(--l)}
 .contact{max-width:720px}
 .ph{margin-top:1.5rem;background:#fff;border-radius:20px;padding:1.6rem;display:grid;gap:.7rem}
 .tag{background:#fff3c4;border:1px dashed #b38f00;border-radius:6px;padding:.1rem .45rem;font-size:.85rem;color:#6b5600}
-.tag.dk{background:transparent;border-color:rgba(208,242,123,.5);color:var(--l)}
+.tag.dk{background:transparent;border-color:rgba(255,182,39,.5);color:var(--l)}
 .foot{background:var(--g);color:rgba(255,255,255,.7);padding:2.5rem 0;font-size:.9rem}
 .foot .logo{color:var(--l)}
 .foot-in{display:flex;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;align-items:center}
@@ -63,3 +63,4 @@ h1 span{color:var(--l)}
   .grid3{grid-template-columns:1fr 1fr}.sec{padding:3.2rem 0}
 }
 @media (max-width:520px){.grid3{grid-template-columns:1fr}.btn{width:100%;text-align:center}.ctas .btn{width:100%}}
+.ph a{color:var(--b);font-weight:600}h1{font-weight:900}.hero-in .lead{max-width:38rem}

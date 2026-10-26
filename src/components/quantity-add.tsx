@@ -49,12 +49,12 @@ export function QuantityAdd({
           type="button"
           disabled={!isAvailable || pending}
           onClick={() => adjust(1)}
-          className="flex h-12 w-full items-center justify-center rounded-xl bg-[#D0F27B] text-sm font-bold text-[#18221B] hover:bg-[#c3e86a] disabled:opacity-50"
+          className="flex h-12 w-full items-center justify-center rounded-xl bg-[#FFB627] text-sm font-bold text-[#0E3B24] hover:bg-[#c3e86a] disabled:opacity-50"
         >
           Add to basket
         </button>
       ) : (
-        <div className="flex h-12 items-center justify-between rounded-xl border border-[#18221B]/12 bg-[#F5F0E6] px-2">
+        <div className="flex h-12 items-center justify-between rounded-xl border border-[#0E3B24]/12 bg-[#F7F3EA] px-2">
           <button
             type="button"
             aria-label="Decrease quantity"

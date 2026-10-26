@@ -57,7 +57,7 @@ export default async function SearchPage({
   const suggestions = BROWSE_CATEGORIES.slice(0, 4);
 
   return (
-    <div className="min-h-full bg-[#F5F0E6]">
+    <div className="min-h-full bg-[#F7F3EA]">
       <DevBanner />
       <CustomerNav
         user={user}
@@ -86,13 +86,13 @@ export default async function SearchPage({
                 <Link
                   key={s.slug}
                   href={`/browse/${s.slug}`}
-                  className="rounded-full border border-[#18221B]/10 bg-white px-3 py-1.5 text-sm font-medium"
+                  className="rounded-full border border-[#0E3B24]/10 bg-white px-3 py-1.5 text-sm font-medium"
                 >
                   {s.name}
                 </Link>
               ))}
             </div>
-            <p className="mt-6 text-sm text-[#18221B]/60">
+            <p className="mt-6 text-sm text-[#0E3B24]/60">
               Search products, merchants or aisles across approved Durban
               catalogue items.
             </p>
@@ -100,15 +100,15 @@ export default async function SearchPage({
         )}
 
         {query.length > 0 && query.length < 2 && (
-          <p className="mt-6 text-sm text-[#18221B]/65">
+          <p className="mt-6 text-sm text-[#0E3B24]/65">
             Type at least 2 characters.
           </p>
         )}
 
         {query.length >= 2 && products.length === 0 && (
-          <div className="mt-8 rounded-2xl border border-dashed border-[#18221B]/20 bg-white/70 px-5 py-10 text-center">
+          <div className="mt-8 rounded-2xl border border-dashed border-[#0E3B24]/20 bg-white/70 px-5 py-10 text-center">
             <p className="font-medium">No results for “{query}”</p>
-            <p className="mt-2 text-sm text-[#18221B]/65">
+            <p className="mt-2 text-sm text-[#0E3B24]/65">
               Try another product name, merchant, or browse a category.
             </p>
             <Link href="/browse/groceries" className="mt-4 inline-block text-sm font-semibold underline">

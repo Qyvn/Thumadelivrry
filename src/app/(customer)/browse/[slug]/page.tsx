@@ -64,7 +64,7 @@ export default async function BrowseCategoryPage({
         });
 
   return (
-    <div className="min-h-full bg-[#F5F0E6]">
+    <div className="min-h-full bg-[#F7F3EA]">
       <DevBanner />
       <CustomerNav
         user={user}
@@ -72,12 +72,12 @@ export default async function BrowseCategoryPage({
         locationLabel={locationLabel}
       />
       <main className="mx-auto max-w-5xl px-4 py-8">
-        <p className="text-sm font-medium text-[#18221B]/55">Shop</p>
+        <p className="text-sm font-medium text-[#0E3B24]/55">Shop</p>
         <h1 className="mt-1 font-[family-name:var(--font-display)] text-3xl font-bold">
           {category.name}
         </h1>
-        <p className="mt-2 text-sm text-[#18221B]/65">{category.description}</p>
-        <p className="mt-1 text-xs text-[#18221B]/50">
+        <p className="mt-2 text-sm text-[#0E3B24]/65">{category.description}</p>
+        <p className="mt-1 text-xs text-[#0E3B24]/50">
           Showing stores within {nearby.radiusKm} km · nearest first when you
           shop.
         </p>
@@ -100,8 +100,8 @@ export default async function BrowseCategoryPage({
                 }
                 className={`rounded-full px-3 py-1.5 font-medium ${
                   active
-                    ? "bg-[#18221B] text-[#D0F27B]"
-                    : "bg-white text-[#18221B] border border-[#18221B]/10"
+                    ? "bg-[#0E3B24] text-[#FFB627]"
+                    : "bg-white text-[#0E3B24] border border-[#0E3B24]/10"
                 }`}
               >
                 {opt.label}
@@ -111,9 +111,9 @@ export default async function BrowseCategoryPage({
         </div>
 
         {products.length === 0 ? (
-          <div className="mt-10 rounded-2xl border border-dashed border-[#18221B]/20 bg-white/70 px-5 py-12 text-center">
+          <div className="mt-10 rounded-2xl border border-dashed border-[#0E3B24]/20 bg-white/70 px-5 py-12 text-center">
             <p className="font-medium">No products in this category yet</p>
-            <p className="mt-2 text-sm text-[#18221B]/65">
+            <p className="mt-2 text-sm text-[#0E3B24]/65">
               Categories only show approved merchant catalogue items.
             </p>
           </div>

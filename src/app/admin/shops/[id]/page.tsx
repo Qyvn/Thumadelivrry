@@ -47,11 +47,11 @@ export default async function ShopBacklogDetailPage({
   const draft = shop.status === "DRAFT";
 
   return (
-    <div className="min-h-full bg-[#F5F0E6]">
-      <header className="border-b border-[#18221B]/10 bg-[#18221B] px-4 py-4 text-white">
+    <div className="min-h-full bg-[#F7F3EA]">
+      <header className="border-b border-[#0E3B24]/10 bg-[#0E3B24] px-4 py-4 text-white">
         <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-3">
           <div>
-            <Link href="/admin/shops" className="text-sm text-[#D0F27B]">
+            <Link href="/admin/shops" className="text-sm text-[#FFB627]">
               ← Shop backlog
             </Link>
             <p className="mt-1 font-[family-name:var(--font-display)] text-xl font-bold">
@@ -63,7 +63,7 @@ export default async function ShopBacklogDetailPage({
               type="submit"
               size="sm"
               variant="outline"
-              className="border-[#D0F27B]/40 text-[#D0F27B]"
+              className="border-[#FFB627]/40 text-[#FFB627]"
             >
               Log out
             </Button>
@@ -72,25 +72,25 @@ export default async function ShopBacklogDetailPage({
       </header>
 
       <main className="mx-auto max-w-3xl space-y-8 px-4 py-8">
-        <section className="rounded-2xl border border-[#18221B]/8 bg-white p-5">
+        <section className="rounded-2xl border border-[#0E3B24]/8 bg-white p-5">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-[#18221B]/45">
+              <p className="text-xs font-semibold uppercase tracking-wide text-[#0E3B24]/45">
                 Shop name
               </p>
               <h1 className="mt-1 font-[family-name:var(--font-display)] text-2xl font-bold">
                 {shop.name}
               </h1>
-              <p className="mt-2 text-sm text-[#18221B]/65">
+              <p className="mt-2 text-sm text-[#0E3B24]/65">
                 {[shop.suburb, shop.city].filter(Boolean).join(", ") || "Location TBD"}
               </p>
               {shop.description && (
-                <p className="mt-2 text-sm text-[#18221B]/55">{shop.description}</p>
+                <p className="mt-2 text-sm text-[#0E3B24]/55">{shop.description}</p>
               )}
             </div>
             <span
               className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                draft ? "bg-[#ebe4d4]" : "bg-[#D0F27B]"
+                draft ? "bg-[#efe6d2]" : "bg-[#FFB627]"
               }`}
             >
               {draft ? "Backlog / not live" : "Published to customers"}
@@ -123,19 +123,19 @@ export default async function ShopBacklogDetailPage({
         )}
 
         {/* Menu upload space */}
-        <section className="rounded-2xl border border-[#18221B]/8 bg-white p-5">
+        <section className="rounded-2xl border border-[#0E3B24]/8 bg-white p-5">
           <h2 className="font-semibold">Menu</h2>
-          <p className="mt-1 text-sm text-[#18221B]/60">
+          <p className="mt-1 text-sm text-[#0E3B24]/60">
             Space for this shop&apos;s dishes and takeaway items. Add lines as you
             receive their menu.
           </p>
 
           {menuItems.length === 0 ? (
-            <div className="mt-4 rounded-xl border border-dashed border-[#18221B]/15 px-4 py-8 text-center text-sm text-[#18221B]/55">
+            <div className="mt-4 rounded-xl border border-dashed border-[#0E3B24]/15 px-4 py-8 text-center text-sm text-[#0E3B24]/55">
               No menu items yet — upload dishes below when ready.
             </div>
           ) : (
-            <ul className="mt-4 divide-y divide-[#18221B]/8">
+            <ul className="mt-4 divide-y divide-[#0E3B24]/8">
               {menuItems.map((item) => (
                 <li
                   key={item.id}
@@ -150,7 +150,7 @@ export default async function ShopBacklogDetailPage({
 
           <form
             action={addShopCatalogueItemAction}
-            className="mt-4 grid gap-3 border-t border-[#18221B]/8 pt-4 sm:grid-cols-3"
+            className="mt-4 grid gap-3 border-t border-[#0E3B24]/8 pt-4 sm:grid-cols-3"
           >
             <input type="hidden" name="merchantId" value={shop.id} />
             <input type="hidden" name="itemKind" value="menu" />
@@ -170,19 +170,19 @@ export default async function ShopBacklogDetailPage({
         </section>
 
         {/* Stock upload space */}
-        <section className="rounded-2xl border border-[#18221B]/8 bg-white p-5">
+        <section className="rounded-2xl border border-[#0E3B24]/8 bg-white p-5">
           <h2 className="font-semibold">Available stock</h2>
-          <p className="mt-1 text-sm text-[#18221B]/60">
+          <p className="mt-1 text-sm text-[#0E3B24]/60">
             Space for grocery and retail lines. Add products and quantities as
             stock lists arrive.
           </p>
 
           {stockItems.length === 0 ? (
-            <div className="mt-4 rounded-xl border border-dashed border-[#18221B]/15 px-4 py-8 text-center text-sm text-[#18221B]/55">
+            <div className="mt-4 rounded-xl border border-dashed border-[#0E3B24]/15 px-4 py-8 text-center text-sm text-[#0E3B24]/55">
               No stock lines yet — upload available products below when ready.
             </div>
           ) : (
-            <ul className="mt-4 divide-y divide-[#18221B]/8">
+            <ul className="mt-4 divide-y divide-[#0E3B24]/8">
               {stockItems.map((item) => (
                 <li
                   key={item.id}
@@ -191,10 +191,10 @@ export default async function ShopBacklogDetailPage({
                   <span>
                     <span className="font-medium">{item.name}</span>
                     {item.packageSize ? (
-                      <span className="text-[#18221B]/50"> · {item.packageSize}</span>
+                      <span className="text-[#0E3B24]/50"> · {item.packageSize}</span>
                     ) : null}
                     {item.stockQty != null ? (
-                      <span className="text-[#18221B]/50"> · qty {item.stockQty}</span>
+                      <span className="text-[#0E3B24]/50"> · qty {item.stockQty}</span>
                     ) : null}
                   </span>
                   <span>{formatZar(item.priceCents)}</span>
@@ -205,7 +205,7 @@ export default async function ShopBacklogDetailPage({
 
           <form
             action={addShopCatalogueItemAction}
-            className="mt-4 grid gap-3 border-t border-[#18221B]/8 pt-4 sm:grid-cols-2"
+            className="mt-4 grid gap-3 border-t border-[#0E3B24]/8 pt-4 sm:grid-cols-2"
           >
             <input type="hidden" name="merchantId" value={shop.id} />
             <input type="hidden" name="itemKind" value="stock" />

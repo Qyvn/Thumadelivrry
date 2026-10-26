@@ -70,7 +70,7 @@ export default async function CheckoutPage({
   }
 
   return (
-    <div className="min-h-full bg-[#F5F0E6]">
+    <div className="min-h-full bg-[#F7F3EA]">
       <DevBanner />
       <CustomerNav
         user={user}
@@ -81,7 +81,7 @@ export default async function CheckoutPage({
         <h1 className="font-[family-name:var(--font-display)] text-3xl font-bold">
           Checkout
         </h1>
-        <p className="mt-2 text-sm text-[#18221B]/65">
+        <p className="mt-2 text-sm text-[#0E3B24]/65">
           Delivery is available anywhere within the administrator-configured
           Greater Durban radius. Full price is shown before you pay. Payment uses
           a mock SA provider until live credentials are configured.
@@ -94,7 +94,7 @@ export default async function CheckoutPage({
         )}
 
         {addressed.length === 0 ? (
-          <div className="mt-8 rounded-2xl border border-dashed border-[#18221B]/20 bg-white px-5 py-10 text-center">
+          <div className="mt-8 rounded-2xl border border-dashed border-[#0E3B24]/20 bg-white px-5 py-10 text-center">
             <p className="font-medium">Add a Durban delivery address</p>
             <Link
               href="/account/addresses"
@@ -129,7 +129,7 @@ export default async function CheckoutPage({
                   key={addr.id}
                   className={`flex cursor-pointer gap-3 rounded-xl border p-4 ${
                     addr.inServiceArea
-                      ? "border-[#18221B]/10 bg-white"
+                      ? "border-[#0E3B24]/10 bg-white"
                       : "border-red-200 bg-red-50/50 opacity-70"
                   }`}
                 >
@@ -148,7 +148,7 @@ export default async function CheckoutPage({
                       {addr.building ? ` · ${addr.building}` : ""}
                       {addr.unitNumber ? ` · Unit ${addr.unitNumber}` : ""}
                     </span>
-                    <span className="block text-sm text-[#18221B]/60">
+                    <span className="block text-sm text-[#0E3B24]/60">
                       {addr.line1}, {addr.suburb}, {addr.city}
                     </span>
                     {!addr.inServiceArea && (
@@ -186,15 +186,15 @@ export default async function CheckoutPage({
                 <span>Service fee</span>
                 <span>{formatZar(totals.serviceFeeCents)}</span>
               </div>
-              <div className="flex justify-between border-t border-[#18221B]/10 pt-3 text-base font-bold">
+              <div className="flex justify-between border-t border-[#0E3B24]/10 pt-3 text-base font-bold">
                 <span>Total due</span>
                 <span>{formatZar(totals.totalCents)}</span>
               </div>
             </div>
 
-            <div className="rounded-2xl border border-[#18221B]/10 bg-[#ebe4d4]/50 p-4 text-sm">
+            <div className="rounded-2xl border border-[#0E3B24]/10 bg-[#efe6d2]/50 p-4 text-sm">
               <p className="font-semibold">Mock payment (development)</p>
-              <p className="mt-1 text-[#18221B]/65">
+              <p className="mt-1 text-[#0E3B24]/65">
                 Provider: {settings?.paymentProvider ?? "mock_payfast"}. Never
                 marks paid from a browser redirect alone. Cash on delivery is
                 not enabled.

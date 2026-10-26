@@ -30,7 +30,7 @@ export function OrderLiveRefresh({
 
   if (terminal) {
     return (
-      <p className="mt-2 text-xs text-[#18221B]/45">Order complete — tracking stopped.</p>
+      <p className="mt-2 text-xs text-[#0E3B24]/45">Order complete — tracking stopped.</p>
     );
   }
 
@@ -41,7 +41,7 @@ export function OrderLiveRefresh({
   });
 
   return (
-    <p className="mt-2 text-xs font-medium text-[#18221B]/50">
+    <p className="mt-2 text-xs font-medium text-[#0E3B24]/50">
       Live tracking · checked {time}
     </p>
   );

@@ -71,7 +71,7 @@ export default async function OrderDetailPage({
         <h1 className="mt-3 font-[family-name:var(--font-display)] text-3xl font-bold">
           {order.orderNumber}
         </h1>
-        <p className="mt-1 text-[#18221B]/65">{order.merchant.name}</p>
+        <p className="mt-1 text-[#0E3B24]/65">{order.merchant.name}</p>
         <p className="mt-3 text-lg font-semibold">
           {statusLabel(order.status)}
         </p>
@@ -89,12 +89,12 @@ export default async function OrderDetailPage({
               <li
                 key={step}
                 className={`flex items-center gap-3 text-sm ${
-                  i <= stepIndex ? "font-semibold text-[#18221B]" : "text-[#18221B]/40"
+                  i <= stepIndex ? "font-semibold text-[#0E3B24]" : "text-[#0E3B24]/40"
                 }`}
               >
                 <span
                   className={`h-2.5 w-2.5 rounded-full ${
-                    i <= stepIndex ? "bg-[#D0F27B]" : "bg-[#18221B]/15"
+                    i <= stepIndex ? "bg-[#FFB627]" : "bg-[#0E3B24]/15"
                   }`}
                 />
                 {statusLabel(step)}
@@ -103,7 +103,7 @@ export default async function OrderDetailPage({
           </ol>
         )}
 
-        <div className="mt-8 space-y-3 rounded-2xl border border-[#18221B]/8 bg-white p-5">
+        <div className="mt-8 space-y-3 rounded-2xl border border-[#0E3B24]/8 bg-white p-5">
           {order.items.map((item) => (
             <div key={item.id} className="flex justify-between gap-3 text-sm">
               <span>
@@ -114,7 +114,7 @@ export default async function OrderDetailPage({
               </span>
             </div>
           ))}
-          <div className="border-t border-[#18221B]/10 pt-3 text-sm">
+          <div className="border-t border-[#0E3B24]/10 pt-3 text-sm">
             <div className="flex justify-between">
               <span>Delivery</span>
               <span>{formatZar(order.deliveryFeeCents)}</span>
@@ -132,7 +132,7 @@ export default async function OrderDetailPage({
 
         <div className="mt-4 rounded-2xl bg-white p-5 text-sm">
           <p className="font-semibold">Delivery</p>
-          <p className="mt-1 text-[#18221B]/65">
+          <p className="mt-1 text-[#0E3B24]/65">
             {[
               order.address.building,
               order.address.unitNumber
@@ -144,31 +144,31 @@ export default async function OrderDetailPage({
               .filter(Boolean)
               .join(" · ")}
           </p>
-          <p className="mt-3 text-xs text-[#18221B]/45">
+          <p className="mt-3 text-xs text-[#0E3B24]/45">
             Estimated arrival is shown only when the system can calculate a
             reliable time — none is invented here.
           </p>
           <p className="mt-3 font-semibold">Payment</p>
-          <p className="mt-1 text-[#18221B]/65">
+          <p className="mt-1 text-[#0E3B24]/65">
             {order.payment?.status ?? "Not started"} ·{" "}
             {order.payment?.provider ?? "n/a"}
           </p>
           {order.delivery?.courier && (
             <>
               <p className="mt-3 font-semibold">Delivery partner</p>
-              <p className="mt-1 text-[#18221B]/65">
+              <p className="mt-1 text-[#0E3B24]/65">
                 {order.delivery.courier.user.fullName}
                 {order.delivery.courier.vehicleType
                   ? ` · ${order.delivery.courier.vehicleType}`
                   : ""}
               </p>
-              <p className="mt-1 text-xs text-[#18221B]/45">
+              <p className="mt-1 text-xs text-[#0E3B24]/45">
                 Live map tracking is not shown without real location data.
               </p>
             </>
           )}
           <p className="mt-3 font-semibold">Support</p>
-          <p className="mt-1 text-[#18221B]/65">
+          <p className="mt-1 text-[#0E3B24]/65">
             Need help with a missing, incorrect or delayed order? Contact THUMA
             support via your account once support channels are enabled.
           </p>
@@ -188,7 +188,7 @@ export default async function OrderDetailPage({
           <p className="text-sm font-semibold">Timeline</p>
           <ul className="mt-3 space-y-2">
             {order.events.map((ev) => (
-              <li key={ev.id} className="text-sm text-[#18221B]/65">
+              <li key={ev.id} className="text-sm text-[#0E3B24]/65">
                 {statusLabel(ev.toStatus)}
                 {ev.note ? ` — ${ev.note}` : ""}
               </li>

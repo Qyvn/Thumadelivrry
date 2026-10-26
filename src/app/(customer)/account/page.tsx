@@ -24,10 +24,10 @@ export default async function AccountPage() {
         <h1 className="font-[family-name:var(--font-display)] text-3xl font-bold">
           Account
         </h1>
-        <div className="mt-6 rounded-2xl border border-[#18221B]/8 bg-white p-5">
+        <div className="mt-6 rounded-2xl border border-[#0E3B24]/8 bg-white p-5">
           <p className="font-semibold">{user.fullName}</p>
-          <p className="text-sm text-[#18221B]/65">{user.email}</p>
-          <p className="mt-2 text-xs uppercase tracking-wide text-[#18221B]/45">
+          <p className="text-sm text-[#0E3B24]/65">{user.email}</p>
+          <p className="mt-2 text-xs uppercase tracking-wide text-[#0E3B24]/45">
             Role: {user.role}
           </p>
         </div>
@@ -35,20 +35,20 @@ export default async function AccountPage() {
         <div className="mt-4 space-y-2">
           <Link
             href="/account/addresses"
-            className="block rounded-xl border border-[#18221B]/8 bg-white px-4 py-3 text-sm font-medium"
+            className="block rounded-xl border border-[#0E3B24]/8 bg-white px-4 py-3 text-sm font-medium"
           >
             Delivery addresses
           </Link>
           <Link
             href="/orders"
-            className="block rounded-xl border border-[#18221B]/8 bg-white px-4 py-3 text-sm font-medium"
+            className="block rounded-xl border border-[#0E3B24]/8 bg-white px-4 py-3 text-sm font-medium"
           >
             Order history
           </Link>
           {user.role === "ADMIN" && (
             <Link
               href="/admin"
-              className="block rounded-xl border border-[#18221B]/8 bg-white px-4 py-3 text-sm font-medium"
+              className="block rounded-xl border border-[#0E3B24]/8 bg-white px-4 py-3 text-sm font-medium"
             >
               Admin dashboard
             </Link>
@@ -56,7 +56,7 @@ export default async function AccountPage() {
           {user.role === "MERCHANT_STAFF" && (
             <Link
               href="/merchant"
-              className="block rounded-xl border border-[#18221B]/8 bg-white px-4 py-3 text-sm font-medium"
+              className="block rounded-xl border border-[#0E3B24]/8 bg-white px-4 py-3 text-sm font-medium"
             >
               Merchant portal
             </Link>
@@ -64,7 +64,7 @@ export default async function AccountPage() {
           {user.role === "COURIER" && (
             <Link
               href="/courier"
-              className="block rounded-xl border border-[#18221B]/8 bg-white px-4 py-3 text-sm font-medium"
+              className="block rounded-xl border border-[#0E3B24]/8 bg-white px-4 py-3 text-sm font-medium"
             >
               Courier app
             </Link>

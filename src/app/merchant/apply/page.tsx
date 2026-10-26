@@ -61,18 +61,18 @@ export default async function MerchantApplyPage({
 
   return (
     <div className="thuma-hero-bg min-h-full px-4 py-10">
-      <div className="mx-auto max-w-lg rounded-2xl border border-[#18221B]/8 bg-white/95 p-6 sm:p-8">
+      <div className="mx-auto max-w-lg rounded-2xl border border-[#0E3B24]/8 bg-white/95 p-6 sm:p-8">
         <p className="font-[family-name:var(--font-display)] text-2xl font-bold">
           Join THUMA
         </p>
         <h1 className="mt-1 text-xl font-semibold">Merchant application</h1>
-        <p className="mt-2 text-sm text-[#18221B]/65">
+        <p className="mt-2 text-sm text-[#0E3B24]/65">
           Applications are reviewed by THUMA administrators. Only approved
           merchants become publicly orderable.
         </p>
 
         {submitted && (
-          <p className="mt-4 rounded-xl bg-[#D0F27B]/40 px-4 py-3 text-sm font-medium">
+          <p className="mt-4 rounded-xl bg-[#FFB627]/40 px-4 py-3 text-sm font-medium">
             Application submitted for review. You will not appear in the
             customer app until an admin approves you.
           </p>
@@ -91,7 +91,7 @@ export default async function MerchantApplyPage({
             <Input name="contactPhone" placeholder="Phone" required />
             <select
               name="categoryCodes"
-              className="flex h-11 w-full rounded-xl border border-[#18221B]/15 bg-white px-4 text-sm"
+              className="flex h-11 w-full rounded-xl border border-[#0E3B24]/15 bg-white px-4 text-sm"
               defaultValue="EATS"
             >
               <option value="EATS">THUMA Eats (food)</option>

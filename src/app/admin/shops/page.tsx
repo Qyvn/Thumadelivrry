@@ -28,11 +28,11 @@ export default async function ShopBacklogPage({
   });
 
   return (
-    <div className="min-h-full bg-[#F5F0E6]">
-      <header className="border-b border-[#18221B]/10 bg-[#18221B] px-4 py-4 text-white">
+    <div className="min-h-full bg-[#F7F3EA]">
+      <header className="border-b border-[#0E3B24]/10 bg-[#0E3B24] px-4 py-4 text-white">
         <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3">
           <div>
-            <p className="font-[family-name:var(--font-display)] text-xl font-bold text-[#D0F27B]">
+            <p className="font-[family-name:var(--font-display)] text-xl font-bold text-[#FFB627]">
               Shop backlog
             </p>
             <p className="text-sm text-white/70">{user.fullName}</p>
@@ -49,7 +49,7 @@ export default async function ShopBacklogPage({
                 type="submit"
                 size="sm"
                 variant="outline"
-                className="border-[#D0F27B]/40 text-[#D0F27B]"
+                className="border-[#FFB627]/40 text-[#FFB627]"
               >
                 Log out
               </Button>
@@ -63,7 +63,7 @@ export default async function ShopBacklogPage({
           <h1 className="font-[family-name:var(--font-display)] text-3xl font-bold">
             Shops · names, menus &amp; stock
           </h1>
-          <p className="mt-2 max-w-2xl text-sm text-[#18221B]/65">
+          <p className="mt-2 max-w-2xl text-sm text-[#0E3B24]/65">
             Reserve real partner shops here. Add their names now, then upload menu
             dishes and grocery stock when you have them. Draft shops stay off the
             customer app until you publish.
@@ -76,9 +76,9 @@ export default async function ShopBacklogPage({
           </p>
         )}
 
-        <section className="rounded-2xl border border-[#18221B]/8 bg-white p-5">
+        <section className="rounded-2xl border border-[#0E3B24]/8 bg-white p-5">
           <h2 className="font-semibold">Add a shop slot</h2>
-          <p className="mt-1 text-sm text-[#18221B]/60">
+          <p className="mt-1 text-sm text-[#0E3B24]/60">
             Creates an empty backlog entry ready for menu and stock lines.
           </p>
           <form
@@ -92,13 +92,13 @@ export default async function ShopBacklogPage({
               className="sm:col-span-2"
             />
             <label className="text-sm sm:col-span-2">
-              <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-[#18221B]/45">
+              <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-[#0E3B24]/45">
                 What will you upload?
               </span>
               <select
                 name="kind"
                 defaultValue="both"
-                className="h-11 w-full rounded-xl border border-[#18221B]/15 bg-white px-3 text-sm"
+                className="h-11 w-full rounded-xl border border-[#0E3B24]/15 bg-white px-3 text-sm"
               >
                 <option value="both">Menu + grocery stock</option>
                 <option value="eats">Food menu only</option>
@@ -123,11 +123,11 @@ export default async function ShopBacklogPage({
             Backlog ({shops.length})
           </h2>
           {shops.length === 0 ? (
-            <div className="mt-4 rounded-2xl border border-dashed border-[#18221B]/20 bg-white px-5 py-12 text-center">
+            <div className="mt-4 rounded-2xl border border-dashed border-[#0E3B24]/20 bg-white px-5 py-12 text-center">
               <p className="font-[family-name:var(--font-display)] text-xl font-bold">
                 No shops reserved yet
               </p>
-              <p className="mx-auto mt-2 max-w-md text-sm text-[#18221B]/65">
+              <p className="mx-auto mt-2 max-w-md text-sm text-[#0E3B24]/65">
                 This space is for real partners. Add a shop name above, then open
                 it to upload menu items and available stock when you are ready.
               </p>
@@ -148,11 +148,11 @@ export default async function ShopBacklogPage({
                   <li key={shop.id}>
                     <Link
                       href={`/admin/shops/${shop.id}`}
-                      className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#18221B]/8 bg-white px-5 py-4 transition hover:border-[#18221B]/25"
+                      className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#0E3B24]/8 bg-white px-5 py-4 transition hover:border-[#0E3B24]/25"
                     >
                       <div>
                         <p className="font-semibold">{shop.name}</p>
-                        <p className="text-sm text-[#18221B]/60">
+                        <p className="text-sm text-[#0E3B24]/60">
                           {[shop.suburb, shop.city].filter(Boolean).join(", ")}
                           {" · "}
                           {menuCount} menu · {stockCount} stock
@@ -161,8 +161,8 @@ export default async function ShopBacklogPage({
                       <span
                         className={`rounded-full px-3 py-1 text-xs font-semibold ${
                           draft
-                            ? "bg-[#ebe4d4] text-[#18221B]"
-                            : "bg-[#D0F27B] text-[#18221B]"
+                            ? "bg-[#efe6d2] text-[#0E3B24]"
+                            : "bg-[#FFB627] text-[#0E3B24]"
                         }`}
                       >
                         {draft ? "Backlog / draft" : "Published"}
@@ -175,7 +175,7 @@ export default async function ShopBacklogPage({
           )}
         </section>
 
-        <p className="text-xs text-[#18221B]/45">
+        <p className="text-xs text-[#0E3B24]/45">
           Development sample merchants stay separate and are not listed here.
         </p>
       </main>

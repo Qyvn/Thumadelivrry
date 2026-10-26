@@ -64,17 +64,17 @@ export default async function CourierPage({
     : [];
 
   return (
-    <div className="min-h-full bg-[#F5F0E6]">
-      <header className="border-b border-[#18221B]/10 bg-[#18221B] px-4 py-4 text-white">
+    <div className="min-h-full bg-[#F7F3EA]">
+      <header className="border-b border-[#0E3B24]/10 bg-[#0E3B24] px-4 py-4 text-white">
         <div className="mx-auto flex max-w-3xl items-center justify-between">
           <div>
-            <p className="font-[family-name:var(--font-display)] text-xl font-bold text-[#D0F27B]">
+            <p className="font-[family-name:var(--font-display)] text-xl font-bold text-[#FFB627]">
               THUMA Courier
             </p>
             <p className="text-sm text-white/70">{user.fullName}</p>
           </div>
           <form action={logoutAction}>
-            <Button type="submit" size="sm" variant="outline" className="border-[#D0F27B]/40 text-[#D0F27B]">
+            <Button type="submit" size="sm" variant="outline" className="border-[#FFB627]/40 text-[#FFB627]">
               Log out
             </Button>
           </form>
@@ -89,9 +89,9 @@ export default async function CourierPage({
         )}
 
         {!courier && (
-          <div className="rounded-2xl border border-dashed border-[#18221B]/20 bg-white p-6 text-center">
+          <div className="rounded-2xl border border-dashed border-[#0E3B24]/20 bg-white p-6 text-center">
             <p className="font-semibold">No courier profile</p>
-            <p className="mt-2 text-sm text-[#18221B]/65">
+            <p className="mt-2 text-sm text-[#0E3B24]/65">
               Ask an admin to approve your courier onboarding.
             </p>
             <Link href="/" className="mt-4 inline-block text-sm underline">
@@ -101,7 +101,7 @@ export default async function CourierPage({
         )}
 
         {courier?.isDevSample && (
-          <p className="rounded-xl bg-[#18221B] px-4 py-2 text-xs text-[#D0F27B]">
+          <p className="rounded-xl bg-[#0E3B24] px-4 py-2 text-xs text-[#FFB627]">
             Development sample courier profile.
           </p>
         )}
@@ -110,27 +110,27 @@ export default async function CourierPage({
           <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold">
             Available jobs
           </h2>
-          <p className="mt-1 text-sm text-[#18221B]/65">
+          <p className="mt-1 text-sm text-[#0E3B24]/65">
             Customer contact details are limited to what you need for assigned
             deliveries.
           </p>
           {available.length === 0 ? (
-            <p className="mt-3 text-sm text-[#18221B]/65">No open assignments.</p>
+            <p className="mt-3 text-sm text-[#0E3B24]/65">No open assignments.</p>
           ) : (
             <div className="mt-4 space-y-3">
               {available.map((order) => (
                 <div
                   key={order.id}
-                  className="rounded-2xl border border-[#18221B]/8 bg-white p-4"
+                  className="rounded-2xl border border-[#0E3B24]/8 bg-white p-4"
                 >
                   <p className="font-semibold">{order.orderNumber}</p>
-                  <p className="text-sm text-[#18221B]/65">
+                  <p className="text-sm text-[#0E3B24]/65">
                     Pickup: {order.merchant.name}
                     {order.merchant.addressLine1
                       ? ` · ${order.merchant.addressLine1}`
                       : ""}
                   </p>
-                  <p className="text-sm text-[#18221B]/65">
+                  <p className="text-sm text-[#0E3B24]/65">
                     Drop-off suburb: {order.address.suburb}
                   </p>
                   <form action={courierOrderAction} className="mt-3">
@@ -151,24 +151,24 @@ export default async function CourierPage({
             My deliveries
           </h2>
           {mine.length === 0 ? (
-            <p className="mt-3 text-sm text-[#18221B]/65">No active deliveries.</p>
+            <p className="mt-3 text-sm text-[#0E3B24]/65">No active deliveries.</p>
           ) : (
             <div className="mt-4 space-y-3">
               {mine.map((order) => (
                 <div
                   key={order.id}
-                  className="rounded-2xl border border-[#18221B]/8 bg-white p-4"
+                  className="rounded-2xl border border-[#0E3B24]/8 bg-white p-4"
                 >
                   <p className="font-semibold">{order.orderNumber}</p>
                   <p className="text-sm">{statusLabel(order.status)}</p>
-                  <p className="mt-2 text-sm text-[#18221B]/65">
+                  <p className="mt-2 text-sm text-[#0E3B24]/65">
                     Pickup: {order.merchant.name}
                   </p>
-                  <p className="text-sm text-[#18221B]/65">
+                  <p className="text-sm text-[#0E3B24]/65">
                     Deliver to: {order.address.line1}, {order.address.suburb}
                   </p>
                   {order.address.notes && (
-                    <p className="mt-1 text-xs text-[#18221B]/50">
+                    <p className="mt-1 text-xs text-[#0E3B24]/50">
                       Notes: {order.address.notes}
                     </p>
                   )}
@@ -209,7 +209,7 @@ export default async function CourierPage({
             Earnings
           </h2>
           {completed.length === 0 ? (
-            <p className="mt-3 text-sm text-[#18221B]/65">
+            <p className="mt-3 text-sm text-[#0E3B24]/65">
               No completed delivery earnings yet. Rates are configurable platform
               policy.
             </p>

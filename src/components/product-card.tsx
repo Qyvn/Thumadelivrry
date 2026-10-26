@@ -56,8 +56,8 @@ export function ProductCard({
   }
 
   return (
-    <article className="flex flex-col overflow-hidden rounded-2xl border border-[#18221B]/8 bg-white shadow-[0_1px_2px_rgba(24,34,27,0.04)]">
-      <Link href={`/products/${product.id}`} className="relative aspect-square bg-[#ebe4d4]">
+    <article className="flex flex-col overflow-hidden rounded-2xl border border-[#0E3B24]/8 bg-white shadow-[0_1px_2px_rgba(14,59,36,0.04)]">
+      <Link href={`/products/${product.id}`} className="relative aspect-square bg-[#efe6d2]">
         {product.imageUrl ? (
           <Image
             src={product.imageUrl}
@@ -68,31 +68,31 @@ export function ProductCard({
           />
         ) : null}
         {!product.isAvailable && (
-          <span className="absolute inset-x-2 bottom-2 rounded-lg bg-[#18221B]/85 px-2 py-1 text-center text-[11px] font-semibold text-white">
+          <span className="absolute inset-x-2 bottom-2 rounded-lg bg-[#0E3B24]/85 px-2 py-1 text-center text-[11px] font-semibold text-white">
             Out of stock
           </span>
         )}
       </Link>
       <div className="flex flex-1 flex-col p-3">
         <Link href={`/products/${product.id}`} className="min-w-0">
-          <h3 className="line-clamp-2 text-sm font-semibold leading-snug text-[#18221B]">
+          <h3 className="line-clamp-2 text-sm font-semibold leading-snug text-[#0E3B24]">
             {product.name}
           </h3>
           {product.packageSize && (
-            <p className="mt-0.5 text-xs text-[#18221B]/55">{product.packageSize}</p>
+            <p className="mt-0.5 text-xs text-[#0E3B24]/55">{product.packageSize}</p>
           )}
         </Link>
-        <p className="mt-2 text-sm font-bold text-[#18221B]">
+        <p className="mt-2 text-sm font-bold text-[#0E3B24]">
           {formatZar(product.priceCents)}
         </p>
         <Link
           href={`/shops/${product.merchant.slug}`}
-          className="mt-1 truncate text-xs text-[#18221B]/55 hover:underline"
+          className="mt-1 truncate text-xs text-[#0E3B24]/55 hover:underline"
         >
           {product.merchant.name}
         </Link>
         {typeof product.stockQty === "number" && product.isAvailable && (
-          <p className="mt-1 text-[11px] text-[#18221B]/45">
+          <p className="mt-1 text-[11px] text-[#0E3B24]/45">
             {product.stockQty > 0 ? `${product.stockQty} in stock` : "Limited stock"}
           </p>
         )}
@@ -103,18 +103,18 @@ export function ProductCard({
               type="button"
               disabled={!product.isAvailable || pending}
               onClick={() => adjust(1)}
-              className="flex h-10 w-full items-center justify-center rounded-xl bg-[#D0F27B] text-sm font-bold text-[#18221B] transition hover:bg-[#c3e86a] disabled:opacity-50"
+              className="flex h-10 w-full items-center justify-center rounded-xl bg-[#FFB627] text-sm font-bold text-[#0E3B24] transition hover:bg-[#c3e86a] disabled:opacity-50"
             >
               Add
             </button>
           ) : (
-            <div className="flex h-10 items-center justify-between rounded-xl border border-[#18221B]/12 bg-[#F5F0E6] px-1">
+            <div className="flex h-10 items-center justify-between rounded-xl border border-[#0E3B24]/12 bg-[#F7F3EA] px-1">
               <button
                 type="button"
                 aria-label="Decrease quantity"
                 disabled={pending}
                 onClick={() => adjust(-1)}
-                className="flex h-8 w-8 items-center justify-center rounded-lg text-[#18221B] hover:bg-white"
+                className="flex h-8 w-8 items-center justify-center rounded-lg text-[#0E3B24] hover:bg-white"
               >
                 <Minus className="h-4 w-4" />
               </button>
@@ -124,7 +124,7 @@ export function ProductCard({
                 aria-label="Increase quantity"
                 disabled={pending}
                 onClick={() => adjust(1)}
-                className="flex h-8 w-8 items-center justify-center rounded-lg text-[#18221B] hover:bg-white"
+                className="flex h-8 w-8 items-center justify-center rounded-lg text-[#0E3B24] hover:bg-white"
               >
                 <Plus className="h-4 w-4" />
               </button>

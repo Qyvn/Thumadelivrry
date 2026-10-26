@@ -7,8 +7,9 @@ import fs from "fs";
 import path from "path";
 
 const BASE = process.env.THUMA_URL || "http://localhost:3456";
-const OUT = "/opt/cursor/artifacts/screenshots";
-const VIDEO_DIR = "/opt/cursor/artifacts/fe-test-video";
+const ART = process.env.FE_ARTIFACTS || "/opt/cursor/artifacts";
+const OUT = `${ART}/screenshots`;
+const VIDEO_DIR = `${ART}/fe-test-video`;
 fs.mkdirSync(OUT, { recursive: true });
 fs.mkdirSync(VIDEO_DIR, { recursive: true });
 
@@ -39,7 +40,7 @@ page.setDefaultTimeout(15000);
 try {
   // 1. Home
   await page.goto(BASE, { waitUntil: "networkidle" });
-  const hasBrand = await page.getByText("THUMA", { exact: true }).first().isVisible();
+  const hasBrand = await page.getByText("Duban", { exact: true }).first().isVisible();
   const hasHeadline = await page.getByRole("heading", { name: /What do you need today/i }).isVisible();
   const hasSearch = await page.getByPlaceholder("Search groceries, meals and essentials").isVisible();
   const hasCategories = await page.getByText("Groceries & Essentials").isVisible();
@@ -223,7 +224,7 @@ try {
   await browser.close();
   if (video) {
     const vpath = await video.path();
-    const dest = "/opt/cursor/artifacts/thuma-frontend-test.webm";
+    const dest = `${ART}/thuma-frontend-test.webm`;
     try {
       fs.copyFileSync(vpath, dest);
       console.log(`VIDEO ${dest}`);

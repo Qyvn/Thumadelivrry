@@ -35,7 +35,7 @@ export default async function OrdersPage() {
         </h1>
 
         {orders.length === 0 ? (
-          <div className="mt-10 rounded-2xl border border-dashed border-[#18221B]/20 bg-white/70 px-5 py-12 text-center">
+          <div className="mt-10 rounded-2xl border border-dashed border-[#0E3B24]/20 bg-white/70 px-5 py-12 text-center">
             <p className="font-medium">No orders yet</p>
             <Link href="/eats" className="mt-4 inline-block text-sm font-semibold underline">
               Start browsing
@@ -47,12 +47,12 @@ export default async function OrdersPage() {
               <li key={order.id}>
                 <Link
                   href={`/orders/${order.id}`}
-                  className="block rounded-2xl border border-[#18221B]/8 bg-white p-4"
+                  className="block rounded-2xl border border-[#0E3B24]/8 bg-white p-4"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <p className="font-semibold">{order.orderNumber}</p>
-                      <p className="text-sm text-[#18221B]/60">
+                      <p className="text-sm text-[#0E3B24]/60">
                         {order.merchant.name}
                       </p>
                       <p className="mt-2 text-sm font-medium">
@@ -63,7 +63,7 @@ export default async function OrdersPage() {
                       <p className="font-semibold">
                         {formatZar(order.totalCents)}
                       </p>
-                      <p className="mt-1 text-[#18221B]/45">
+                      <p className="mt-1 text-[#0E3B24]/45">
                         {order.payment?.status ?? "NO_PAYMENT"}
                       </p>
                     </div>

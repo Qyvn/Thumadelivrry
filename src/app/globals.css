@@ -1,12 +1,12 @@
 @import "tailwindcss";
 
 :root {
-  --thuma-charcoal: #18221b;
-  --thuma-lime: #d0f27b;
-  --thuma-cream: #f5f0e6;
-  --thuma-cream-deep: #ebe4d4;
-  --thuma-ink: #18221b;
-  --thuma-muted: rgba(24, 34, 27, 0.62);
+  --thuma-charcoal: #0E3B24;
+  --thuma-lime: #FFB627;
+  --thuma-cream: #F7F3EA;
+  --thuma-cream-deep: #efe6d2;
+  --thuma-ink: #0E3B24;
+  --thuma-muted: rgba(14,59,36, 0.62);
   --background: var(--thuma-cream);
   --foreground: var(--thuma-ink);
 }
@@ -87,15 +87,15 @@ body {
   background:
     radial-gradient(
       ellipse 80% 60% at 80% 20%,
-      rgba(208, 242, 123, 0.35),
+      rgba(255, 182, 39, 0.35),
       transparent 55%
     ),
     radial-gradient(
       ellipse 70% 50% at 10% 90%,
-      rgba(24, 34, 27, 0.08),
+      rgba(14,59,36, 0.08),
       transparent 50%
     ),
-    linear-gradient(165deg, #f7f3ea 0%, #f5f0e6 45%, #ebe6d8 100%);
+    linear-gradient(165deg, #f7f3ea 0%, #F7F3EA 45%, #ebe6d8 100%);
 }
 
 .thuma-grain {

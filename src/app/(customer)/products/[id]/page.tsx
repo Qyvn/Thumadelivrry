@@ -32,7 +32,7 @@ export default async function ProductDetailPage({
   const browse = browseCategoryBySlug(product.browseCategory);
 
   return (
-    <div className="min-h-full bg-[#F5F0E6]">
+    <div className="min-h-full bg-[#F7F3EA]">
       <DevBanner />
       <CustomerNav
         user={user}
@@ -47,8 +47,8 @@ export default async function ProductDetailPage({
           Back to {browse?.name ?? "shopping"}
         </Link>
 
-        <div className="mt-4 overflow-hidden rounded-2xl border border-[#18221B]/8 bg-white">
-          <div className="relative aspect-[4/3] bg-[#ebe4d4]">
+        <div className="mt-4 overflow-hidden rounded-2xl border border-[#0E3B24]/8 bg-white">
+          <div className="relative aspect-[4/3] bg-[#efe6d2]">
             {product.imageUrl && (
               <Image
                 src={product.imageUrl}
@@ -60,14 +60,14 @@ export default async function ProductDetailPage({
             )}
           </div>
           <div className="p-5">
-            <p className="text-xs font-semibold uppercase tracking-wide text-[#18221B]/45">
+            <p className="text-xs font-semibold uppercase tracking-wide text-[#0E3B24]/45">
               {browse?.name ?? product.category.name}
             </p>
             <h1 className="mt-1 font-[family-name:var(--font-display)] text-2xl font-bold">
               {product.name}
             </h1>
             {product.packageSize && (
-              <p className="mt-1 text-sm text-[#18221B]/60">{product.packageSize}</p>
+              <p className="mt-1 text-sm text-[#0E3B24]/60">{product.packageSize}</p>
             )}
             <p className="mt-3 text-2xl font-bold">{formatZar(product.priceCents)}</p>
             <Link
@@ -76,10 +76,10 @@ export default async function ProductDetailPage({
             >
               {product.merchant.name}
             </Link>
-            <p className="mt-4 text-sm leading-relaxed text-[#18221B]/70">
+            <p className="mt-4 text-sm leading-relaxed text-[#0E3B24]/70">
               {product.description}
             </p>
-            <p className="mt-3 text-xs text-[#18221B]/45">
+            <p className="mt-3 text-xs text-[#0E3B24]/45">
               Availability:{" "}
               {product.isAvailable
                 ? typeof product.stockQty === "number"
@@ -97,7 +97,7 @@ export default async function ProductDetailPage({
                 initialQty={basketQtyByProduct[product.id] ?? 0}
               />
             </div>
-            <p className="mt-3 text-xs text-[#18221B]/50">
+            <p className="mt-3 text-xs text-[#0E3B24]/50">
               Baskets are single-merchant for fulfilment simplicity. Mixing shops
               requires clearing your basket first.
             </p>
