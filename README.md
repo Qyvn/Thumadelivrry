@@ -108,3 +108,11 @@ Documented in `.env.example`. Not wired for live traffic yet:
 ## Licence
 
 Private — THUMA project.
+
+## GitHub Pages (static landing site)
+
+The full app needs a Node server + database, so it cannot run on GitHub Pages.
+A static brand/landing site lives in `site/` and is deployed by `.github/workflows/pages.yml`
+to https://qyvn.github.io/Thumadelivrry/. Contact details there are marked `[PLACEHOLDER]` until provided.
+
+Local run of the full app: `DATABASE_URL=file:/abs/path/to/copy-of-data/demo.db npm run build && npm start`
