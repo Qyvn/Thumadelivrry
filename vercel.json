@@ -1,5 +1,6 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
-  "buildCommand": "prisma generate && next build",
-  "installCommand": "npm install"
+  "installCommand": "npm install",
+  "buildCommand": "node scripts/prisma-db.mjs generate && (if [ \"$THUMA_MIGRATE_ON_BUILD\" = \"1\" ]; then node scripts/prisma-db.mjs deploy; fi) && next build"
 }

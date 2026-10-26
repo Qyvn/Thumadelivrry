@@ -2,10 +2,10 @@
   "name": "thuma",
   "version": "0.1.0",
   "private": true,
-  "description": "THUMA — Everything-delivery super app for Cornubia Flats, KZN",
+  "description": "THUMA \u2014 Everything-delivery super app for Cornubia Flats, KZN",
   "scripts": {
     "dev": "next dev --port 3456",
-    "build": "prisma generate && next build",
+    "build": "node scripts/prisma-db.mjs generate && next build",
     "start": "next start --port 3456",
     "lint": "eslint",
     "db:migrate": "prisma migrate dev",
@@ -15,7 +15,13 @@
     "test:unit": "tsx src/lib/pricing.test.ts && tsx src/lib/order-lifecycle.test.ts && tsx src/lib/eligibility.test.ts && tsx src/lib/geo.test.ts",
     "test:e2e": "tsx scripts/e2e-smoke.ts",
     "test:fe": "node scripts/fe-test.mjs",
-    "postinstall": "prisma generate"
+    "postinstall": "node scripts/prisma-db.mjs generate",
+    "db:pg:sync": "node scripts/prisma-db.mjs sync",
+    "db:pg:check": "node scripts/prisma-db.mjs check",
+    "db:deploy": "node scripts/prisma-db.mjs deploy",
+    "db:pg:migrate": "prisma migrate dev --schema prisma/postgres/schema.prisma",
+    "db:pg:seed": "tsx prisma/seed.ts",
+    "test": "node scripts/prisma-db.mjs check && THUMA_USE_TMP_DB=1 npm run test:unit && THUMA_USE_TMP_DB=1 npm run test:e2e"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
