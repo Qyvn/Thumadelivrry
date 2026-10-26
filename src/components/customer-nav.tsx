@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Bell, ChevronDown, MapPin, ShoppingBasket, UserRound } from "lucide-react";
 import { SessionUser } from "@/lib/auth";
@@ -18,7 +19,7 @@ export function CustomerNav({
       <div className="mx-auto flex max-w-5xl items-center gap-2 px-4 py-3">
         <Link href="/" className="shrink-0">
           <span className="font-[family-name:var(--font-display)] text-xl font-bold tracking-tight text-[#0E3B24] sm:text-2xl">
-            <span className="inline-flex items-center gap-2"><img src="/duban-mark.svg" alt="" width={32} height={32} className="h-8 w-8" />Duban</span>
+            <span className="inline-flex items-center gap-2"><Image src="/duban-mark.svg" alt="" width={32} height={32} className="h-8 w-8" priority />Duban</span>
           </span>
         </Link>
 

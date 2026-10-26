@@ -89,7 +89,6 @@ try {
   const milk = page.getByRole("heading", { name: "Fresh Milk 2L" });
   const milkVisible = await milk.isVisible().catch(() => false);
   const priceVisible = await page.getByText(/R\s?\d/).first().isVisible();
-  const addBtn = page.getByRole("button", { name: "Add" }).first();
   if (groceriesHeading && milkVisible && priceVisible) {
     pass("browse-groceries", await shot(page, "04-browse-groceries"));
   } else {
