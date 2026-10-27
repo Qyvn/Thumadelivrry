@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/db";
 import {
   homeSubmitSchema,
+  listingTypeForProperty,
   parseRandToCents,
   uniqueSlug,
 } from "@/lib/onestop";
@@ -29,7 +30,6 @@ export async function submitHomeAction(
   const parsed = homeSubmitSchema.safeParse({
     title: str("title"),
     description: str("description"),
-    listingType: str("listingType"),
     propertyType: str("propertyType"),
     area: str("area"),
     city: str("city") || "Durban",
@@ -43,6 +43,8 @@ export async function submitHomeAction(
     minNights: str("minNights") || undefined,
     checkInFrom: str("checkInFrom"),
     checkOutBy: str("checkOutBy"),
+    hotelRoomTypesNote: str("hotelRoomTypesNote"),
+    websiteUrl: str("websiteUrl"),
     amenities,
     hostName: str("hostName"),
     hostPhone: str("hostPhone"),
@@ -55,21 +57,18 @@ export async function submitHomeAction(
     return { error: "Please fix the highlighted fields", fieldErrors };
   }
   const d = parsed.data;
+  const listingType = listingTypeForProperty(d.propertyType);
   const nightly =
-    d.listingType === "SHORT_STAY"
-      ? parseRandToCents(d.nightlyPriceRand ?? "")
-      : null;
+    listingType === "SHORT_STAY" ? parseRandToCents(d.nightlyPriceRand ?? "") : null;
   const monthly =
-    d.listingType === "LONG_TERM"
-      ? parseRandToCents(d.monthlyPriceRand ?? "")
-      : null;
+    listingType === "LONG_TERM" ? parseRandToCents(d.monthlyPriceRand ?? "") : null;
 
   await prisma.homeListing.create({
     data: {
       title: d.title,
       slug: uniqueSlug(d.title),
       description: d.description,
-      listingType: d.listingType,
+      listingType,
       propertyType: d.propertyType,
       area: d.area,
       city: d.city || "Durban",
@@ -83,6 +82,9 @@ export async function submitHomeAction(
       minNights: d.minNights ?? null,
       checkInFrom: d.checkInFrom || null,
       checkOutBy: d.checkOutBy || null,
+      hotelRoomTypesNote:
+        d.propertyType === "HOTEL" ? d.hotelRoomTypesNote || null : null,
+      websiteUrl: d.propertyType === "HOTEL" ? d.websiteUrl || null : null,
       amenitiesJson: JSON.stringify(d.amenities ?? []),
       photosJson: "[]",
       hostName: d.hostName,
@@ -92,7 +94,7 @@ export async function submitHomeAction(
       status: "PENDING_REVIEW",
     },
   });
-  revalidatePath("/homes");
-  revalidatePath("/admin/homes");
+  revalidatePath("/stays");
+  revalidatePath("/admin/stays");
   return { ok: true };
 }

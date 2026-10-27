@@ -25,10 +25,10 @@ const TABS = [
       p.startsWith("/checkout"),
   },
   {
-    href: "/homes",
-    label: "Homes",
+    href: "/stays",
+    label: "Stays",
     icon: House,
-    match: (p: string) => p.startsWith("/homes"),
+    match: (p: string) => p.startsWith("/stays"),
   },
 ] as const;
 

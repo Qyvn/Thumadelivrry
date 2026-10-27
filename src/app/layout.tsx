@@ -16,14 +16,14 @@ const body = Inter({
 
 export const metadata: Metadata = {
   title: "Duban — Durban. All in one.",
-  description: "Gems. Food. Homes. Around Durban.",
+  description: "Gems. Food. Stays. Around Durban.",
   icons: {
     icon: [{ url: "/duban-mark.png", type: "image/png" }],
     apple: [{ url: "/apple-touch-icon.png" }],
   },
   openGraph: {
     title: "Duban — Durban. All in one.",
-    description: "Gems. Food. Homes.",
+    description: "Gems. Food. Stays.",
     images: [{ url: "/og-image.jpg", width: 1200, height: 630 }],
   },
 };

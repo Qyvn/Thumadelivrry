@@ -1,4 +1,4 @@
-/** Duban one-stop: Hidden Gems + Homes helpers. No invented listings. */
+/** Duban one-stop: Hidden Gems + Stays helpers. No invented listings. */
 
 import { z } from "zod";
 import { slugify } from "@/lib/utils";
@@ -29,13 +29,22 @@ export const HOME_LISTING_TYPES = [
 export type HomeListingType = (typeof HOME_LISTING_TYPES)[number]["code"];
 
 export const HOME_PROPERTY_TYPES = [
-  { code: "APARTMENT", label: "Apartment" },
-  { code: "HOUSE", label: "House" },
-  { code: "STUDIO", label: "Studio" },
-  { code: "ROOM", label: "Private room" },
-  { code: "COTTAGE", label: "Cottage" },
-  { code: "OTHER", label: "Other" },
+  { code: "HOTEL", label: "Hotel" },
+  { code: "GUESTHOUSE", label: "Guesthouse" },
+  { code: "BNB", label: "B&B" },
+  { code: "HOLIDAY_HOME", label: "Holiday home" },
+  { code: "MONTHLY_RENTAL", label: "Monthly rental" },
 ] as const;
+export type HomePropertyType = (typeof HOME_PROPERTY_TYPES)[number]["code"];
+
+/** Derive SHORT_STAY vs LONG_TERM from the stay property type. */
+export function listingTypeForProperty(propertyType: string): HomeListingType {
+  return propertyType === "MONTHLY_RENTAL" ? "LONG_TERM" : "SHORT_STAY";
+}
+
+export function isHotelProperty(propertyType: string): boolean {
+  return propertyType === "HOTEL";
+}
 
 export const COMMON_AMENITIES = [
   "Wifi",
@@ -96,14 +105,12 @@ export const homeSubmitSchema = z
   .object({
     title: z.string().trim().min(5).max(140),
     description: z.string().trim().min(40).max(4000),
-    listingType: z.enum(["SHORT_STAY", "LONG_TERM"]),
     propertyType: z.enum([
-      "APARTMENT",
-      "HOUSE",
-      "STUDIO",
-      "ROOM",
-      "COTTAGE",
-      "OTHER",
+      "HOTEL",
+      "GUESTHOUSE",
+      "BNB",
+      "HOLIDAY_HOME",
+      "MONTHLY_RENTAL",
     ]),
     area: z.string().trim().min(2).max(80),
     city: z.string().trim().min(2).max(80).default("Durban"),
@@ -117,6 +124,14 @@ export const homeSubmitSchema = z
     minNights: z.coerce.number().int().min(1).max(90).optional().or(z.nan()).transform((v) => (Number.isNaN(v) ? undefined : v)),
     checkInFrom: z.string().trim().max(10).optional().or(z.literal("")),
     checkOutBy: z.string().trim().max(10).optional().or(z.literal("")),
+    hotelRoomTypesNote: z.string().trim().max(800).optional().or(z.literal("")),
+    websiteUrl: z
+      .string()
+      .trim()
+      .url()
+      .max(300)
+      .optional()
+      .or(z.literal("")),
     amenities: z.array(z.string()).max(40).optional(),
     hostName: z.string().trim().min(2).max(120),
     hostPhone: phoneOk,
@@ -124,7 +139,8 @@ export const homeSubmitSchema = z
     hostBio: z.string().trim().max(800).optional().or(z.literal("")),
   })
   .superRefine((data, ctx) => {
-    if (data.listingType === "SHORT_STAY") {
+    const listingType = listingTypeForProperty(data.propertyType);
+    if (listingType === "SHORT_STAY") {
       const n = parseRandToCents(data.nightlyPriceRand ?? "");
       if (n == null || n < 10000) {
         ctx.addIssue({
@@ -133,7 +149,7 @@ export const homeSubmitSchema = z
           message: "Nightly price required (min R100)",
         });
       }
-      if (!data.maxGuests) {
+      if (!data.maxGuests && data.propertyType !== "HOTEL") {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           path: ["maxGuests"],
@@ -149,6 +165,13 @@ export const homeSubmitSchema = z
           message: "Monthly rent required (min R1 000)",
         });
       }
+    }
+    if (data.propertyType === "HOTEL" && !(data.hotelRoomTypesNote || "").trim()) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["hotelRoomTypesNote"],
+        message: "Add a short note about room types",
+      });
     }
   });
 

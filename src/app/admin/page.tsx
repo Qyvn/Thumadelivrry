@@ -108,8 +108,8 @@ export default async function AdminDashboardPage() {
             <Link href="/admin/gems" className="text-sm text-[#FFB627]">
               Gems
             </Link>
-            <Link href="/admin/homes" className="text-sm text-[#FFB627]">
-              Homes
+            <Link href="/admin/stays" className="text-sm text-[#FFB627]">
+              Stays
             </Link>
             <Link href="/admin/merchants" className="text-sm text-[#FFB627]">
               Merchants
@@ -280,7 +280,7 @@ export default async function AdminDashboardPage() {
             </ul>
             <div className="mt-4 flex flex-wrap gap-4 text-sm font-semibold underline">
               <Link href="/admin/gems">Hidden Gems review</Link>
-              <Link href="/admin/homes">Homes review</Link>
+              <Link href="/admin/stays">Stays review</Link>
               <Link href="/admin/shops">Shop backlog (names, menus, stock)</Link>
               <Link href="/admin/orders">Monitor &amp; dispatch orders</Link>
             </div>

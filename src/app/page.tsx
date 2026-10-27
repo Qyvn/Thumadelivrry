@@ -38,7 +38,7 @@ export default async function HomePage() {
             All in one.
           </h1>
           <p className="mt-4 text-[15px] text-[var(--muted)]">
-            Gems. Food. Homes.
+            Gems. Food. Stays.
           </p>
           <Link
             href="/gems"
@@ -64,9 +64,9 @@ export default async function HomePage() {
             }
           />
           <Door
-            href="/homes"
-            title="Homes"
-            meta={homeCount === 0 ? "List yours" : `${homeCount} listings`}
+            href="/stays"
+            title="Stays"
+            meta={homeCount === 0 ? "List yours" : `${homeCount} live`}
           />
         </section>
 

@@ -26,7 +26,7 @@ const d = { width: 1280, height: 800 };
 await shot(BASE, "simple-home-mobile.png", m);
 await shot(`${BASE}/gems`, "simple-gems-mobile.png", m);
 await shot(`${BASE}/food`, "simple-food-mobile.png", m);
-await shot(`${BASE}/homes`, "simple-homes-mobile.png", m);
+await shot(`${BASE}/stays`, "simple-homes-mobile.png", m);
 await shot(SITE, "simple-site-mobile.png", m);
 await shot(SITE, "simple-site-desktop.png", d);
 await shot(BASE, "simple-home-desktop.png", d);

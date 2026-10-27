@@ -11,7 +11,7 @@ export async function reviewHomeAction(formData: FormData) {
   const decision = String(formData.get("decision") ?? "");
   const reviewNotes = String(formData.get("reviewNotes") ?? "").trim() || null;
   if (!id || !["APPROVED", "REJECTED", "SUSPENDED"].includes(decision)) {
-    redirect("/admin/homes?error=Invalid+review");
+    redirect("/admin/stays?error=Invalid+review");
   }
   await prisma.homeListing.update({
     where: { id },
@@ -22,7 +22,7 @@ export async function reviewHomeAction(formData: FormData) {
       reviewedById: user.id,
     },
   });
-  revalidatePath("/homes");
-  revalidatePath("/admin/homes");
-  redirect(`/admin/homes?saved=${decision}`);
+  revalidatePath("/stays");
+  revalidatePath("/admin/stays");
+  redirect(`/admin/stays?saved=${decision}`);
 }

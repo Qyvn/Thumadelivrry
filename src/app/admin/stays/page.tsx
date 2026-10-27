@@ -4,7 +4,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import {
-  listingTypeLabel,
   parseAmenitiesJson,
   propertyTypeLabel,
 } from "@/lib/onestop";
@@ -21,7 +20,7 @@ const fmt = (d: Date) =>
     year: "numeric",
   });
 
-export default async function AdminHomesPage({
+export default async function AdminStaysPage({
   searchParams,
 }: {
   searchParams: Promise<{ error?: string; saved?: string }>;
@@ -41,17 +40,17 @@ export default async function AdminHomesPage({
   return (
     <main className="mx-auto max-w-6xl px-4 py-8 text-[#0E3B24]">
       <Link href="/admin" className="text-sm underline">← Admin dashboard</Link>
-      <h1 className="mt-3 font-[family-name:var(--font-display)] text-3xl font-bold">Homes</h1>
+      <h1 className="mt-3 font-[family-name:var(--font-display)] text-3xl font-bold">Stays</h1>
       <p className="mt-1 text-sm text-[#0E3B24]/65">
-        Approve landlord submissions only. Short stays and long-term rentals — enquiry-only, no
-        payments. Never invent listings, prices or reviews.
+        Approve stay submissions only — enquiry-only, no payments. Never invent listings,
+        prices or reviews.
       </p>
       {error && <p className="mt-4 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-800">{error}</p>}
       {saved && <p className="mt-4 rounded-xl bg-green-50 px-4 py-3 text-sm text-green-800">Saved: {saved}</p>}
 
       <section className="mt-6">
         <h2 className="text-xl font-bold">Review queue ({pending.length})</h2>
-        {pending.length === 0 && <p className="mt-2 text-sm text-[#0E3B24]/65">No homes waiting.</p>}
+        {pending.length === 0 && <p className="mt-2 text-sm text-[#0E3B24]/65">No stays waiting.</p>}
         <div className="mt-3 grid gap-4 lg:grid-cols-2">
           {pending.map((h) => {
             const amenities = parseAmenitiesJson(h.amenitiesJson);
@@ -65,8 +64,7 @@ export default async function AdminHomesPage({
               <article key={h.id} className="rounded-2xl bg-white p-5 text-sm">
                 <p className="text-base font-semibold">{h.title}</p>
                 <p className="text-[#0E3B24]/60">
-                  {listingTypeLabel(h.listingType)} · {propertyTypeLabel(h.propertyType)} · {h.area} ·{" "}
-                  {fmt(h.createdAt)}
+                  {propertyTypeLabel(h.propertyType)} · {h.area} · {fmt(h.createdAt)}
                 </p>
                 <p className="mt-1 font-bold">{price}</p>
                 <p className="mt-1 text-xs">
@@ -75,6 +73,17 @@ export default async function AdminHomesPage({
                   {h.minNights ? ` · min ${h.minNights} nights` : ""}
                 </p>
                 <p className="mt-2 whitespace-pre-wrap line-clamp-6">{h.description}</p>
+                {h.propertyType === "HOTEL" && h.hotelRoomTypesNote && (
+                  <p className="mt-2 text-xs"><span className="font-semibold">Rooms:</span> {h.hotelRoomTypesNote}</p>
+                )}
+                {h.propertyType === "HOTEL" && h.websiteUrl && (
+                  <p className="mt-1 text-xs">
+                    Website:{" "}
+                    <a href={h.websiteUrl} target="_blank" rel="noreferrer" className="underline">
+                      {h.websiteUrl}
+                    </a>
+                  </p>
+                )}
                 {amenities.length > 0 && (
                   <p className="mt-2 text-xs">Amenities: {amenities.join(", ")}</p>
                 )}
@@ -103,8 +112,8 @@ export default async function AdminHomesPage({
           {approved.map((h) => (
             <li key={h.id} className="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-white px-4 py-3">
               <span>
-                <Link href={`/homes/${h.slug}`} className="font-semibold underline">{h.title}</Link>
-                <span className="text-[#0E3B24]/55"> · {h.area} · {h.listingType}</span>
+                <Link href={`/stays/${h.slug}`} className="font-semibold underline">{h.title}</Link>
+                <span className="text-[#0E3B24]/55"> · {h.area} · {propertyTypeLabel(h.propertyType)}</span>
               </span>
               <form action={reviewHomeAction}>
                 <input type="hidden" name="id" value={h.id} />

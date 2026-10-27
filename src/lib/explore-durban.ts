@@ -184,8 +184,8 @@ export const WHATS_ON: WhatsOnItem[] = [
 export const DUBAN_ADS = [
   {
     id: "list-home",
-    text: "List your home",
-    href: "/homes/list",
+    text: "List your stay",
+    href: "/stays/list",
   },
   {
     id: "shop",

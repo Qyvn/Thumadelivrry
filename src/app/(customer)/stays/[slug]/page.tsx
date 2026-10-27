@@ -6,7 +6,6 @@ import { prisma } from "@/lib/db";
 import {
   enquiryWhatsAppUrl,
   homeEnquiryMessage,
-  listingTypeLabel,
   parseAmenitiesJson,
   parsePhotosJson,
   propertyTypeLabel,
@@ -44,10 +43,9 @@ export default async function HomeDetailPage({
   return (
     <AppShell user={user} basketCount={basketCount} locationLabel={locationLabel}>
       <main className="mx-auto w-full max-w-3xl flex-1 px-4 pb-16 pt-5">
-        <Link href="/homes" className="text-sm underline">← Homes</Link>
-        <p className="mt-4 text-[11px] font-semibold uppercase tracking-wide text-[#0E3B24]/45">
-          {listingTypeLabel(listing.listingType)} · {propertyTypeLabel(listing.propertyType)} ·{" "}
-          {listing.area}, {listing.city}
+        <Link href="/stays" className="text-sm underline">← Stays</Link>
+        <p className="mt-4 text-[11px] font-medium tracking-wide text-[var(--muted)]">
+          {propertyTypeLabel(listing.propertyType)} · {listing.area}, {listing.city}
         </p>
         <h1 className="mt-1 font-[family-name:var(--font-display)] text-3xl font-bold">
           {listing.title}
@@ -76,6 +74,27 @@ export default async function HomeDetailPage({
         <p className="mt-6 whitespace-pre-wrap text-sm leading-relaxed text-[#0E3B24]/80">
           {listing.description}
         </p>
+
+        {listing.propertyType === "HOTEL" && (listing.hotelRoomTypesNote || listing.websiteUrl) && (
+          <section className="mt-6 rounded-2xl border border-[var(--line)] bg-[var(--card)] p-5">
+            <h2 className="font-semibold">Hotel details</h2>
+            {listing.hotelRoomTypesNote && (
+              <p className="mt-2 whitespace-pre-wrap text-sm text-[var(--muted)]">
+                {listing.hotelRoomTypesNote}
+              </p>
+            )}
+            {listing.websiteUrl && (
+              <a
+                href={listing.websiteUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-3 inline-block text-sm font-medium underline underline-offset-4"
+              >
+                Visit website
+              </a>
+            )}
+          </section>
+        )}
 
         {listing.listingType === "SHORT_STAY" && (
           <dl className="mt-6 grid grid-cols-2 gap-3 rounded-2xl bg-white p-4 text-sm">

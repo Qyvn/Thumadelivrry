@@ -44,11 +44,11 @@ try {
   const hasHeadline = await page.getByRole("heading", { name: /Durban\.?\s*All in one/i }).isVisible();
   const hasGems = await page.getByRole("link", { name: /^Gems/i }).first().isVisible();
   const hasFood = await page.getByRole("link", { name: /^Food/i }).first().isVisible();
-  const hasHomes = await page.getByRole("link", { name: /^Homes/i }).first().isVisible();
-  if (hasBrand && hasHeadline && hasGems && hasFood && hasHomes) {
+  const hasStays = await page.getByRole("link", { name: /^Stays/i }).first().isVisible();
+  if (hasBrand && hasHeadline && hasGems && hasFood && hasStays) {
     pass("home-hero", await shot(page, "01-home"));
   } else {
-    fail("home-hero", `brand=${hasBrand} headline=${hasHeadline} gems=${hasGems} food=${hasFood} homes=${hasHomes}`);
+    fail("home-hero", `brand=${hasBrand} headline=${hasHeadline} gems=${hasGems} food=${hasFood} stays=${hasStays}`);
   }
 
   // Food & Shops still has nearest stores
@@ -63,10 +63,10 @@ try {
   if (gemsEmpty) pass("gems-empty-state", await shot(page, "02b-gems"));
   else fail("gems-empty-state", "missing empty state");
 
-  await page.goto(`${BASE}/homes`, { waitUntil: "networkidle" });
-  const homesEmpty = await page.getByText(/Listings coming soon/i).isVisible();
-  if (homesEmpty) pass("homes-empty-state", await shot(page, "02c-homes"));
-  else fail("homes-empty-state", "missing empty state");
+  await page.goto(`${BASE}/stays`, { waitUntil: "networkidle" });
+  const staysEmpty = await page.getByText(/Stays coming soon/i).isVisible();
+  if (staysEmpty) pass("stays-empty-state", await shot(page, "02c-stays"));
+  else fail("stays-empty-state", "missing empty state");
 
   // 2. Login
   await page.goto(`${BASE}/login`, { waitUntil: "networkidle" });

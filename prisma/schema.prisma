@@ -608,17 +608,17 @@ model HiddenGem {
   @@index([area])
 }
 
-// --- Duban Homes: short stays (nightly) + long-term rentals (monthly) ---
+// --- Duban Stays: hotels, guesthouses, B&Bs, holiday homes, monthly rentals ---
 // Enquiry-only via WhatsApp — no payments/deposits on platform.
-// Inspired by stay marketplaces but original Duban UI (no Airbnb branding/design copy).
 model HomeListing {
   id                String   @id @default(cuid())
   title             String
   slug              String   @unique
   description       String
-  // SHORT_STAY (nightly) | LONG_TERM (monthly)
+  // SHORT_STAY (nightly) | LONG_TERM (monthly) — derived from propertyType
   listingType       String
-  propertyType      String   // APARTMENT | HOUSE | STUDIO | ROOM | COTTAGE | OTHER
+  // HOTEL | GUESTHOUSE | BNB | HOLIDAY_HOME | MONTHLY_RENTAL
+  propertyType      String
   area              String
   city              String   @default("Durban")
   addressHint       String?  // public approximate location only
@@ -635,6 +635,9 @@ model HomeListing {
   minNights         Int?
   checkInFrom       String?  // "14:00"
   checkOutBy        String?  // "10:00"
+  // Hotel-only extras
+  hotelRoomTypesNote String?
+  websiteUrl         String?
   // JSON string arrays
   amenitiesJson     String?  // ["Wifi","Parking","Pool"]
   photosJson        String?  // ["data:..." or "/uploads/..."] — empty until host uploads
@@ -653,6 +656,7 @@ model HomeListing {
   updatedAt         DateTime @updatedAt
 
   @@index([status, listingType])
+  @@index([status, propertyType])
   @@index([area])
   @@index([bedrooms])
   @@index([monthlyPriceCents])
