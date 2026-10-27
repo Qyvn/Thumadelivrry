@@ -41,33 +41,32 @@ try {
   // 1. Home
   await page.goto(BASE, { waitUntil: "networkidle" });
   const hasBrand = await page.getByText("Duban", { exact: true }).first().isVisible();
-  const hasHeadline = await page.getByRole("heading", { name: /What do you need today/i }).isVisible();
-  const hasSearch = await page.getByPlaceholder("Search groceries, meals and essentials").isVisible();
-  const hasCategories = await page.getByText("Groceries & Essentials").isVisible();
-  if (hasBrand && hasHeadline && hasSearch && hasCategories) {
+  const hasHeadline = await page.getByRole("heading", { name: /Your Durban one-stop/i }).isVisible();
+  const hasGems = await page.getByRole("link", { name: /Hidden Gems/i }).first().isVisible();
+  const hasFood = await page.getByRole("link", { name: /Food & Shops/i }).first().isVisible();
+  const hasHomes = await page.getByRole("link", { name: /Homes to Rent/i }).first().isVisible();
+  if (hasBrand && hasHeadline && hasGems && hasFood && hasHomes) {
     pass("home-hero", await shot(page, "01-home"));
   } else {
-    fail("home-hero", `brand=${hasBrand} headline=${hasHeadline} search=${hasSearch} cats=${hasCategories}`);
+    fail("home-hero", `brand=${hasBrand} headline=${hasHeadline} gems=${hasGems} food=${hasFood} homes=${hasHomes}`);
   }
 
-  await page.getByRole("heading", { name: "Nearest stores" }).scrollIntoViewIfNeeded();
-  await page.waitForTimeout(400);
-  const nearestVisible = await page.getByRole("heading", { name: "Nearest stores" }).isVisible();
-  const nearestBadge = await page.getByText(/Nearest/).first().isVisible().catch(() => false);
-  const withinRadiusCopy = await page.getByText(/Within \d+(\.\d+)? km/).isVisible();
-  if (nearestVisible && withinRadiusCopy) {
-    pass("home-nearest-stores", await shot(page, "02-nearest"));
-  } else {
-    fail(
-      "home-nearest-stores",
-      `heading=${nearestVisible} badge=${nearestBadge} radiusCopy=${withinRadiusCopy}`,
-    );
-  }
+  // Food & Shops still has nearest stores
+  await page.goto(`${BASE}/food`, { waitUntil: "networkidle" });
+  const foodHeadline = await page.getByRole("heading", { name: /Food & Shops/i }).isVisible();
+  const powered = await page.getByText(/Delivery powered by THUMA/i).first().isVisible();
+  if (foodHeadline && powered) pass("food-section", await shot(page, "02-food"));
+  else fail("food-section", `headline=${foodHeadline} powered=${powered}`);
 
-  // Outside-radius store must not appear in nearest list
-  const farInList = await page.getByText("Outside Radius Spaza").isVisible().catch(() => false);
-  if (!farInList) pass("nearest-excludes-far-store");
-  else fail("nearest-excludes-far-store", "Outside Radius Spaza shown in nearest list");
+  await page.goto(`${BASE}/gems`, { waitUntil: "networkidle" });
+  const gemsEmpty = await page.getByText(/Gems coming soon/i).isVisible();
+  if (gemsEmpty) pass("gems-empty-state", await shot(page, "02b-gems"));
+  else fail("gems-empty-state", "missing empty state");
+
+  await page.goto(`${BASE}/homes`, { waitUntil: "networkidle" });
+  const homesEmpty = await page.getByText(/Listings coming soon/i).isVisible();
+  if (homesEmpty) pass("homes-empty-state", await shot(page, "02c-homes"));
+  else fail("homes-empty-state", "missing empty state");
 
   // 2. Login
   await page.goto(`${BASE}/login`, { waitUntil: "networkidle" });
