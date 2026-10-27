@@ -1,8 +1,8 @@
 export function DevBanner() {
   return (
-    <div className="bg-[#0E3B24] px-4 py-2 text-center text-xs text-[#FFB627]">
-      Development mode — sample merchants and products are not live partners.
-      Delivery is not confirmed for Greater Durban until launch.
+    <div className="border-b border-[var(--line)] bg-[var(--paper)] px-4 py-2 text-center text-[11px] font-medium text-[var(--muted)]">
+      Development mode — sample merchants are not live partners. Delivery not
+      confirmed until launch.
     </div>
   );
 }

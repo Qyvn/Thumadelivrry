@@ -41,7 +41,7 @@ try {
   // 1. Home
   await page.goto(BASE, { waitUntil: "networkidle" });
   const hasBrand = await page.getByText("Duban", { exact: true }).first().isVisible();
-  const hasHeadline = await page.getByRole("heading", { name: /Your Durban one-stop/i }).isVisible();
+  const hasHeadline = await page.getByRole("heading", { name: /Durban\.?\s*All in one/i }).isVisible();
   const hasGems = await page.getByRole("link", { name: /Hidden Gems/i }).first().isVisible();
   const hasFood = await page.getByRole("link", { name: /Food & Shops/i }).first().isVisible();
   const hasHomes = await page.getByRole("link", { name: /Homes to Rent/i }).first().isVisible();

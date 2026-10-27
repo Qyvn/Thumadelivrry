@@ -18,7 +18,7 @@ export function AppShell({
   hideTaskbar?: boolean;
 }) {
   return (
-    <div className="flex min-h-full flex-col bg-[#F7F3EA]">
+    <div className="flex min-h-full flex-col bg-[var(--paper)] text-[var(--ink)]">
       <DevBanner />
       <AdStrip />
       <CustomerNav user={user} basketCount={basketCount} locationLabel={locationLabel} />

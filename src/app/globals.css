@@ -1,14 +1,37 @@
 @import "tailwindcss";
 
 :root {
-  --thuma-charcoal: #0E3B24;
-  --thuma-lime: #FFB627;
-  --thuma-cream: #F7F3EA;
-  --thuma-cream-deep: #efe6d2;
-  --thuma-ink: #0E3B24;
-  --thuma-muted: rgba(14,59,36, 0.62);
-  --background: var(--thuma-cream);
-  --foreground: var(--thuma-ink);
+  /* Chris Do–inspired base: near-black + off-white */
+  --ink: #0a0a0a;
+  --paper: #fafaf8;
+  --muted: #5c5c5c;
+  --line: #e6e6e1;
+  --card: #ffffff;
+  /* Duban accents — use sparingly */
+  --green: #0e3b24;
+  --sunset: #f26b1d;
+  --ocean: #1e88c8;
+  --sun: #ffb627;
+  /* Tokens */
+  --radius: 16px;
+  --radius-sm: 10px;
+  --radius-lg: 24px;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-8: 3rem;
+  --focus: #1e88c8;
+
+  --thuma-charcoal: var(--green);
+  --thuma-lime: var(--sun);
+  --thuma-cream: var(--paper);
+  --thuma-ink: var(--ink);
+  --thuma-muted: var(--muted);
+  --background: var(--paper);
+  --foreground: var(--ink);
 }
 
 @theme inline {
@@ -30,21 +53,52 @@ html {
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--paper);
+  color: var(--ink);
   font-family: var(--font-body), system-ui, sans-serif;
   min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
 }
 
 ::selection {
-  background: var(--thuma-lime);
-  color: var(--thuma-charcoal);
+  background: var(--sun);
+  color: var(--ink);
 }
 
-@keyframes thuma-rise {
+/* AA-friendly focus */
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.display {
+  font-family: var(--font-display), system-ui, sans-serif;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+  font-weight: 800;
+}
+
+.eyebrow {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+@keyframes duban-rise {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(16px);
   }
   to {
     opacity: 1;
@@ -52,7 +106,7 @@ body {
   }
 }
 
-@keyframes thuma-fade {
+@keyframes duban-fade {
   from {
     opacity: 0;
   }
@@ -61,43 +115,33 @@ body {
   }
 }
 
-@keyframes thuma-pulse-soft {
-  0%,
-  100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.02);
-  }
-}
-
 .animate-rise {
-  animation: thuma-rise 0.55s ease-out both;
+  animation: duban-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .animate-fade {
-  animation: thuma-fade 0.7s ease-out both;
+  animation: duban-fade 0.7s ease-out both;
 }
 
-.animate-pulse-soft {
-  animation: thuma-pulse-soft 3.2s ease-in-out infinite;
+.reveal {
+  animation: duban-rise 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-.thuma-hero-bg {
-  background:
-    radial-gradient(
-      ellipse 80% 60% at 80% 20%,
-      rgba(255, 182, 39, 0.35),
-      transparent 55%
-    ),
-    radial-gradient(
-      ellipse 70% 50% at 10% 90%,
-      rgba(14,59,36, 0.08),
-      transparent 50%
-    ),
-    linear-gradient(165deg, #f7f3ea 0%, #F7F3EA 45%, #ebe6d8 100%);
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .animate-rise,
+  .animate-fade,
+  .reveal {
+    animation: none !important;
+  }
 }
 
-.thuma-grain {
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+.scroll-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scroll-hide::-webkit-scrollbar {
+  display: none;
 }
