@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { CustomerNav } from "@/components/customer-nav";
-import { DevBanner } from "@/components/dev-banner";
+import { AppShell } from "@/components/app-shell";
 import { getCustomerShell } from "@/lib/customer-context";
 import { prisma } from "@/lib/db";
 import {
@@ -46,9 +45,7 @@ export default async function GemsPage({
   });
 
   return (
-    <div className="flex min-h-full flex-col bg-[#F7F3EA]">
-      <DevBanner />
-      <CustomerNav user={user} basketCount={basketCount} locationLabel={locationLabel} />
+    <AppShell user={user} basketCount={basketCount} locationLabel={locationLabel}>
       <main className="mx-auto w-full max-w-5xl flex-1 px-4 pb-16 pt-5">
         <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#0E3B24]/40">
           Duban · Hidden Gems
@@ -149,6 +146,6 @@ export default async function GemsPage({
           </ul>
         )}
       </main>
-    </div>
+    </AppShell>
   );
 }

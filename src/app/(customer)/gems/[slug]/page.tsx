@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CustomerNav } from "@/components/customer-nav";
-import { DevBanner } from "@/components/dev-banner";
+import { AppShell } from "@/components/app-shell";
 import { getCustomerShell } from "@/lib/customer-context";
 import { prisma } from "@/lib/db";
 import {
@@ -26,9 +25,7 @@ export default async function GemDetailPage({
   const { user, basketCount, locationLabel } = await getCustomerShell();
 
   return (
-    <div className="flex min-h-full flex-col bg-[#F7F3EA]">
-      <DevBanner />
-      <CustomerNav user={user} basketCount={basketCount} locationLabel={locationLabel} />
+    <AppShell user={user} basketCount={basketCount} locationLabel={locationLabel}>
       <main className="mx-auto w-full max-w-3xl flex-1 px-4 pb-16 pt-5">
         <Link href="/gems" className="text-sm underline">
           ← Hidden Gems
@@ -66,6 +63,6 @@ export default async function GemDetailPage({
           </a>
         </div>
       </main>
-    </div>
+    </AppShell>
   );
 }

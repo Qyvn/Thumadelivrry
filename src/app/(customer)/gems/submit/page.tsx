@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { CustomerNav } from "@/components/customer-nav";
-import { DevBanner } from "@/components/dev-banner";
+import { AppShell } from "@/components/app-shell";
 import { getCustomerShell } from "@/lib/customer-context";
 import { SubmitGemForm } from "./submit-form";
 
@@ -9,9 +8,7 @@ export const dynamic = "force-dynamic";
 export default async function SubmitGemPage() {
   const { user, basketCount, locationLabel } = await getCustomerShell();
   return (
-    <div className="flex min-h-full flex-col bg-[#F7F3EA]">
-      <DevBanner />
-      <CustomerNav user={user} basketCount={basketCount} locationLabel={locationLabel} />
+    <AppShell user={user} basketCount={basketCount} locationLabel={locationLabel}>
       <main className="mx-auto w-full max-w-xl flex-1 px-4 pb-16 pt-5">
         <Link href="/gems" className="text-sm underline">← Hidden Gems</Link>
         <h1 className="mt-3 font-[family-name:var(--font-display)] text-3xl font-bold">
@@ -24,6 +21,6 @@ export default async function SubmitGemPage() {
           <SubmitGemForm />
         </div>
       </main>
-    </div>
+    </AppShell>
   );
 }

@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CustomerNav } from "@/components/customer-nav";
-import { DevBanner } from "@/components/dev-banner";
+import { AppShell } from "@/components/app-shell";
 import { getCustomerShell } from "@/lib/customer-context";
 import { prisma } from "@/lib/db";
 import {
@@ -43,9 +42,7 @@ export default async function HomeDetailPage({
         : "Price on enquiry";
 
   return (
-    <div className="flex min-h-full flex-col bg-[#F7F3EA]">
-      <DevBanner />
-      <CustomerNav user={user} basketCount={basketCount} locationLabel={locationLabel} />
+    <AppShell user={user} basketCount={basketCount} locationLabel={locationLabel}>
       <main className="mx-auto w-full max-w-3xl flex-1 px-4 pb-16 pt-5">
         <Link href="/homes" className="text-sm underline">← Homes</Link>
         <p className="mt-4 text-[11px] font-semibold uppercase tracking-wide text-[#0E3B24]/45">
@@ -170,6 +167,6 @@ export default async function HomeDetailPage({
           </a>
         </div>
       </main>
-    </div>
+    </AppShell>
   );
 }

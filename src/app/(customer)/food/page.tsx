@@ -8,8 +8,7 @@ import {
   Store,
   UtensilsCrossed,
 } from "lucide-react";
-import { CustomerNav } from "@/components/customer-nav";
-import { DevBanner } from "@/components/dev-banner";
+import { AppShell } from "@/components/app-shell";
 import { ProductCard } from "@/components/product-card";
 import { getCustomerShell } from "@/lib/customer-context";
 import { BROWSE_CATEGORIES } from "@/lib/browse";
@@ -70,9 +69,7 @@ export default async function FoodShopsPage() {
   );
 
   return (
-    <div className="flex min-h-full flex-col bg-[#F7F3EA]">
-      <DevBanner />
-      <CustomerNav user={user} basketCount={basketCount} locationLabel={locationLabel} />
+    <AppShell user={user} basketCount={basketCount} locationLabel={locationLabel}>
       <main className="mx-auto w-full max-w-5xl flex-1 px-4 pb-16 pt-5">
         <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#0E3B24]/40">
           Delivery powered by THUMA
@@ -159,6 +156,6 @@ export default async function FoodShopsPage() {
           )}
         </section>
       </main>
-    </div>
+    </AppShell>
   );
 }

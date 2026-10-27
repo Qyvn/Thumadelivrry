@@ -1,9 +1,9 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, Gem, Home, ShoppingBasket } from "lucide-react";
-import { CustomerNav } from "@/components/customer-nav";
-import { DevBanner } from "@/components/dev-banner";
+import { ArrowRight, Gem, House, ShoppingBasket } from "lucide-react";
+import { AppShell } from "@/components/app-shell";
 import { getCustomerShell } from "@/lib/customer-context";
+import { EXPLORE_PICKS, WHATS_ON } from "@/lib/explore-durban";
 import { prisma } from "@/lib/db";
 import { WHATSAPP_DISPLAY, WHATSAPP_URL } from "@/lib/onestop";
 
@@ -22,80 +22,151 @@ export default async function HomePage() {
     ? `Hi ${user.fullName.split(" ")[0]}`
     : "Welcome to Duban";
 
-  return (
-    <div className="flex min-h-full flex-col bg-[#F7F3EA]">
-      <DevBanner />
-      <CustomerNav
-        user={user}
-        basketCount={basketCount}
-        locationLabel={locationLabel}
-      />
+  const upcoming = WHATS_ON.filter((w) => w.status === "upcoming");
 
-      <main className="mx-auto w-full max-w-5xl flex-1 px-4 pb-16 pt-5">
-        <section className="animate-rise flex flex-col items-start gap-4 sm:flex-row sm:items-center">
+  return (
+    <AppShell user={user} basketCount={basketCount} locationLabel={locationLabel}>
+      <main className="mx-auto w-full max-w-lg px-3 pb-8 pt-4 sm:max-w-5xl sm:px-4">
+        <section className="flex items-center gap-3">
           <Image
             src="/duban-logo.jpg"
             alt="Duban"
-            width={96}
-            height={96}
-            className="h-20 w-20 rounded-2xl object-cover shadow-sm sm:h-24 sm:w-24"
+            width={72}
+            height={72}
+            className="h-[72px] w-[72px] rounded-2xl object-cover shadow-sm ring-1 ring-[#0E3B24]/10"
             priority
           />
-          <div>
-            <p className="text-sm font-medium text-[#0E3B24]/55">{greeting}</p>
-            <h1 className="mt-1 font-[family-name:var(--font-display)] text-3xl font-bold tracking-tight text-[#0E3B24] sm:text-4xl">
+          <div className="min-w-0">
+            <p className="text-xs font-medium text-[#0E3B24]/55">{greeting}</p>
+            <h1 className="font-[family-name:var(--font-display)] text-2xl font-bold tracking-tight text-[#0E3B24]">
               Your Durban one-stop
             </h1>
-            <p className="mt-2 max-w-md text-sm text-[#0E3B24]/65">
-              Hidden gems, food &amp; shops delivered with THUMA, and homes to rent around Durban.
+            <p className="mt-1 text-xs text-[#0E3B24]/60">
+              Gems · Food &amp; Shops · Homes
             </p>
           </div>
         </section>
 
-        <section className="mt-8 grid gap-4 sm:grid-cols-3">
-          <SectionCard
-            href="/gems"
-            icon={<Gem className="h-5 w-5" />}
-            title="Hidden Gems"
-            body="Local Durban spots — submitted by people, approved by Duban. No invented places."
-            meta={
-              gemCount === 0
-                ? "Coming soon — submit a gem"
-                : `${gemCount} approved spot${gemCount === 1 ? "" : "s"}`
-            }
-          />
-          <SectionCard
-            href="/food"
-            icon={<ShoppingBasket className="h-5 w-5" />}
-            title="Food & Shops"
-            body="Groceries, meals and essentials. Delivery powered by THUMA."
-            meta={
-              merchantCount === 0
-                ? "Merchants onboarding"
-                : `${merchantCount} approved merchant${merchantCount === 1 ? "" : "s"}`
-            }
-            badge="Delivery powered by THUMA"
-          />
-          <SectionCard
-            href="/homes"
-            icon={<Home className="h-5 w-5" />}
-            title="Homes to Rent"
-            body="Short stays and long-term rentals. Enquiry-only via WhatsApp — no payments on Duban."
-            meta={
-              homeCount === 0
-                ? "Listings coming soon — list your home"
-                : `${homeCount} approved listing${homeCount === 1 ? "" : "s"}`
-            }
-          />
+        <section className="mt-5">
+          <div className="flex gap-3 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <QuickTile
+              href="/gems"
+              icon={<Gem className="h-5 w-5" />}
+              title="Hidden Gems"
+              meta={gemCount === 0 ? "Submit a gem" : `${gemCount} live`}
+            />
+            <QuickTile
+              href="/food"
+              icon={<ShoppingBasket className="h-5 w-5" />}
+              title="Food & Shops"
+              meta={merchantCount === 0 ? "THUMA delivery" : `${merchantCount} shops`}
+              badge="THUMA"
+            />
+            <QuickTile
+              href="/homes"
+              icon={<House className="h-5 w-5" />}
+              title="Homes"
+              meta={homeCount === 0 ? "List your home" : `${homeCount} listings`}
+            />
+          </div>
         </section>
 
-        <section className="mt-10 rounded-2xl border border-[#0E3B24]/8 bg-white p-5">
-          <h2 className="font-[family-name:var(--font-display)] text-xl font-bold">
+        <section className="mt-8">
+          <div className="flex items-end justify-between gap-2 px-0.5">
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#3DBE5A]">
+                Duban guide picks
+              </p>
+              <h2 className="font-[family-name:var(--font-display)] text-xl font-bold">
+                Explore Durban
+              </h2>
+            </div>
+            <Link href="/gems" className="text-xs font-semibold underline">
+              All gems
+            </Link>
+          </div>
+          <p className="mt-1 text-xs text-[#0E3B24]/55">
+            Real spots with a source link — no invented reviews, prices or ratings. Gradient tiles
+            only (no hotlinked photos).
+          </p>
+          <div className="mt-3 flex gap-3 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {EXPLORE_PICKS.map((p) => (
+              <a
+                key={p.id}
+                href={p.sourceUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="w-[72%] max-w-[280px] shrink-0 snap-start overflow-hidden rounded-3xl bg-white shadow-[0_2px_12px_rgba(14,59,36,0.06)] sm:w-[240px]"
+              >
+                <div
+                  className="flex h-28 items-end p-4 text-white"
+                  style={{ background: p.tile }}
+                >
+                  <span className="rounded-full bg-black/25 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide backdrop-blur">
+                    {p.category}
+                  </span>
+                </div>
+                <div className="p-3.5">
+                  <p className="font-semibold leading-snug">{p.name}</p>
+                  <p className="mt-0.5 text-[11px] font-medium text-[#0E3B24]/45">{p.area}</p>
+                  <p className="mt-2 line-clamp-2 text-xs text-[#0E3B24]/65">{p.why}</p>
+                  <p className="mt-2 text-[10px] font-semibold text-[#1E88C8]">
+                    Source: {p.sourceLabel} ↗
+                  </p>
+                </div>
+              </a>
+            ))}
+          </div>
+        </section>
+
+        <section className="mt-8">
+          <div className="flex items-end justify-between gap-2">
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#F26B1D]">
+                Verified listings
+              </p>
+              <h2 className="font-[family-name:var(--font-display)] text-xl font-bold">
+                What&apos;s on in Durban
+              </h2>
+            </div>
+          </div>
+          <p className="mt-1 text-xs text-[#0E3B24]/55">
+            From IOL, Daily News, Durban Tourism, Suncoast and public X posts — dates linked to
+            sources. Not ticket sales.
+          </p>
+          <ul className="mt-3 space-y-3">
+            {upcoming.map((e) => (
+              <li key={e.id}>
+                <a
+                  href={e.sourceUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="block rounded-2xl border border-[#0E3B24]/8 bg-white p-4"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <p className="font-semibold leading-snug">{e.title}</p>
+                    <ArrowRight className="mt-0.5 h-4 w-4 shrink-0 opacity-40" />
+                  </div>
+                  <p className="mt-1 text-[11px] font-bold uppercase tracking-wide text-[#F26B1D]">
+                    {e.whenLabel}
+                  </p>
+                  <p className="mt-1 text-xs text-[#0E3B24]/55">{e.area}</p>
+                  <p className="mt-2 text-xs text-[#0E3B24]/70">{e.blurb}</p>
+                  <p className="mt-2 text-[10px] font-semibold text-[#1E88C8]">
+                    {e.sourceLabel} ↗
+                  </p>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section className="mt-8 rounded-3xl bg-[#0E3B24] p-5 text-[#FFB627]">
+          <h2 className="font-[family-name:var(--font-display)] text-lg font-bold">
             Talk to Duban
           </h2>
-          <p className="mt-2 text-sm text-[#0E3B24]/65">
-            Gems and homes enquiries go to WhatsApp {WHATSAPP_DISPLAY}. Food orders use the THUMA
-            checkout in Food &amp; Shops.
+          <p className="mt-2 text-sm text-[#FFB627]/75">
+            Gems &amp; homes enquiries · advertise · partner — WhatsApp {WHATSAPP_DISPLAY}
           </p>
           <a
             href={WHATSAPP_URL}
@@ -103,75 +174,42 @@ export default async function HomePage() {
             target="_blank"
             rel="noreferrer"
           >
-            WhatsApp {WHATSAPP_DISPLAY}
+            Open WhatsApp
           </a>
         </section>
       </main>
-
-      <footer className="border-t border-[#0E3B24]/8 bg-[#0E3B24] px-4 py-8 text-[#FFB627]">
-        <div className="mx-auto flex max-w-5xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-3">
-            <Image
-              src="/duban-mark.png"
-              alt=""
-              width={36}
-              height={36}
-              className="h-9 w-9 rounded-full"
-            />
-            <div>
-              <p className="font-[family-name:var(--font-display)] text-xl font-bold">Duban</p>
-              <p className="text-sm text-[#FFB627]/70">
-                Love Durban · Delivery powered by THUMA · {WHATSAPP_DISPLAY}
-              </p>
-            </div>
-          </div>
-          <div className="flex flex-wrap gap-4 text-sm">
-            <Link href="/gems" className="hover:underline">Gems</Link>
-            <Link href="/food" className="hover:underline">Food</Link>
-            <Link href="/homes" className="hover:underline">Homes</Link>
-            <Link href="/merchant" className="hover:underline">Merchant</Link>
-            <Link href="/admin" className="hover:underline">Admin</Link>
-          </div>
-        </div>
-      </footer>
-    </div>
+    </AppShell>
   );
 }
 
-function SectionCard({
+function QuickTile({
   href,
   icon,
   title,
-  body,
   meta,
   badge,
 }: {
   href: string;
   icon: React.ReactNode;
   title: string;
-  body: string;
   meta: string;
   badge?: string;
 }) {
   return (
     <Link
       href={href}
-      className="group flex flex-col rounded-2xl border border-[#0E3B24]/8 bg-white p-5 transition hover:border-[#0E3B24]/25"
+      className="flex w-[38%] min-w-[132px] shrink-0 flex-col rounded-3xl border border-[#0E3B24]/8 bg-white p-3.5 shadow-[0_1px_4px_rgba(14,59,36,0.04)]"
     >
-      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#FFB627] text-[#0E3B24]">
+      <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#FFB627] text-[#0E3B24]">
         {icon}
       </span>
       {badge && (
-        <span className="mt-3 text-[10px] font-bold uppercase tracking-wide text-[#0E3B24]/45">
+        <span className="mt-2 text-[9px] font-bold uppercase tracking-wide text-[#0E3B24]/40">
           {badge}
         </span>
       )}
-      <span className="mt-2 flex items-center justify-between gap-2">
-        <span className="font-[family-name:var(--font-display)] text-lg font-bold">{title}</span>
-        <ArrowRight className="h-4 w-4 opacity-40 transition group-hover:opacity-100" />
-      </span>
-      <span className="mt-2 flex-1 text-sm text-[#0E3B24]/65">{body}</span>
-      <span className="mt-4 text-xs font-semibold text-[#0E3B24]/50">{meta}</span>
+      <span className="mt-1 text-sm font-bold leading-tight">{title}</span>
+      <span className="mt-1 text-[11px] text-[#0E3B24]/50">{meta}</span>
     </Link>
   );
 }
