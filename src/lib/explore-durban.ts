@@ -184,17 +184,17 @@ export const WHATS_ON: WhatsOnItem[] = [
 export const DUBAN_ADS = [
   {
     id: "list-home",
-    text: "List your home on Duban — short stays & long-term around Durban",
+    text: "List your home",
     href: "/homes/list",
   },
   {
     id: "shop",
-    text: "Get your shop on Duban Delivery — powered by THUMA",
+    text: "List your shop · THUMA",
     href: "/merchant/apply",
   },
   {
     id: "advertise",
-    text: "Advertise here — WhatsApp +27 64 552 7661",
+    text: "Advertise · WhatsApp",
     href: "https://wa.me/27645527661?text=Hi%20Duban%20—%20I%20want%20to%20advertise",
   },
 ] as const;

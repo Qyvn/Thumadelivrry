@@ -73,37 +73,24 @@ export default async function HomesPage({
 
   return (
     <AppShell user={user} basketCount={basketCount} locationLabel={locationLabel}>
-      <main className="mx-auto w-full max-w-5xl flex-1 px-4 pb-16 pt-5">
-        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#0E3B24]/40">
-          Duban · Homes around Durban
+      <main className="mx-auto w-full max-w-md flex-1 px-5 pb-16 pt-8 sm:max-w-xl">
+        <h1 className="display text-4xl text-[var(--ink)]">Homes</h1>
+        <p className="mt-3 max-w-md text-sm text-[var(--muted)]">
+          Short stays &amp; long-term. Enquiry only via WhatsApp {WHATSAPP_DISPLAY}.
         </p>
-        <h1 className="mt-1 font-[family-name:var(--font-display)] text-3xl font-bold">
-          Homes to rent
-        </h1>
-        <p className="mt-2 max-w-2xl text-sm text-[#0E3B24]/65">
-          Short stays and long-term rentals around Durban. Browse real host listings after admin
-          approval. <strong>Enquiries only</strong> via WhatsApp {WHATSAPP_DISPLAY} — Duban does
-          not take payments or deposits.
-        </p>
-        <div className="mt-4 flex flex-wrap gap-3">
+        <div className="mt-5">
           <Link
             href="/homes/list"
-            className="inline-flex h-10 items-center rounded-full bg-[#FFB627] px-4 text-sm font-bold text-[#0E3B24]"
+            className="inline-flex h-11 items-center rounded-full bg-[var(--ink)] px-5 text-sm font-semibold text-[var(--paper)]"
           >
             List your home
           </Link>
-          <Link href="/gems" className="inline-flex h-10 items-center rounded-full border border-[#0E3B24]/15 bg-white px-4 text-sm font-semibold">
-            Hidden Gems
-          </Link>
-          <Link href="/food" className="inline-flex h-10 items-center rounded-full border border-[#0E3B24]/15 bg-white px-4 text-sm font-semibold">
-            Food &amp; Shops
-          </Link>
         </div>
 
-        <form className="mt-6 grid gap-3 rounded-2xl border border-[#0E3B24]/8 bg-white p-4 sm:grid-cols-2 lg:grid-cols-3">
+        <form className="mt-8 grid gap-3 rounded-2xl border border-[var(--line)] bg-[var(--card)] p-4 sm:grid-cols-2">
           <label className="text-xs font-semibold">
             Stay type
-            <select name="type" defaultValue={sp.type ?? ""} className="mt-1 block w-full rounded-xl border border-[#0E3B24]/15 bg-[#F7F3EA] px-3 py-2 text-sm">
+            <select name="type" defaultValue={sp.type ?? ""} className="mt-1 block w-full rounded-xl border border-[var(--line)] bg-[var(--paper)] px-3 py-2 text-sm">
               <option value="">All</option>
               <option value="SHORT_STAY">Short stay (nightly)</option>
               <option value="LONG_TERM">Long-term (monthly)</option>
@@ -111,7 +98,7 @@ export default async function HomesPage({
           </label>
           <label className="text-xs font-semibold">
             Area
-            <input name="area" list="home-areas" defaultValue={sp.area ?? ""} placeholder="e.g. Ballito" className="mt-1 block w-full rounded-xl border border-[#0E3B24]/15 bg-[#F7F3EA] px-3 py-2 text-sm" />
+            <input name="area" list="home-areas" defaultValue={sp.area ?? ""} placeholder="e.g. Ballito" className="mt-1 block w-full rounded-xl border border-[var(--line)] bg-[var(--paper)] px-3 py-2 text-sm" />
             <datalist id="home-areas">
               {areas.map((a) => (
                 <option key={a.area} value={a.area} />
@@ -120,39 +107,38 @@ export default async function HomesPage({
           </label>
           <label className="text-xs font-semibold">
             Min bedrooms
-            <input name="bedrooms" type="number" min={0} max={20} defaultValue={sp.bedrooms ?? ""} className="mt-1 block w-full rounded-xl border border-[#0E3B24]/15 bg-[#F7F3EA] px-3 py-2 text-sm" />
+            <input name="bedrooms" type="number" min={0} max={20} defaultValue={sp.bedrooms ?? ""} className="mt-1 block w-full rounded-xl border border-[var(--line)] bg-[var(--paper)] px-3 py-2 text-sm" />
           </label>
           <label className="text-xs font-semibold">
             Max price (R)
-            <input name="maxPrice" type="number" min={0} step={100} defaultValue={sp.maxPrice ?? ""} placeholder="Nightly or monthly" className="mt-1 block w-full rounded-xl border border-[#0E3B24]/15 bg-[#F7F3EA] px-3 py-2 text-sm" />
+            <input name="maxPrice" type="number" min={0} step={100} defaultValue={sp.maxPrice ?? ""} placeholder="Nightly or monthly" className="mt-1 block w-full rounded-xl border border-[var(--line)] bg-[var(--paper)] px-3 py-2 text-sm" />
           </label>
           <label className="text-xs font-semibold">
             Guests (short stay)
-            <input name="guests" type="number" min={1} max={40} defaultValue={sp.guests ?? ""} className="mt-1 block w-full rounded-xl border border-[#0E3B24]/15 bg-[#F7F3EA] px-3 py-2 text-sm" />
+            <input name="guests" type="number" min={1} max={40} defaultValue={sp.guests ?? ""} className="mt-1 block w-full rounded-xl border border-[var(--line)] bg-[var(--paper)] px-3 py-2 text-sm" />
           </label>
           <label className="text-xs font-semibold">
             Check-in (enquiry)
-            <input name="checkIn" type="date" defaultValue={sp.checkIn ?? ""} className="mt-1 block w-full rounded-xl border border-[#0E3B24]/15 bg-[#F7F3EA] px-3 py-2 text-sm" />
+            <input name="checkIn" type="date" defaultValue={sp.checkIn ?? ""} className="mt-1 block w-full rounded-xl border border-[var(--line)] bg-[var(--paper)] px-3 py-2 text-sm" />
           </label>
           <label className="text-xs font-semibold">
             Check-out (enquiry)
-            <input name="checkOut" type="date" defaultValue={sp.checkOut ?? ""} className="mt-1 block w-full rounded-xl border border-[#0E3B24]/15 bg-[#F7F3EA] px-3 py-2 text-sm" />
+            <input name="checkOut" type="date" defaultValue={sp.checkOut ?? ""} className="mt-1 block w-full rounded-xl border border-[var(--line)] bg-[var(--paper)] px-3 py-2 text-sm" />
           </label>
           <div className="flex items-end">
-            <button type="submit" className="h-10 w-full rounded-xl bg-[#0E3B24] px-4 text-sm font-bold text-[#FFB627]">
+            <button type="submit" className="h-10 w-full rounded-full bg-[var(--ink)] px-4 text-sm font-semibold text-[var(--paper)]">
               Filter
             </button>
           </div>
         </form>
 
         {homes.length === 0 ? (
-          <div className="mt-8 rounded-2xl border border-dashed border-[#0E3B24]/20 bg-white/70 px-5 py-12 text-center">
+          <div className="mt-10 rounded-2xl border border-dashed border-[var(--line)] px-5 py-14 text-center">
             <p className="font-semibold">Listings coming soon — list your home</p>
-            <p className="mt-2 text-sm text-[#0E3B24]/65">
-              No approved homes match these filters yet. Landlords can submit a listing; Duban
-              reviews every entry. We never invent addresses, prices or reviews.
+            <p className="mt-2 text-sm text-[var(--muted)]">
+              Submit a listing — Duban reviews every entry.
             </p>
-            <Link href="/homes/list" className="mt-4 inline-block text-sm font-semibold underline">
+            <Link href="/homes/list" className="mt-4 inline-block text-sm font-medium text-[var(--muted)] underline underline-offset-4">
               List your home
             </Link>
           </div>
@@ -166,8 +152,8 @@ export default async function HomesPage({
                     ? `${formatZar(h.monthlyPriceCents)} / month`
                     : "Price on enquiry";
               return (
-                <li key={h.id} className="rounded-2xl border border-[#0E3B24]/8 bg-white p-5">
-                  <p className="text-[11px] font-semibold uppercase tracking-wide text-[#0E3B24]/45">
+                <li key={h.id} className="rounded-2xl border border-[var(--line)] bg-[var(--card)] p-5">
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--muted)]">
                     {listingTypeLabel(h.listingType)} · {propertyTypeLabel(h.propertyType)} · {h.area}
                   </p>
                   <Link href={`/homes/${h.slug}`} className="mt-1 block font-semibold hover:underline">
@@ -178,8 +164,8 @@ export default async function HomesPage({
                     {h.bedrooms} bed · {h.bathrooms} bath
                     {h.maxGuests ? ` · up to ${h.maxGuests} guests` : ""}
                   </p>
-                  <p className="mt-2 line-clamp-2 text-sm text-[#0E3B24]/65">{h.description}</p>
-                  <p className="mt-2 text-xs text-[#0E3B24]/45">Host: {h.hostName}</p>
+                  <p className="mt-2 line-clamp-2 text-sm text-[var(--muted)]">{h.description}</p>
+                  <p className="mt-2 text-xs text-[var(--muted)]">Host: {h.hostName}</p>
                   <a
                     href={enquiryWhatsAppUrl(
                       homeEnquiryMessage({

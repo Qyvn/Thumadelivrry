@@ -70,42 +70,31 @@ export default async function FoodShopsPage() {
 
   return (
     <AppShell user={user} basketCount={basketCount} locationLabel={locationLabel}>
-      <main className="mx-auto w-full max-w-5xl flex-1 px-4 pb-16 pt-5">
-        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#0E3B24]/40">
-          Delivery powered by THUMA
+      <main className="mx-auto w-full max-w-md flex-1 px-5 pb-16 pt-8 sm:max-w-xl">
+        <p className="text-sm text-[var(--muted)]">Delivery powered by THUMA</p>
+        <h1 className="display mt-2 text-4xl text-[var(--ink)]">Food</h1>
+        <p className="mt-3 max-w-md text-sm text-[var(--muted)]">
+          Groceries and meals from approved shops.
         </p>
-        <h1 className="mt-1 font-[family-name:var(--font-display)] text-3xl font-bold">
-          Food &amp; Shops
-        </h1>
-        <p className="mt-2 max-w-xl text-sm text-[#0E3B24]/65">
-          Groceries, meals and everyday essentials from approved merchants — ordered and delivered
-          with THUMA.
-        </p>
-        <div className="mt-4 flex flex-wrap gap-3">
-          <Link href="/gems" className="inline-flex h-10 items-center rounded-full border border-[#0E3B24]/15 bg-white px-4 text-sm font-semibold">
-            Hidden Gems
-          </Link>
-          <Link href="/homes" className="inline-flex h-10 items-center rounded-full border border-[#0E3B24]/15 bg-white px-4 text-sm font-semibold">
-            Homes
-          </Link>
-          <Link href="/merchant/apply" className="inline-flex h-10 items-center rounded-full bg-[#FFB627] px-4 text-sm font-bold text-[#0E3B24]">
-            Become a partner
+        <div className="mt-5">
+          <Link href="/merchant/apply" className="inline-flex h-11 items-center rounded-full bg-[var(--ink)] px-5 text-sm font-semibold text-[var(--paper)]">
+            List your shop
           </Link>
         </div>
 
         <form action="/search" className="mt-6">
-          <div className="flex items-center gap-3 rounded-2xl border border-[#0E3B24]/10 bg-white px-4 py-3">
+          <div className="flex items-center gap-3 rounded-2xl border border-[var(--line)] bg-[var(--card)] px-4 py-3">
             <input
               name="q"
-              placeholder="Search groceries, meals and essentials"
-              className="w-full bg-transparent text-sm outline-none placeholder:text-[#0E3B24]/40"
+              placeholder="Search food & shops"
+              className="w-full bg-transparent text-sm outline-none placeholder:text-[var(--muted)]"
             />
           </div>
         </form>
 
         <section className="mt-8">
-          <h2 className="font-[family-name:var(--font-display)] text-xl font-bold">Shop by category</h2>
-          <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
+          <h2 className="display text-2xl">Categories</h2>
+          <div className="mt-4 grid grid-cols-2 gap-3">
             {BROWSE_CATEGORIES.map((cat) => {
               const Icon = CATEGORY_ICONS[cat.icon];
               const count = categoryCounts[cat.slug] ?? 0;
@@ -115,8 +104,8 @@ export default async function FoodShopsPage() {
                   key={cat.slug}
                   href={disabled ? "#" : `/browse/${cat.slug}`}
                   aria-disabled={disabled}
-                  className={`rounded-2xl border border-[#0E3B24]/8 bg-white p-4 ${
-                    disabled ? "pointer-events-none opacity-45" : "hover:border-[#0E3B24]/20"
+                  className={`rounded-2xl border border-[var(--line)] bg-[var(--card)] p-4 ${
+                    disabled ? "pointer-events-none opacity-45" : "hover:border-[var(--ink)]"
                   }`}
                 >
                   <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#FFB627] text-[#0E3B24]">
@@ -140,7 +129,7 @@ export default async function FoodShopsPage() {
             </Link>
           </div>
           {approvedProducts.length === 0 ? (
-            <div className="mt-4 rounded-2xl border border-dashed border-[#0E3B24]/20 bg-white/70 px-5 py-10 text-center text-sm text-[#0E3B24]/65">
+            <div className="mt-4 rounded-2xl border border-dashed border-[#0E3B24]/20 bg-[var(--card)]/70 px-5 py-10 text-center text-sm text-[var(--muted)]">
               No products available in your Durban area yet.
             </div>
           ) : (

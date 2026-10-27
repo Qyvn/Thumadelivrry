@@ -36,10 +36,10 @@ export function BottomTaskbar() {
   const pathname = usePathname() || "/";
   return (
     <nav
-      className="fixed inset-x-0 bottom-0 z-50 border-t border-[var(--line)] bg-[var(--paper)]/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md"
+      className="fixed inset-x-0 bottom-0 z-50 border-t border-[var(--line)] bg-[var(--paper)]/90 pb-[env(safe-area-inset-bottom)] backdrop-blur"
       aria-label="Primary"
     >
-      <ul className="mx-auto flex h-16 max-w-lg items-stretch justify-around px-2">
+      <ul className="mx-auto flex h-14 max-w-md items-stretch justify-around px-3">
         {TABS.map((tab) => {
           const active = tab.match(pathname);
           const Icon = tab.icon;
@@ -48,18 +48,11 @@ export function BottomTaskbar() {
               <Link
                 href={tab.href}
                 className={cn(
-                  "flex h-full flex-col items-center justify-center gap-0.5 text-[10px] font-semibold tracking-wide",
+                  "flex h-full flex-col items-center justify-center gap-0.5 text-[10px] font-medium",
                   active ? "text-[var(--ink)]" : "text-[var(--muted)]",
                 )}
               >
-                <span
-                  className={cn(
-                    "flex h-8 w-8 items-center justify-center rounded-[var(--radius-sm)] transition-colors",
-                    active && "bg-[var(--ink)] text-[var(--paper)]",
-                  )}
-                >
-                  <Icon className="h-[18px] w-[18px]" strokeWidth={active ? 2.4 : 1.8} />
-                </span>
+                <Icon className="h-[18px] w-[18px]" strokeWidth={active ? 2.25 : 1.6} />
                 {tab.label}
               </Link>
             </li>

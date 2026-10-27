@@ -42,9 +42,9 @@ try {
   await page.goto(BASE, { waitUntil: "networkidle" });
   const hasBrand = await page.getByText("Duban", { exact: true }).first().isVisible();
   const hasHeadline = await page.getByRole("heading", { name: /Durban\.?\s*All in one/i }).isVisible();
-  const hasGems = await page.getByRole("link", { name: /Hidden Gems/i }).first().isVisible();
-  const hasFood = await page.getByRole("link", { name: /Food & Shops/i }).first().isVisible();
-  const hasHomes = await page.getByRole("link", { name: /Homes to Rent/i }).first().isVisible();
+  const hasGems = await page.getByRole("link", { name: /^Gems/i }).first().isVisible();
+  const hasFood = await page.getByRole("link", { name: /^Food/i }).first().isVisible();
+  const hasHomes = await page.getByRole("link", { name: /^Homes/i }).first().isVisible();
   if (hasBrand && hasHeadline && hasGems && hasFood && hasHomes) {
     pass("home-hero", await shot(page, "01-home"));
   } else {
@@ -53,7 +53,7 @@ try {
 
   // Food & Shops still has nearest stores
   await page.goto(`${BASE}/food`, { waitUntil: "networkidle" });
-  const foodHeadline = await page.getByRole("heading", { name: /Food & Shops/i }).isVisible();
+  const foodHeadline = await page.getByRole("heading", { name: /^Food$/i }).isVisible();
   const powered = await page.getByText(/Delivery powered by THUMA/i).first().isVisible();
   if (foodHeadline && powered) pass("food-section", await shot(page, "02-food"));
   else fail("food-section", `headline=${foodHeadline} powered=${powered}`);

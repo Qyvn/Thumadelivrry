@@ -16,15 +16,14 @@ const body = Inter({
 
 export const metadata: Metadata = {
   title: "Duban — Durban. All in one.",
-  description:
-    "Duban is your Durban one-stop: Hidden Gems, Food & Shops (delivery powered by THUMA), and Homes to rent. Enquiries via WhatsApp.",
+  description: "Gems. Food. Homes. Around Durban.",
   icons: {
     icon: [{ url: "/duban-mark.png", type: "image/png" }],
     apple: [{ url: "/apple-touch-icon.png" }],
   },
   openGraph: {
     title: "Duban — Durban. All in one.",
-    description: "Hidden Gems, Food & Shops, Homes around Durban.",
+    description: "Gems. Food. Homes.",
     images: [{ url: "/og-image.jpg", width: 1200, height: 630 }],
   },
 };

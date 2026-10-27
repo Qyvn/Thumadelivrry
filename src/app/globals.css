@@ -1,11 +1,11 @@
 @import "tailwindcss";
 
 :root {
-  /* Chris Do–inspired base: near-black + off-white */
+  /* Quiet base: near-black + off-white */
   --ink: #0a0a0a;
   --paper: #fafaf8;
-  --muted: #5c5c5c;
-  --line: #e6e6e1;
+  --muted: #6b6b6b;
+  --line: #e8e8e4;
   --card: #ffffff;
   /* Duban accents — use sparingly */
   --green: #0e3b24;
@@ -61,7 +61,7 @@ body {
 }
 
 ::selection {
-  background: var(--sun);
+  background: #e8e8e4;
   color: var(--ink);
 }
 
@@ -98,11 +98,9 @@ textarea:focus-visible {
 @keyframes duban-rise {
   from {
     opacity: 0;
-    transform: translateY(16px);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
   }
 }
 
@@ -116,7 +114,7 @@ textarea:focus-visible {
 }
 
 .animate-rise {
-  animation: duban-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: duban-rise 0.8s ease both;
 }
 
 .animate-fade {
@@ -124,7 +122,7 @@ textarea:focus-visible {
 }
 
 .reveal {
-  animation: duban-rise 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: duban-rise 0.8s ease both;
 }
 
 @media (prefers-reduced-motion: reduce) {
