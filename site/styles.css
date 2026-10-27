@@ -64,3 +64,15 @@ h1 span{color:var(--l)}
 }
 @media (max-width:520px){.grid3{grid-template-columns:1fr}.btn{width:100%;text-align:center}.ctas .btn{width:100%}}
 .ph a{color:var(--b);font-weight:600}h1{font-weight:900}.hero-in .lead{max-width:38rem}
+.hero-with-logo{display:grid;gap:1rem}
+.hero-logo{width:120px;height:120px;border-radius:24px;object-fit:cover;box-shadow:0 12px 40px rgba(0,0,0,.35);border:2px solid rgba(255,255,255,.25)}
+.section-card{display:block;text-decoration:none;color:inherit;transition:transform .15s}
+.section-card:hover{transform:translateY(-2px)}
+.lead-light{max-width:40rem;color:var(--m);margin-bottom:1.5rem}
+.empty-state{background:#fff;border:1.5px dashed rgba(14,59,36,.25);border-radius:20px;padding:1.8rem;max-width:40rem}
+.empty-state p+p{margin-top:.6rem;color:var(--m)}
+.empty-state a{color:var(--b);font-weight:600}
+@media (min-width:860px){
+  .hero-with-logo{grid-template-columns:160px 1fr;align-items:center}
+  .hero-logo{width:160px;height:160px;grid-row:span 6}
+}

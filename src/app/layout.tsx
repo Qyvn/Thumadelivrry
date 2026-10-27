@@ -15,10 +15,18 @@ const body = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Duban Delivery, powered by THUMA",
-  icons: { icon: "/duban-mark.svg" },
+  title: "Duban — Hidden Gems, Food & Homes around Durban",
   description:
-    "Love Durban, Hidden Gems. Discover Durban with Duban, get it delivered with THUMA — Greater Durban, KwaZulu-Natal.",
+    "Duban is your Durban one-stop: Hidden Gems, Food & Shops (delivery powered by THUMA), and Homes to rent. Enquiries via WhatsApp.",
+  icons: {
+    icon: [{ url: "/duban-mark.png", type: "image/png" }],
+    apple: [{ url: "/apple-touch-icon.png" }],
+  },
+  openGraph: {
+    title: "Duban",
+    description: "Hidden Gems, Food & Shops, Homes around Durban.",
+    images: [{ url: "/og-image.jpg", width: 1200, height: 630 }],
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
