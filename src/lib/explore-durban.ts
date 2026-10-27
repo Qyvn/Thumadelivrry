@@ -8,8 +8,18 @@ export type GuidePick = {
   category: "BEACH" | "LANDMARK" | "MARKET" | "NATURE" | "CULTURE" | "FOOD";
   sourceUrl: string;
   sourceLabel: string;
-  /** CSS gradient for tile — no venue photos */
+  /** CSS gradient fallback */
   tile: string;
+  /** Key into DURBAN_PHOTOS */
+  photoId:
+    | "golden-mile"
+    | "ushaka"
+    | "mabhida"
+    | "umhlanga"
+    | "victoria-market"
+    | "botanic"
+    | "thousand-hills"
+    | "florida-road";
 };
 
 export const EXPLORE_PICKS: GuidePick[] = [
@@ -22,6 +32,7 @@ export const EXPLORE_PICKS: GuidePick[] = [
     sourceUrl: "https://visitdurban.travel/page/central-beaches",
     sourceLabel: "Durban Tourism",
     tile: "linear-gradient(160deg,#0a0a0a 0%,#0e3b24 70%,#1e88c8 140%)",
+    photoId: "golden-mile",
   },
   {
     id: "ushaka",
@@ -32,6 +43,7 @@ export const EXPLORE_PICKS: GuidePick[] = [
     sourceUrl: "https://ushakamarine.com/",
     sourceLabel: "uShaka Marine World",
     tile: "linear-gradient(160deg,#0a0a0a 0%,#0b3d5c 65%,#1e88c8 120%)",
+    photoId: "ushaka",
   },
   {
     id: "mabhida",
@@ -42,6 +54,7 @@ export const EXPLORE_PICKS: GuidePick[] = [
     sourceUrl: "https://visitdurban.travel/space/moses-mabhida-stadium",
     sourceLabel: "Durban Tourism",
     tile: "linear-gradient(160deg,#0a0a0a 0%,#0e3b24 60%,#f26b1d 130%)",
+    photoId: "mabhida",
   },
   {
     id: "umhlanga",
@@ -52,6 +65,7 @@ export const EXPLORE_PICKS: GuidePick[] = [
     sourceUrl: "https://www.umhlangatourism.co.za/UMHLANGA-BROCHURE-2025.pdf",
     sourceLabel: "Umhlanga Tourism 2025",
     tile: "linear-gradient(160deg,#0a0a0a 0%,#1e88c8 75%,#ffb627 140%)",
+    photoId: "umhlanga",
   },
   {
     id: "victoria-market",
@@ -62,6 +76,7 @@ export const EXPLORE_PICKS: GuidePick[] = [
     sourceUrl: "https://www.victoriastreetmarket.co.za/",
     sourceLabel: "Victoria Street Market",
     tile: "linear-gradient(160deg,#0a0a0a 0%,#f26b1d 80%)",
+    photoId: "victoria-market",
   },
   {
     id: "botanic",
@@ -72,6 +87,7 @@ export const EXPLORE_PICKS: GuidePick[] = [
     sourceUrl: "https://durbanbotanicgardens.org.za/",
     sourceLabel: "Durban Botanic Gardens",
     tile: "linear-gradient(160deg,#0a0a0a 0%,#0e3b24 80%)",
+    photoId: "botanic",
   },
   {
     id: "1000-hills",
@@ -82,6 +98,7 @@ export const EXPLORE_PICKS: GuidePick[] = [
     sourceUrl: "https://visitdurban.travel/location/1000-hills-tourism-cto",
     sourceLabel: "Durban Tourism / 1000 Hills",
     tile: "linear-gradient(160deg,#0a0a0a 0%,#14502f 70%,#8b5a2b 130%)",
+    photoId: "thousand-hills",
   },
   {
     id: "florida-road",
@@ -92,6 +109,7 @@ export const EXPLORE_PICKS: GuidePick[] = [
     sourceUrl: "https://visitdurban.travel/space/florida-road",
     sourceLabel: "Durban Tourism",
     tile: "linear-gradient(160deg,#0a0a0a 0%,#2a1748 55%,#f26b1d 130%)",
+    photoId: "florida-road",
   },
 ];
 

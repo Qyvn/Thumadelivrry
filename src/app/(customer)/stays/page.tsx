@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { House } from "lucide-react";
+import { EmptyState } from "@/components/empty-state";
 import { AppShell } from "@/components/app-shell";
 import { getCustomerShell } from "@/lib/customer-context";
 import { prisma } from "@/lib/db";
@@ -204,17 +206,14 @@ export default async function StaysPage({
         </form>
 
         {stays.length === 0 ? (
-          <div className="mt-10 rounded-2xl border border-dashed border-[var(--line)] px-5 py-14 text-center">
-            <p className="font-semibold">Stays coming soon — list yours</p>
-            <p className="mt-2 text-sm text-[var(--muted)]">
-              Submit a listing — Duban reviews every entry.
-            </p>
-            <Link
-              href="/stays/list"
-              className="mt-4 inline-block text-sm font-medium text-[var(--muted)] underline underline-offset-4"
-            >
-              List your stay
-            </Link>
+          <div className="mt-10">
+            <EmptyState
+              icon={House}
+              title="Stays coming soon — list yours"
+              body="Submit a listing — Duban reviews every entry. Enquiry only via WhatsApp."
+              actionHref="/stays/list"
+              actionLabel="List your stay"
+            />
           </div>
         ) : (
           <ul className="mt-6 grid gap-4">

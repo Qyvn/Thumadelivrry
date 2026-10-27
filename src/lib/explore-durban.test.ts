@@ -8,6 +8,7 @@ function ok(c: boolean, m: string) {
 
 ok(EXPLORE_PICKS.length >= 8, "at least 8 guide picks");
 ok(EXPLORE_PICKS.every((p) => p.sourceUrl.startsWith("http")), "all picks have sources");
+ok(EXPLORE_PICKS.every((p) => !!p.photoId), "all picks have photoId");
 ok(EXPLORE_PICKS.every((p) => !/review|★|stars/i.test(p.why)), "no review fluff");
 ok(WHATS_ON.every((w) => w.sourceUrl.startsWith("http") && w.whenLabel.length > 0), "whats-on dated+sourced");
 ok(DUBAN_ADS.every((a) => /home|stay|shop|WhatsApp|THUMA|Advertise/i.test(a.text)), "ads are Duban promos");

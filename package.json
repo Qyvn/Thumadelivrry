@@ -12,7 +12,7 @@
     "db:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts",
     "db:reset": "prisma migrate reset --force",
-    "test:unit": "tsx src/lib/pricing.test.ts && tsx src/lib/order-lifecycle.test.ts && tsx src/lib/eligibility.test.ts && tsx src/lib/geo.test.ts && tsx src/lib/onboarding.test.ts && tsx src/lib/onestop.test.ts && tsx src/lib/explore-durban.test.ts",
+    "test:unit": "tsx src/lib/pricing.test.ts && tsx src/lib/order-lifecycle.test.ts && tsx src/lib/eligibility.test.ts && tsx src/lib/geo.test.ts && tsx src/lib/onboarding.test.ts && tsx src/lib/onestop.test.ts && tsx src/lib/explore-durban.test.ts && tsx src/lib/durban-photos.test.ts",
     "test:e2e": "tsx scripts/e2e-smoke.ts",
     "test:fe": "node scripts/fe-test.mjs",
     "postinstall": "node scripts/prisma-db.mjs generate",

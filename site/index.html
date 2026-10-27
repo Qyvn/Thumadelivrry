@@ -17,65 +17,116 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 </head>
-<body class="simple">
+<body class="fill">
 <a class="skip" href="#main">Skip to content</a>
 
-<p class="ad-line" id="ad-line"><a href="/#stays">List your stay</a></p>
+<p class="ad-line" id="ad-line"><a href="#stays">List your stay</a></p>
 
-<header class="top">
+<header class="top glass">
   <a href="#" class="logo" aria-label="Duban home"><img src="images/duban-mark.png" width="32" height="32" alt="Duban"></a>
   <a class="quiet" href="https://wa.me/27645527661">WhatsApp</a>
 </header>
 
 <main id="main">
-  <section class="hero">
-    <img class="hero-logo" src="images/duban-logo.jpg" width="88" height="88" alt="">
-    <h1>Durban.<br>All in one.</h1>
-    <p class="lead">Gems. Food. Stays.</p>
-    <a class="btn" href="#explore">Explore</a>
+  <section class="hero-bleed">
+    <img
+      class="hero-photo fade-img"
+      src="images/durban/hero-beachfront-1280.webp"
+      srcset="images/durban/hero-beachfront-768.webp 768w, images/durban/hero-beachfront-1280.webp 1280w, images/durban/hero-beachfront-1920.webp 1920w"
+      sizes="100vw"
+      width="1280"
+      height="656"
+      alt="Durban beachfront"
+      fetchpriority="high"
+    >
+    <div class="hero-shade" aria-hidden="true"></div>
+    <div class="hero-inner">
+      <img class="hero-logo" src="images/duban-logo.jpg" width="88" height="88" alt="">
+      <h1>Durban.<br>All in one.</h1>
+      <p class="lead">Gems. Food. Stays.</p>
+      <a class="btn btn-light" href="#explore">Explore</a>
+      <p class="credit">Photo: Steve Roetz · <a href="https://creativecommons.org/licenses/by/2.0" target="_blank" rel="noreferrer">CC BY 2.0</a> · <a href="https://commons.wikimedia.org/wiki/File:Durban_beach.jpg" target="_blank" rel="noreferrer">Commons</a></p>
+    </div>
   </section>
 
-  <section class="doors" aria-label="Sections">
-    <a href="#explore"><b>Gems</b><span>Submit a spot</span></a>
-    <a href="#food"><b>Food</b><span>Delivery by THUMA</span></a>
-    <a href="#stays"><b>Stays</b><span>List yours</span></a>
-  </section>
+  <div class="wrap">
+    <section class="doors" aria-label="Sections">
+      <a class="door tint-green" href="#explore">
+        <img class="fade-img" src="images/durban/botanic.webp" srcset="images/durban/botanic-400.webp 400w, images/durban/botanic-800.webp 800w" sizes="(max-width:640px) 100vw, 36rem" width="800" height="600" alt="" loading="lazy">
+        <span class="door-shade" aria-hidden="true"></span>
+        <span class="door-copy"><b>Gems</b><span>Submit a spot</span><small>M. Purves · CC BY-SA 3.0</small></span>
+        <span class="door-arrow" aria-hidden="true">→</span>
+      </a>
+      <a class="door tint-sunset" href="#food">
+        <img class="fade-img" src="images/durban/victoria-market.webp" srcset="images/durban/victoria-market-400.webp 400w, images/durban/victoria-market-800.webp 800w" sizes="(max-width:640px) 100vw, 36rem" width="800" height="600" alt="" loading="lazy">
+        <span class="door-shade" aria-hidden="true"></span>
+        <span class="door-copy"><b>Food</b><span>Delivery by THUMA</span><small>Scotted400 · CC BY-SA 4.0</small></span>
+        <span class="door-arrow" aria-hidden="true">→</span>
+      </a>
+      <a class="door tint-ocean" href="#stays">
+        <img class="fade-img" src="images/durban/umhlanga.webp" srcset="images/durban/umhlanga-400.webp 400w, images/durban/umhlanga-800.webp 800w" sizes="(max-width:640px) 100vw, 36rem" width="800" height="600" alt="" loading="lazy">
+        <span class="door-shade" aria-hidden="true"></span>
+        <span class="door-copy"><b>Stays</b><span>List yours</span><small>Martie Swart · CC BY 2.0</small></span>
+        <span class="door-arrow" aria-hidden="true">→</span>
+      </a>
+    </section>
 
-  <section id="explore" class="list-block">
-    <h2>Explore Durban</h2>
-    <ul>
-      <li><a href="https://visitdurban.travel/page/central-beaches" target="_blank" rel="noreferrer"><span><strong>Golden Mile</strong><small>Central Beachfront</small></span><em>Durban Tourism</em></a></li>
-      <li><a href="https://ushakamarine.com/" target="_blank" rel="noreferrer"><span><strong>uShaka Marine World</strong><small>Point</small></span><em>uShaka</em></a></li>
-      <li><a href="https://visitdurban.travel/space/moses-mabhida-stadium" target="_blank" rel="noreferrer"><span><strong>Moses Mabhida Stadium</strong><small>Stamford Hill</small></span><em>Durban Tourism</em></a></li>
-      <li><a href="https://www.umhlangatourism.co.za/UMHLANGA-BROCHURE-2025.pdf" target="_blank" rel="noreferrer"><span><strong>Umhlanga Promenade</strong><small>Umhlanga Rocks</small></span><em>Umhlanga Tourism</em></a></li>
-    </ul>
-  </section>
+    <section id="explore" class="block">
+      <h2>Explore Durban</h2>
+      <ul class="cards">
+        <li>
+          <a href="https://visitdurban.travel/page/central-beaches" target="_blank" rel="noreferrer">
+            <img class="fade-img" src="images/durban/golden-mile.webp" srcset="images/durban/golden-mile-400.webp 400w, images/durban/golden-mile-800.webp 800w" sizes="140px" width="400" height="256" alt="Golden Mile" loading="lazy">
+            <span><strong>Golden Mile</strong><small>Central Beachfront</small><em>Durban Tourism · Chris Bloom / CC BY-SA 2.0</em></span>
+          </a>
+        </li>
+        <li>
+          <a href="https://ushakamarine.com/" target="_blank" rel="noreferrer">
+            <img class="fade-img" src="images/durban/ushaka.webp" srcset="images/durban/ushaka-400.webp 400w, images/durban/ushaka-800.webp 800w" sizes="140px" width="400" height="256" alt="uShaka Marine World" loading="lazy">
+            <span><strong>uShaka Marine World</strong><small>Point</small><em>uShaka · Christophe Badoux / CC BY-SA 3.0</em></span>
+          </a>
+        </li>
+        <li>
+          <a href="https://visitdurban.travel/space/moses-mabhida-stadium" target="_blank" rel="noreferrer">
+            <img class="fade-img" src="images/durban/mabhida.webp" srcset="images/durban/mabhida-400.webp 400w, images/durban/mabhida-800.webp 800w" sizes="140px" width="400" height="256" alt="Moses Mabhida Stadium" loading="lazy">
+            <span><strong>Moses Mabhida Stadium</strong><small>Stamford Hill</small><em>Durban Tourism · SA Tourism / CC BY 2.0</em></span>
+          </a>
+        </li>
+        <li>
+          <a href="https://www.umhlangatourism.co.za/UMHLANGA-BROCHURE-2025.pdf" target="_blank" rel="noreferrer">
+            <img class="fade-img" src="images/durban/umhlanga.webp" srcset="images/durban/umhlanga-400.webp 400w, images/durban/umhlanga-800.webp 800w" sizes="140px" width="400" height="256" alt="Umhlanga Lighthouse" loading="lazy">
+            <span><strong>Umhlanga Promenade</strong><small>Umhlanga Rocks</small><em>Umhlanga Tourism · Martie Swart / CC BY 2.0</em></span>
+          </a>
+        </li>
+      </ul>
+    </section>
 
-  <section id="whats-on" class="list-block">
-    <h2>What’s on</h2>
-    <ul>
-      <li><a href="https://iol.co.za/entertainment/whats-on/durban/2026-10-22-durban-is-getting-spooky-five-halloween-events-to-get-your-blood-pumping/" target="_blank" rel="noreferrer"><time>30–31 Oct</time><strong>Halloween weekend</strong><em>IOL</em></a></li>
-      <li><a href="https://www.tsogosun.com/whatson/suncoast-durban-diwali-festival/" target="_blank" rel="noreferrer"><time>30 Oct – 1 Nov</time><strong>Durban Diwali Festival</strong><em>Tsogo Sun</em></a></li>
-      <li><a href="https://iol.co.za/entertainment/celebrity-news/2026-10-01-black-coffee-to-headline-africa-is-not-a-jungle-in-durban-in-november-2026/" target="_blank" rel="noreferrer"><time>7 Nov</time><strong>Africa Is Not A Jungle</strong><em>IOL</em></a></li>
-    </ul>
-  </section>
+    <section id="whats-on" class="block">
+      <h2>What’s on</h2>
+      <ul class="plain">
+        <li><a href="https://iol.co.za/entertainment/whats-on/durban/2026-10-22-durban-is-getting-spooky-five-halloween-events-to-get-your-blood-pumping/" target="_blank" rel="noreferrer"><time>30–31 Oct</time><strong>Halloween weekend</strong><em>IOL</em></a></li>
+        <li><a href="https://www.tsogosun.com/whatson/suncoast-durban-diwali-festival/" target="_blank" rel="noreferrer"><time>30 Oct – 1 Nov</time><strong>Durban Diwali Festival</strong><em>Tsogo Sun</em></a></li>
+        <li><a href="https://iol.co.za/entertainment/celebrity-news/2026-10-01-black-coffee-to-headline-africa-is-not-a-jungle-in-durban-in-november-2026/" target="_blank" rel="noreferrer"><time>7 Nov</time><strong>Africa Is Not A Jungle</strong><em>IOL</em></a></li>
+      </ul>
+    </section>
 
-  <section id="food" class="list-block">
-    <h2>Food</h2>
-    <p class="note">Delivery powered by THUMA.</p>
-    <a class="text-link" href="https://wa.me/27645527661?text=Hi%20Duban%20—%20partner%20as%20a%20merchant">List your shop</a>
-  </section>
+    <section id="food" class="block">
+      <h2>Food</h2>
+      <p class="note">Delivery powered by THUMA.</p>
+      <a class="text-link" href="https://wa.me/27645527661?text=Hi%20Duban%20—%20partner%20as%20a%20merchant">List your shop</a>
+    </section>
 
-  <section id="stays" class="list-block">
-    <h2>Stays</h2>
-    <p class="note">Hotels, guesthouses, B&amp;Bs &amp; homes. Enquiry only.</p>
-    <a class="text-link" href="https://wa.me/27645527661?text=Hi%20Duban%20—%20I%20want%20to%20list%20my%20stay">List your stay</a>
-  </section>
+    <section id="stays" class="block">
+      <h2>Stays</h2>
+      <p class="note">Hotels, guesthouses, B&amp;Bs &amp; homes. Enquiry only.</p>
+      <a class="text-link" href="https://wa.me/27645527661?text=Hi%20Duban%20—%20I%20want%20to%20list%20my%20stay">List your stay</a>
+    </section>
 
-  <p class="foot"><a href="https://wa.me/27645527661">WhatsApp Duban</a></p>
+    <p class="foot"><a href="https://wa.me/27645527661">WhatsApp Duban</a></p>
+  </div>
 </main>
 
-<nav class="taskbar" aria-label="Primary">
+<nav class="taskbar glass" aria-label="Primary">
   <a href="#main" class="on"><span aria-hidden="true">⌂</span>Home</a>
   <a href="#explore"><span aria-hidden="true">◆</span>Gems</a>
   <a href="#food"><span aria-hidden="true">▣</span>Food</a>
@@ -91,6 +142,10 @@
   ];
   var i=0, a=document.querySelector('#ad-line a');
   setInterval(function(){ i=(i+1)%ads.length; a.textContent=ads[i].t; a.href=ads[i].h; },7000);
+  document.querySelectorAll('.fade-img').forEach(function(img){
+    if(img.complete) img.classList.add('is-ready');
+    else img.addEventListener('load', function(){ img.classList.add('is-ready'); });
+  });
 })();
 </script>
 </body>

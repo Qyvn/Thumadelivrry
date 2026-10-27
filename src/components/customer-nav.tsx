@@ -12,7 +12,7 @@ export function CustomerNav({
   locationLabel: string;
 }) {
   return (
-    <header className="sticky top-0 z-40 bg-[var(--paper)]/90 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-white/30 bg-[color-mix(in_srgb,var(--paper)_75%,transparent)] backdrop-blur-xl">
       <div className="mx-auto flex max-w-md items-center justify-between px-5 py-3 sm:max-w-xl">
         <Link href="/" className="shrink-0" aria-label="Duban home">
           <Image

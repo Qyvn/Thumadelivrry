@@ -59,3 +59,8 @@ next-env.d.ts
 /src/generated/prisma
 
 AGENTS.md
+
+# Raw photo downloads (optimised WebP kept in public/images/durban)
+public/images/durban/_src/
+public/images/durban/_meta.json
+public/images/durban/catalog.json

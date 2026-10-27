@@ -36,7 +36,7 @@ export function BottomTaskbar() {
   const pathname = usePathname() || "/";
   return (
     <nav
-      className="fixed inset-x-0 bottom-0 z-50 border-t border-[var(--line)] bg-[var(--paper)]/90 pb-[env(safe-area-inset-bottom)] backdrop-blur"
+      className="fixed inset-x-0 bottom-0 z-50 border-t border-white/40 bg-[color-mix(in_srgb,var(--paper)_72%,transparent)] pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_30px_rgba(10,10,10,0.06)] backdrop-blur-xl"
       aria-label="Primary"
     >
       <ul className="mx-auto flex h-14 max-w-md items-stretch justify-around px-3">

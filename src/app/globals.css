@@ -1,18 +1,16 @@
 @import "tailwindcss";
 
 :root {
-  /* Quiet base: near-black + off-white */
+  /* Quiet base from logo palette */
   --ink: #0a0a0a;
-  --paper: #fafaf8;
+  --paper: #f7f4ef;
   --muted: #6b6b6b;
-  --line: #e8e8e4;
+  --line: #e6e2da;
   --card: #ffffff;
-  /* Duban accents — use sparingly */
   --green: #0e3b24;
   --sunset: #f26b1d;
   --ocean: #1e88c8;
   --sun: #ffb627;
-  /* Tokens */
   --radius: 16px;
   --radius-sm: 10px;
   --radius-lg: 24px;
@@ -24,6 +22,8 @@
   --space-6: 2rem;
   --space-8: 3rem;
   --focus: #1e88c8;
+  --shadow-soft: 0 8px 28px rgba(10, 10, 10, 0.06);
+  --shadow-card: 0 14px 40px rgba(10, 10, 10, 0.1);
 
   --thuma-charcoal: var(--green);
   --thuma-lime: var(--sun);
@@ -53,19 +53,33 @@ html {
 }
 
 body {
-  background: var(--paper);
+  background:
+    radial-gradient(1200px 600px at 10% -10%, color-mix(in srgb, var(--sun) 14%, transparent), transparent 60%),
+    radial-gradient(900px 500px at 100% 0%, color-mix(in srgb, var(--ocean) 12%, transparent), transparent 55%),
+    radial-gradient(800px 400px at 50% 100%, color-mix(in srgb, var(--green) 8%, transparent), transparent 50%),
+    var(--paper);
   color: var(--ink);
   font-family: var(--font-body), system-ui, sans-serif;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
 }
 
+body::before {
+  content: "";
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode: multiply;
+}
+
 ::selection {
-  background: #e8e8e4;
+  background: color-mix(in srgb, var(--sun) 55%, white);
   color: var(--ink);
 }
 
-/* AA-friendly focus */
 :focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: 3px;
@@ -96,44 +110,35 @@ textarea:focus-visible {
 }
 
 @keyframes duban-rise {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
 }
 
 @keyframes duban-fade {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .animate-rise {
-  animation: duban-rise 0.8s ease both;
+  animation: duban-rise 0.7s ease both;
 }
 
 .animate-fade {
-  animation: duban-fade 0.7s ease-out both;
+  animation: duban-fade 0.6s ease-out both;
 }
 
 .reveal {
-  animation: duban-rise 0.8s ease both;
+  animation: duban-rise 0.7s ease both;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
+  html { scroll-behavior: auto; }
   .animate-rise,
   .animate-fade,
   .reveal {
     animation: none !important;
   }
+  body::before { opacity: 0; }
 }
 
 .scroll-hide {

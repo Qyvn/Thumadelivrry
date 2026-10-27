@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { Gem } from "lucide-react";
+import { EmptyState } from "@/components/empty-state";
 import { AppShell } from "@/components/app-shell";
 import { getCustomerShell } from "@/lib/customer-context";
 import { prisma } from "@/lib/db";
@@ -100,14 +102,14 @@ export default async function GemsPage({
         </form>
 
         {gems.length === 0 ? (
-          <div className="mt-10 rounded-2xl border border-dashed border-[var(--line)] px-5 py-14 text-center">
-            <p className="font-semibold">Gems coming soon</p>
-            <p className="mt-2 text-sm text-[var(--muted)]">
-              Know a spot? Submit it — we review every entry.
-            </p>
-            <Link href="/gems/submit" className="mt-4 inline-block text-sm font-medium text-[var(--muted)] underline underline-offset-4">
-              Submit a gem
-            </Link>
+          <div className="mt-10">
+            <EmptyState
+              icon={Gem}
+              title="Gems coming soon"
+              body="Know a spot? Submit it — we review every entry before it goes live."
+              actionHref="/gems/submit"
+              actionLabel="Submit a gem"
+            />
           </div>
         ) : (
           <ul className="mt-6 grid gap-4 sm:grid-cols-2">
