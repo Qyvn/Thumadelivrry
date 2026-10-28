@@ -7,6 +7,9 @@ export function PhotoCredit({
   photo: DurbanPhoto;
   className?: string;
 }) {
+  if (photo.owner) {
+    return <p className={`text-[10px] leading-snug text-white/75 ${className}`}>Photo: Duban</p>;
+  }
   return (
     <p className={`text-[10px] leading-snug text-white/70 ${className}`}>
       Photo: {photo.author} ·{" "}

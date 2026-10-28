@@ -3,10 +3,9 @@ import Image from "next/image";
 import { Gem, ShoppingBasket, House, ArrowRight } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { FadeImage } from "@/components/fade-image";
-import { PhotoCredit } from "@/components/photo-credit";
 import { getCustomerShell } from "@/lib/customer-context";
 import { EXPLORE_PICKS, WHATS_ON } from "@/lib/explore-durban";
-import { DURBAN_PHOTOS } from "@/lib/durban-photos";
+import { DURBAN_PHOTOS, HERO_PHOTO, NIGHTLIFE_PHOTO } from "@/lib/durban-photos";
 import { prisma } from "@/lib/db";
 import { WHATSAPP_URL } from "@/lib/onestop";
 
@@ -23,23 +22,26 @@ export default async function HomePage() {
 
   const explore = EXPLORE_PICKS.slice(0, 4);
   const upcoming = WHATS_ON.filter((w) => w.status === "upcoming").slice(0, 3);
-  const hero = DURBAN_PHOTOS.hero;
 
   return (
     <AppShell user={user} basketCount={basketCount} locationLabel={locationLabel}>
       <main className="pb-12">
         <section className="relative isolate min-h-[72vh] overflow-hidden">
-          <FadeImage
-            src={`/images/durban/${hero.id}-1280.webp`}
-            alt={hero.place}
-            fill
-            priority
-            sizes="100vw"
-            className="scale-105"
-          />
+          <picture>
+            <source media="(min-width: 768px)" srcSet={HERO_PHOTO.wideSet} sizes="100vw" />
+            <img
+              src={HERO_PHOTO.tall}
+              srcSet={HERO_PHOTO.tallSet}
+              sizes="100vw"
+              alt={HERO_PHOTO.place}
+              fetchPriority="high"
+              decoding="async"
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+          </picture>
           <div
             aria-hidden
-            className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/45 to-[var(--paper)]"
+            className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,.62),rgba(0,0,0,.5)_55%,rgba(0,0,0,.55)_82%,var(--paper))]"
           />
           <div className="relative mx-auto flex min-h-[72vh] w-full max-w-md flex-col items-center justify-center px-5 pb-10 pt-16 text-center sm:max-w-xl">
             <Image
@@ -62,7 +64,7 @@ export default async function HomePage() {
             >
               Explore
             </Link>
-            <PhotoCredit photo={hero} className="mt-10 max-w-xs" />
+            <p className="mt-10 text-[10px] text-white/80">Photo: Duban</p>
           </div>
         </section>
 
@@ -124,7 +126,7 @@ export default async function HomePage() {
                         <span className="font-semibold tracking-[-0.01em]">{p.name}</span>
                         <span className="mt-0.5 text-sm text-[var(--muted)]">{p.area}</span>
                         <span className="mt-2 text-[10px] text-[var(--muted)]">
-                          {p.sourceLabel} · {photo.author} / {photo.license}
+                          {p.sourceLabel} · {photo.owner ? "Photo: Duban" : `${photo.author} / ${photo.license}`}
                         </span>
                       </span>
                     </a>
@@ -142,7 +144,13 @@ export default async function HomePage() {
 
           <section className="mt-14">
             <h2 className="display text-2xl tracking-[-0.03em]">What&apos;s on</h2>
-            <ul className="mt-5 divide-y divide-[var(--line)] overflow-hidden rounded-[20px] border border-[var(--line)] bg-[var(--card)] shadow-[var(--shadow-soft)]">
+            <div className="relative mt-5 h-40 overflow-hidden rounded-[20px] shadow-[var(--shadow-card)]">
+              <FadeImage src={NIGHTLIFE_PHOTO.src} alt="Umhlanga Rocks sign at night" fill sizes="(max-width: 640px) 100vw, 36rem" />
+              <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent" />
+              <p className="absolute bottom-3 left-4 text-sm font-semibold text-white">Durban after dark</p>
+              <p className="absolute bottom-3 right-4 text-[10px] text-white/80">Photo: Duban</p>
+            </div>
+            <ul className="mt-3 divide-y divide-[var(--line)] overflow-hidden rounded-[20px] border border-[var(--line)] bg-[var(--card)] shadow-[var(--shadow-soft)]">
               {upcoming.map((e) => (
                 <li key={e.id}>
                   <a
@@ -221,7 +229,7 @@ function Door({
           </span>
           <span className="mt-1 block text-sm text-white/85">{meta}</span>
           <span className="mt-2 block text-[10px] text-white/65">
-            {photo.author} · {photo.license}
+            {photo.owner ? "Photo: Duban" : `${photo.author} · ${photo.license}`}
           </span>
         </span>
         <span className="mb-1 text-white/80" aria-hidden>

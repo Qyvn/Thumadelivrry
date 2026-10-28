@@ -64,3 +64,7 @@ AGENTS.md
 public/images/durban/_src/
 public/images/durban/_meta.json
 public/images/durban/catalog.json
+
+# Owner originals + previews (kept locally, not deployed)
+assets/originals/
+assets/edited-previews/
