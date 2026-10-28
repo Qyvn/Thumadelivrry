@@ -16,7 +16,8 @@
    - placeholder:true  -> shows a small "Sample" tag. Remove when real.
    - featured:true     -> "Featured" badge + sorted to the front (paid).
    - img: file in ./images/ (WebP, with w/h) or omit for a gradient.
-   - msg: the prefilled WhatsApp text for that button.
+   - gems cat: filter chip the gem appears under (Beach, Nature...).
+   - events date ISO: start/end drive the live countdown.
    ===================================================================== */
 const DUBAN = {
   whatsapp: "27645527661",
@@ -42,24 +43,24 @@ const DUBAN = {
 
   /* GEMS — real places. credit shown in the footer "Photo credits" line. */
   gems: [
-    { name:"Golden Mile", area:"Beachfront", img:"durban-letters-card-400.webp", w:400, h:500, credit:"Duban" },
-    { name:"uShaka Marine World", area:"Point", img:"ushaka-gate-card-400.webp", w:400, h:500, credit:"Duban" },
-    { name:"Moses Mabhida Stadium", area:"Stamford Hill", img:"mabhida-400.webp", w:400, h:300,
+    { name:"Golden Mile", cat:"Beach", area:"Beachfront", img:"durban-letters-card-400.webp", w:400, h:500, credit:"Duban" },
+    { name:"uShaka Marine World", cat:"Family", area:"Point", img:"ushaka-gate-card-400.webp", w:400, h:500, credit:"Duban" },
+    { name:"Moses Mabhida Stadium", cat:"Landmark", area:"Stamford Hill", img:"mabhida-400.webp", w:400, h:300,
       credit:"South African Tourism / Roger de la Harpe", lic:"CC BY 2.0", licUrl:"https://creativecommons.org/licenses/by/2.0", src:"https://commons.wikimedia.org/wiki/File:Moses_Mabhida_Stadium,_Durban,_KwaZulu_Natal,_South_Africa_(20513002075).jpg" },
-    { name:"Umhlanga Rocks", area:"Umhlanga", img:"umhlanga-night-card-400.webp", w:400, h:500, credit:"Duban" },
-    { name:"Victoria Street Market", area:"CBD", img:"victoria-market-400.webp", w:400, h:300,
+    { name:"Umhlanga Rocks", cat:"Beach", area:"Umhlanga", img:"umhlanga-night-card-400.webp", w:400, h:500, credit:"Duban" },
+    { name:"Victoria Street Market", cat:"Culture", area:"CBD", img:"victoria-market-400.webp", w:400, h:300,
       credit:"Scotted400", lic:"CC BY-SA 4.0", licUrl:"https://creativecommons.org/licenses/by-sa/4.0", src:"https://commons.wikimedia.org/wiki/File:Victoria_Market,_Durban.jpg" },
-    { name:"Durban Botanic Gardens", area:"Berea", img:"botanic-400.webp", w:400, h:300,
+    { name:"Durban Botanic Gardens", cat:"Nature", area:"Berea", img:"botanic-400.webp", w:400, h:300,
       credit:"M. Purves", lic:"CC BY-SA 3.0", licUrl:"https://creativecommons.org/licenses/by-sa/3.0", src:"https://commons.wikimedia.org/wiki/File:Durban_Botanic_cycads_and_trees.JPG" },
-    { name:"Florida Road", area:"Morningside", img:"florida-road-400.webp", w:400, h:233,
+    { name:"Florida Road", cat:"Culture", area:"Morningside", img:"florida-road-400.webp", w:400, h:233,
       credit:"Dennis Sylvester Hurd", lic:"CC BY 2.0", licUrl:"https://creativecommons.org/licenses/by/2.0", src:"https://commons.wikimedia.org/wiki/File:Along_Florida_Road_(54331633898).jpg" },
-    { name:"Valley of a Thousand Hills", area:"Inland", img:"thousand-hills-400.webp", w:400, h:300,
+    { name:"Valley of a Thousand Hills", cat:"Nature", area:"Inland", img:"thousand-hills-400.webp", w:400, h:300,
       credit:"Jean & Nathalie", lic:"CC BY 2.0", licUrl:"https://creativecommons.org/licenses/by/2.0", src:"https://commons.wikimedia.org/wiki/File:Valley_of_a_Thousand_Hills.jpg" }
   ],
 
   /* EVENTS — first featured:true event fills the "Featured event" slot. */
   events: [
-    { name:"Durban Diwali Festival", date:"30 Oct – 1 Nov 2026", place:"Suncoast, beachfront",
+    { name:"Durban Diwali Festival", date:"30 Oct – 1 Nov 2026", start:"2026-10-30T00:00:00+02:00", end:"2026-11-01T23:59:00+02:00", place:"Suncoast, beachfront",
       blurb:"Culture, food and fireworks.", link:"https://www.tsogosun.com/whatson/suncoast-durban-diwali-festival/",
       img:"promenade-card-400.webp", w:400, h:500, featured:true }
   ],
@@ -142,6 +143,49 @@ nav.bottom a.wa b{color:#25D366}
  .event{grid-template-columns:1fr 1.2fr}.event .ph{aspect-ratio:auto}.event .body{padding:44px;justify-content:center}
  footer .cols{grid-template-columns:2fr 1fr 1fr}section.block{padding-top:120px}
 }
+
+/* ---- ALIVE layer ---- */
+.hero picture img{animation:kb 22s ease-out both;transform-origin:60% 40%}
+@keyframes kb{from{transform:scale(1.14)}to{transform:scale(1)}}
+.hero .in>*{opacity:0;transform:translateY(24px);animation:up .9s cubic-bezier(.2,.7,.2,1) forwards}
+.hero h1 .l{display:block;opacity:0;transform:translateY(40px);animation:up 1s cubic-bezier(.2,.7,.2,1) forwards}
+.hero h1 .l:nth-child(2){animation-delay:.25s}.hero .in p{animation-delay:.55s}.hero .in .cta{animation-delay:.75s}.hero .in h1{opacity:1;transform:none;animation:none}
+@keyframes up{to{opacity:1;transform:none}}
+.scrollcue{display:inline-block;margin-left:8px;animation:bob 1.8s ease-in-out infinite}@keyframes bob{50%{transform:translateY(4px)}}
+.today{border-bottom:1px solid var(--line);background:#0f0f11}
+.today .wrap{display:flex;gap:10px 22px;flex-wrap:wrap;align-items:center;padding:14px 20px;font-size:14px;color:var(--mut)}
+.today b{color:var(--txt)}.dot{width:8px;height:8px;border-radius:50%;background:#25D366;display:inline-block;margin-right:6px;animation:blink 2s infinite}
+@keyframes blink{50%{opacity:.3}}
+.today .cd{color:var(--gold);font-weight:600;font-variant-numeric:tabular-nums}
+.chips{display:flex;gap:8px;overflow-x:auto;margin:-8px 0 22px;scrollbar-width:none;padding-bottom:4px}.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--line);background:transparent;color:var(--mut);border-radius:999px;padding:9px 16px;font:500 14px Inter;cursor:pointer;transition:all .25s}
+.chip.on{background:var(--txt);color:#000;border-color:var(--txt)}
+.card{transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s,border-color .35s,opacity .35s}
+.card:hover{transform:translateY(-6px);box-shadow:0 18px 40px -18px rgba(30,136,200,.45);border-color:#3a3a40}
+.card:active{transform:scale(.98)}
+.card .ph img{transition:transform .8s cubic-bezier(.2,.7,.2,1)}.card:hover .ph img{transform:scale(1.06)}
+.card.hide{display:none}
+.ph.inv{display:flex;flex-direction:column;justify-content:flex-end;padding:18px;position:relative;background-size:200% 200%;animation:shift 9s ease infinite}
+.ph.inv .ico{font-size:44px;line-height:1;margin-bottom:auto;filter:drop-shadow(0 6px 14px rgba(0,0,0,.4))}
+.ph.inv span{font:800 22px "Inter Tight";letter-spacing:-.02em}.ph.inv small{color:rgba(255,255,255,.75)}
+.g0{background-image:linear-gradient(135deg,#1E88C8,#123a5a 55%,#0b0b0c)}.g1{background-image:linear-gradient(135deg,#F26B1D,#5a2410 55%,#0b0b0c)}.g2{background-image:linear-gradient(135deg,#FFB627,#6a4708 55%,#0b0b0c)}
+@keyframes shift{50%{background-position:100% 100%}}
+.card.add{background:radial-gradient(120% 90% at 0% 0%,rgba(242,107,29,.18),transparent 60%),radial-gradient(120% 90% at 100% 100%,rgba(30,136,200,.18),transparent 60%)}
+.rv{opacity:0;transform:translateY(28px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.7,.2,1)}.rv.vis{opacity:1;transform:none}
+.fab{position:fixed;right:18px;bottom:92px;z-index:40;width:58px;height:58px;border-radius:50%;background:#25D366;display:grid;place-items:center;box-shadow:0 10px 30px rgba(37,211,102,.4);animation:pulse 2.6s infinite}
+.fab svg{width:30px;height:30px;fill:#06210f}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(37,211,102,.55)}70%{box-shadow:0 0 0 16px rgba(37,211,102,0)}100%{box-shadow:0 0 0 0 rgba(37,211,102,0)}}
+.btn{transition:transform .2s,filter .2s}.btn:hover{filter:brightness(1.08);transform:translateY(-1px)}.btn:active{transform:scale(.97)}
+nav.bottom a.act{color:var(--txt)}nav.bottom a.act b{color:var(--gold)}
+@media(max-width:639px){
+ .grid.swipe{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;margin:0 -20px;padding:4px 20px 14px;scrollbar-width:none}
+ .grid.swipe::-webkit-scrollbar{display:none}
+ .grid.swipe>.card{flex:0 0 78%;scroll-snap-align:start}.grid.gems.swipe>.card{flex-basis:62%}
+ .swipehint{font-size:13px;color:var(--mut);margin-top:-14px;margin-bottom:14px}
+}
+@media(min-width:640px){.swipehint{display:none}}
+@media(min-width:960px){.fab{bottom:28px;right:28px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}.rv,.hero .in>*,.hero h1 .l{opacity:1!important;transform:none!important}html{scroll-behavior:auto}}
 </style>
 </head>
 <body>
@@ -157,18 +201,21 @@ nav.bottom a.wa b{color:#25D366}
     <source media="(min-width:900px)" srcset="images/promenade-hero-wide-1280.webp 1280w, images/promenade-hero-wide-1920.webp 1920w" sizes="100vw">
     <img src="images/promenade-hero-tall-720.webp" srcset="images/promenade-hero-tall-480.webp 480w, images/promenade-hero-tall-720.webp 720w, images/promenade-hero-tall-1080.webp 1080w" sizes="100vw" width="720" height="1280" alt="Durban Golden Mile promenade and Moses Mabhida Stadium from above" fetchpriority="high">
   </picture>
-  <div class="wrap">
-    <h1>Durban.<br><span>All in one.</span></h1>
+  <div class="wrap in">
+    <h1><span class="l">Durban.</span><span class="l" style="color:var(--gold)">All in one.</span></h1>
     <p>Gems. Food. Stays.</p>
-    <div class="cta"><a class="btn btn-light" href="#gems">Explore Durban</a></div>
+    <div class="cta"><a class="btn btn-light" href="#gems">Explore Durban<span class="scrollcue">↓</span></a></div>
   </div>
 </section>
+<div class="today" aria-live="polite"><div class="wrap"><span><span class="dot"></span><b id="greet">Hello</b>, Durban · <b id="clock">--:--</b></span><span id="evline"></span></div></div>
 
 <section class="block" id="gems"><div class="wrap">
   <div class="kicker">Gems &amp; What's on</div>
   <h2>See Durban.</h2>
   <p class="sub">The places locals take visitors.</p>
-  <div class="grid gems" id="gemGrid"></div>
+  <div class="chips" id="gemChips"></div>
+  <p class="swipehint">Swipe →</p>
+  <div class="grid gems swipe" id="gemGrid"></div>
   <div id="eventSlot"></div>
 </div></section>
 
@@ -176,7 +223,8 @@ nav.bottom a.wa b{color:#25D366}
   <div class="kicker">Food</div>
   <h2>Eat Durban.</h2>
   <p class="sub">Order from local kitchens on WhatsApp.</p>
-  <div class="grid" id="foodGrid"></div>
+  <p class="swipehint">Swipe →</p>
+  <div class="grid swipe" id="foodGrid"></div>
   <p class="note">Delivery powered by <b>THUMA</b>.</p>
 </div></section>
 
@@ -184,7 +232,8 @@ nav.bottom a.wa b{color:#25D366}
   <div class="kicker">Stays</div>
   <h2>Sleep Durban.</h2>
   <p class="sub">Hotels, guesthouses, B&amp;Bs and homes. Enquiry only.</p>
-  <div class="grid" id="stayGrid"></div>
+  <p class="swipehint">Swipe →</p>
+  <div class="grid swipe" id="stayGrid"></div>
 </div></section>
 
 <section class="block" id="partner"><div class="wrap">
@@ -208,6 +257,7 @@ nav.bottom a.wa b{color:#25D366}
   <p>© <span id="yr"></span> Duban</p>
 </div></footer>
 
+<a class="fab" id="fab" aria-label="Chat to Duban on WhatsApp" href="#"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.4-.7-2.9-1.1-4.7-4.1-4.8-4.3-.1-.2-1.1-1.5-1.1-2.9s.7-2.1 1-2.4c.3-.3.6-.3.8-.3h.6c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.4 0 .6l-.4.6-.4.4c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1.1c.2-.3.4-.2.7-.1l2 1c.3.1.5.2.5.3.1.1.1.6-.1 1.2z"/></svg></a>
 <nav class="bottom" aria-label="Sections">
   <a href="#gems"><b>◆</b>Gems</a><a href="#food"><b>●</b>Food</a><a href="#stays"><b>▲</b>Stays</a><a href="#partner"><b>★</b>Partner</a><a class="wa" id="navwa" href="#"><b>✆</b>WhatsApp</a>
 </nav>
@@ -220,19 +270,19 @@ nav.bottom a.wa b{color:#25D366}
   const featFirst = a => [...a].sort((x,y)=>(y.featured?1:0)-(x.featured?1:0));
   const photo = (it,i) => it.img
     ? `<div class="ph"><img src="images/${esc(it.img)}" width="${it.w||400}" height="${it.h||300}" loading="lazy" decoding="async" alt="${esc(it.name)}"></div>`
-    : `<div class="ph g${i%3}" role="img" aria-label="Photo placeholder"></div>`;
+    : `<div class="ph inv g${i%3}" role="img" aria-label="Your photo here"><div class="ico">${it.icon||"✦"}</div><span>Your business here</span><small>Your photo goes here</small></div>`;
   const tags = it => `<div class="tags">${it.featured?'<span class="tag feat">Featured</span>':''}${it.placeholder?'<span class="tag">Sample</span>':''}</div>`;
   const btn = (label,msg,cls="btn-wa") => `<a class="btn btn-sm ${cls}" href="${wa(msg)}" target="_blank" rel="noopener">${label}</a>`;
   const addCard = (title,text,msg) => `<div class="card add"><h3>${title}</h3><p>${text}</p>${btn(title,msg,"btn-light")}</div>`;
   const $ = id => document.getElementById(id);
 
-  $("foodGrid").innerHTML = featFirst(D.food).map((f,i)=>`<article class="card ${f.featured?'isfeat':''}">${photo(f,i)}${tags(f)}<div class="body"><h3>${esc(f.name)}</h3><div class="meta">${esc(f.area)} · ${esc(f.cuisine)}</div>${btn("Order via WhatsApp",`Hi Duban, I'd like to order from ${f.name} (${f.area}).`)}</div></article>`).join("")
+  $("foodGrid").innerHTML = featFirst(D.food).map((f,i)=>(f.icon=f.icon||["🍛","🐟","🌯","🍔","☕","🍰"][i%6],0)||`<article class="card ${f.featured?'isfeat':''}">${photo(f,i)}${tags(f)}<div class="body"><h3>${esc(f.name)}</h3><div class="meta">${esc(f.area)} · ${esc(f.cuisine)}</div>${btn("Order via WhatsApp",`Hi Duban, I'd like to order from ${f.name} (${f.area}).`)}</div></article>`).join("")
     + addCard("List your shop","Restaurant, takeaway or shop? Get on Duban.","Hi Duban, I'd like to list my shop/restaurant.");
 
-  $("stayGrid").innerHTML = featFirst(D.stays).map((s,i)=>`<article class="card ${s.featured?'isfeat':''}">${photo(s,i+1)}${tags(s)}<div class="body"><h3>${esc(s.name)}</h3><div class="meta">${esc(s.area)} · ${esc(s.type)}</div><div class="price">From ${esc(s.price)}</div>${btn("Enquire on WhatsApp",`Hi Duban, I'd like to enquire about ${s.name} (${s.area}).`)}</div></article>`).join("")
+  $("stayGrid").innerHTML = featFirst(D.stays).map((s,i)=>(s.icon=s.icon||["🌊","🛏️","🏡","🏙️"][i%4],0)||`<article class="card ${s.featured?'isfeat':''}">${photo(s,i+1)}${tags(s)}<div class="body"><h3>${esc(s.name)}</h3><div class="meta">${esc(s.area)} · ${esc(s.type)}</div><div class="price">From ${esc(s.price)}</div>${btn("Enquire on WhatsApp",`Hi Duban, I'd like to enquire about ${s.name} (${s.area}).`)}</div></article>`).join("")
     + addCard("List your stay","Hotel, guesthouse, B&amp;B or home? Get on Duban.","Hi Duban, I'd like to list my stay.");
 
-  $("gemGrid").innerHTML = D.gems.map((g,i)=>`<article class="card gem">${photo(g,i)}<div class="body"><h3>${esc(g.name)}</h3><div class="meta">${esc(g.area)}</div></div></article>`).join("");
+  $("gemGrid").innerHTML = D.gems.map((g,i)=>`<article class="card gem" data-cat="${esc(g.cat||"")}">${photo(g,i)}<div class="body"><h3>${esc(g.name)}</h3><div class="meta">${esc(g.area)}</div></div></article>`).join("");
 
   const ev = D.events.find(e=>e.featured) || D.events[0];
   $("eventSlot").innerHTML = (ev ? `<article class="event">${photo(ev,2)}<div class="body"><div class="kicker">Featured event</div><h3>${esc(ev.name)}</h3><div class="when">${esc(ev.date)} · ${esc(ev.place)}</div><p class="meta">${esc(ev.blurb)}${ev.link?` <a href="${esc(ev.link)}" target="_blank" rel="noopener">Source / details ↗</a>`:''}</p><div class="row">${btn("Promote your event","Hi Duban, I'd like to promote my event.","btn-wa")}</div></div></article>` : "");
@@ -249,6 +299,34 @@ nav.bottom a.wa b{color:#25D366}
   ["topwa","footwa","footwa2","navwa"].forEach(id=>{const a=$(id);a.href=hello;a.target="_blank";a.rel="noopener"});
   $("tiktok").href = D.tiktok; $("tiktok").target="_blank";
   $("yr").textContent = new Date().getFullYear();
+  /* ---- ALIVE: today strip, chips, reveals, fab, active nav ---- */
+  $("fab").href=hello;$("fab").target="_blank";$("fab").rel="noopener";
+  const tz="Africa/Johannesburg";
+  const ev2=D.events.find(e=>e.featured&&e.start)||D.events.find(e=>e.start);
+  function tick(){const now=new Date();
+    const h=+new Intl.DateTimeFormat("en-ZA",{hour:"numeric",hourCycle:"h23",timeZone:tz}).format(now);
+    $("greet").textContent=h<5?"Late night":h<12?"Sawubona, good morning":h<17?"Sawubona, good afternoon":"Sawubona, good evening";
+    $("clock").textContent=new Intl.DateTimeFormat("en-ZA",{weekday:"short",hour:"2-digit",minute:"2-digit",timeZone:tz}).format(now)+" SAST";
+    if(!ev2){$("evline").textContent="";return}
+    const st=new Date(ev2.start),en=new Date(ev2.end||ev2.start),d=st-now;
+    if(now>en){$("evline").textContent="";return}
+    let t;if(d<=0)t='<span class="cd">On now</span>';else{const dd=Math.floor(d/864e5),hh=Math.floor(d%864e5/36e5),mm=Math.floor(d%36e5/6e4);t='<span class="cd">'+(dd?dd+"d ":"")+hh+"h "+mm+"m</span> to go"}
+    $("evline").innerHTML='<a href="#eventSlot" style="text-decoration:none"><b>'+esc(ev2.name)+'</b></a> · '+t;}
+  tick();setInterval(tick,30000);
+  const cats=["All",...new Set(D.gems.map(g=>g.cat).filter(Boolean))];
+  $("gemChips").innerHTML=cats.map((c,i)=>`<button class="chip${i?"":" on"}" data-c="${esc(c)}">${esc(c)}</button>`).join("");
+  $("gemChips").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;
+    document.querySelectorAll("#gemChips .chip").forEach(x=>x.classList.toggle("on",x===b));
+    document.querySelectorAll("#gemGrid .card").forEach(c=>c.classList.toggle("hide",b.dataset.c!=="All"&&c.dataset.cat!==b.dataset.c));
+    $("gemGrid").scrollTo({left:0,behavior:"smooth"});});
+  const els=document.querySelectorAll("section.block h2,section.block .sub,.card,.event,.note");
+  if("IntersectionObserver" in window&&!matchMedia("(prefers-reduced-motion: reduce)").matches){
+    const io=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){en.target.classList.add("vis");io.unobserve(en.target)}}),{rootMargin:"0px 0px -8% 0px"});
+    els.forEach((el,i)=>{el.classList.add("rv");el.style.transitionDelay=(el.classList.contains("card")?(i%4)*70:0)+"ms";io.observe(el)});
+    const nav=document.querySelectorAll("nav.bottom a[href^='#']");
+    const so=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting)nav.forEach(a=>a.classList.toggle("act",a.getAttribute("href")==="#"+en.target.id))}),{rootMargin:"-45% 0px -50% 0px"});
+    ["gems","food","stays","partner"].forEach(id=>so.observe($(id)));
+  }
 })();
 </script>
 </body>
