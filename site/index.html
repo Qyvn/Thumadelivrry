@@ -1,150 +1,254 @@
 <!doctype html>
-<html lang="en-ZA">
+<html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Duban — Durban. All in one.</title>
-<meta name="description" content="Duban: Gems, Food & Stays around Durban. Delivery powered by THUMA.">
-<meta property="og:title" content="Duban — Durban. All in one.">
-<meta property="og:description" content="Gems. Food. Stays.">
-<meta property="og:image" content="images/og-duban.jpg">
-<meta name="theme-color" content="#0A0A0A">
-<link rel="icon" href="images/duban-mark.png" type="image/png">
-<link rel="icon" href="favicon.ico">
-<link rel="apple-touch-icon" href="images/duban-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
+<meta name="description" content="Duban: Gems, Food and Stays around Durban. Delivery powered by THUMA.">
+<meta name="theme-color" content="#0b0b0c">
+<link rel="icon" href="images/duban-mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script>
+/* =====================================================================
+   DUBAN DATA — edit ONLY this object to change what the site shows.
+   - whatsapp: number used by every button (no +, no spaces)
+   - placeholder:true  -> shows a small "Sample" tag. Remove when real.
+   - featured:true     -> "Featured" badge + sorted to the front (paid).
+   - img: file in ./images/ (WebP, with w/h) or omit for a gradient.
+   - msg: the prefilled WhatsApp text for that button.
+   ===================================================================== */
+const DUBAN = {
+  whatsapp: "27645527661",
+  tiktok: "https://www.tiktok.com/@duban_durban031",
+
+  /* FOOD — restaurants & shops. Last card "List your shop" is automatic. */
+  food: [
+    { name:"Your restaurant here", area:"Area", cuisine:"Cuisine", img:"victoria-market-400.webp", w:400, h:300, placeholder:true, featured:false },
+    { name:"Your restaurant here", area:"Area", cuisine:"Cuisine", placeholder:true },
+    { name:"Your shop here",       area:"Area", cuisine:"Cuisine", placeholder:true },
+    { name:"Your restaurant here", area:"Area", cuisine:"Cuisine", placeholder:true },
+    { name:"Your shop here",       area:"Area", cuisine:"Cuisine", placeholder:true },
+    { name:"Your restaurant here", area:"Area", cuisine:"Cuisine", placeholder:true }
+  ],
+
+  /* STAYS — price as text, e.g. "R___ /night". Last card "List your stay" is automatic. */
+  stays: [
+    { name:"Your stay here", area:"Area", type:"Guesthouse", price:"R___ /night", img:"umhlanga-night-card-400.webp", w:400, h:500, placeholder:true, featured:true },
+    { name:"Your stay here", area:"Area", type:"Hotel",      price:"R___ /night", placeholder:true },
+    { name:"Your stay here", area:"Area", type:"B&B",        price:"R___ /night", placeholder:true },
+    { name:"Your stay here", area:"Area", type:"Apartment",  price:"R___ /night", placeholder:true }
+  ],
+
+  /* GEMS — real places. credit shown in the footer "Photo credits" line. */
+  gems: [
+    { name:"Golden Mile", area:"Beachfront", img:"durban-letters-card-400.webp", w:400, h:500, credit:"Duban" },
+    { name:"uShaka Marine World", area:"Point", img:"ushaka-gate-card-400.webp", w:400, h:500, credit:"Duban" },
+    { name:"Moses Mabhida Stadium", area:"Stamford Hill", img:"mabhida-400.webp", w:400, h:300,
+      credit:"South African Tourism / Roger de la Harpe", lic:"CC BY 2.0", licUrl:"https://creativecommons.org/licenses/by/2.0", src:"https://commons.wikimedia.org/wiki/File:Moses_Mabhida_Stadium,_Durban,_KwaZulu_Natal,_South_Africa_(20513002075).jpg" },
+    { name:"Umhlanga Rocks", area:"Umhlanga", img:"umhlanga-night-card-400.webp", w:400, h:500, credit:"Duban" },
+    { name:"Victoria Street Market", area:"CBD", img:"victoria-market-400.webp", w:400, h:300,
+      credit:"Scotted400", lic:"CC BY-SA 4.0", licUrl:"https://creativecommons.org/licenses/by-sa/4.0", src:"https://commons.wikimedia.org/wiki/File:Victoria_Market,_Durban.jpg" },
+    { name:"Durban Botanic Gardens", area:"Berea", img:"botanic-400.webp", w:400, h:300,
+      credit:"M. Purves", lic:"CC BY-SA 3.0", licUrl:"https://creativecommons.org/licenses/by-sa/3.0", src:"https://commons.wikimedia.org/wiki/File:Durban_Botanic_cycads_and_trees.JPG" },
+    { name:"Florida Road", area:"Morningside", img:"florida-road-400.webp", w:400, h:233,
+      credit:"Dennis Sylvester Hurd", lic:"CC BY 2.0", licUrl:"https://creativecommons.org/licenses/by/2.0", src:"https://commons.wikimedia.org/wiki/File:Along_Florida_Road_(54331633898).jpg" },
+    { name:"Valley of a Thousand Hills", area:"Inland", img:"thousand-hills-400.webp", w:400, h:300,
+      credit:"Jean & Nathalie", lic:"CC BY 2.0", licUrl:"https://creativecommons.org/licenses/by/2.0", src:"https://commons.wikimedia.org/wiki/File:Valley_of_a_Thousand_Hills.jpg" }
+  ],
+
+  /* EVENTS — first featured:true event fills the "Featured event" slot. */
+  events: [
+    { name:"Durban Diwali Festival", date:"30 Oct – 1 Nov 2026", place:"Suncoast, beachfront",
+      blurb:"Culture, food and fireworks.", link:"https://www.tsogosun.com/whatson/suncoast-durban-diwali-festival/",
+      img:"promenade-card-400.webp", w:400, h:500, featured:true }
+  ],
+
+  /* PARTNER PACKAGES — replace R___ with your real prices. */
+  packages: [
+    { name:"Basic listing",         price:"R___ /month", points:["Card in Food or Stays","WhatsApp button to you"] },
+    { name:"Featured listing",      price:"R___ /month", points:["Featured badge","Shown first in its section"], featured:true },
+    { name:"Event / Spotlight promo", price:"R___ /event", points:["Featured event slot","Shout-out on TikTok"] }
+  ]
+};
+</script>
+<style>
+:root{--bg:#0b0b0c;--card:#161618;--line:#26262a;--txt:#f7f4ef;--mut:#9a978f;--blue:#1E88C8;--orange:#F26B1D;--gold:#FFB627;--r:18px}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{background:var(--bg);color:var(--txt);font:16px/1.5 Inter,system-ui,sans-serif;padding-bottom:76px;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:"Inter Tight",Inter,sans-serif;letter-spacing:-.03em;line-height:1.02}
+a{color:inherit}
+img{display:block;width:100%;height:100%;object-fit:cover}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+header.top{position:sticky;top:0;z-index:20;background:rgba(11,11,12,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+header.top .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+.logo{display:flex;gap:10px;align-items:center;font:800 22px "Inter Tight";text-decoration:none;letter-spacing:-.03em}
+.logo img{width:30px;height:30px;border-radius:8px}
+.topnav{display:none;gap:28px}.topnav a{text-decoration:none;color:var(--mut);font-weight:500}.topnav a:hover{color:var(--txt)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:0 20px;border-radius:999px;font-weight:600;text-decoration:none;border:0;cursor:pointer;font-size:15px}
+.btn-wa{background:#25D366;color:#06210f}.btn-light{background:var(--txt);color:#000}.btn-ghost{border:1px solid var(--line);background:transparent}
+.btn-sm{min-height:40px;font-size:14px;padding:0 16px;width:100%}
+.hero{position:relative;min-height:88svh;display:flex;align-items:flex-end;overflow:hidden}
+.hero picture{position:absolute;inset:0}
+.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,11,12,.15) 30%,rgba(11,11,12,.95))}
+.hero .wrap{position:relative;z-index:1;padding-bottom:56px;width:100%}
+.hero h1{font-size:clamp(52px,13vw,128px);font-weight:800}
+.hero h1 span{color:var(--gold)}
+.hero p{font-size:clamp(20px,4.5vw,28px);color:var(--mut);margin:14px 0 28px;font-weight:500}
+.hero .cta{display:flex;gap:12px;flex-wrap:wrap}
+.credit-mini{position:absolute;right:12px;bottom:8px;z-index:1;font-size:11px;color:var(--mut)}
+section.block{padding:88px 0 0}
+.kicker{color:var(--orange);font-weight:600;font-size:14px;letter-spacing:.08em;text-transform:uppercase}
+section h2{font-size:clamp(40px,9vw,72px);font-weight:800;margin:8px 0 10px}
+.sub{color:var(--mut);font-size:18px;max-width:560px;margin-bottom:32px}
+.grid{display:grid;gap:16px;grid-template-columns:1fr}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column;position:relative}
+.ph{aspect-ratio:4/3;background:#222;overflow:hidden}
+.g0{background:linear-gradient(135deg,#1E88C8,#0b0b0c)}.g1{background:linear-gradient(135deg,#F26B1D,#0b0b0c)}.g2{background:linear-gradient(135deg,#FFB627,#0b0b0c)}
+.body{padding:18px;display:flex;flex-direction:column;gap:6px;flex:1}
+.body h3{font-size:22px;font-weight:700}
+.meta{color:var(--mut);font-size:14px}
+.price{font-weight:600}
+.body .btn{margin-top:auto}.body .meta+.btn,.body .price+.btn{margin-top:14px}
+.tags{position:absolute;top:12px;left:12px;display:flex;gap:6px}
+.tag{font-size:11px;font-weight:600;padding:4px 10px;border-radius:999px;background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.2);backdrop-filter:blur(6px)}
+.tag.feat{background:var(--gold);color:#000;border-color:var(--gold)}
+.card.isfeat{border-color:var(--gold)}
+.card.add{border-style:dashed;align-items:flex-start;justify-content:center;padding:28px;min-height:220px;background:transparent}
+.card.add h3{font-size:28px;margin-bottom:6px}.card.add p{color:var(--mut);margin-bottom:18px}
+.note{color:var(--mut);margin-top:18px;font-size:14px}.note b{color:var(--txt)}
+.gem .ph{aspect-ratio:4/5}.gem .body{padding:14px}.gem h3{font-size:18px}
+.event{display:grid;grid-template-columns:1fr;background:var(--card);border:1px solid var(--gold);border-radius:var(--r);overflow:hidden;margin-top:28px}
+.event .ph{aspect-ratio:16/10}.event .body{padding:24px;gap:10px}.event h3{font-size:clamp(28px,6vw,44px)}
+.event .when{color:var(--gold);font-weight:600}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.pkg .body{padding:26px;gap:10px}.pkg .big{font:800 36px "Inter Tight";letter-spacing:-.03em}
+.pkg ul{padding-left:18px;color:var(--mut);margin-bottom:18px}
+footer{margin-top:100px;border-top:1px solid var(--line);padding:48px 0 32px;color:var(--mut);font-size:14px}
+footer .cols{display:grid;gap:28px}
+footer h4{color:var(--txt);font:700 16px "Inter Tight";margin-bottom:8px}
+footer a{color:var(--txt)}
+.credits{margin-top:32px;font-size:12px;line-height:1.7}
+.made{margin-top:20px;color:var(--txt);font-weight:600}
+nav.bottom{position:fixed;left:0;right:0;bottom:0;z-index:30;display:grid;grid-template-columns:repeat(5,1fr);background:rgba(11,11,12,.94);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+nav.bottom a{text-align:center;padding:10px 0 12px;font-size:12px;text-decoration:none;color:var(--mut);font-weight:500}
+nav.bottom a b{display:block;font-size:18px;color:var(--txt)}
+nav.bottom a.wa b{color:#25D366}
+@media(min-width:640px){.grid{grid-template-columns:repeat(2,1fr)}.gems{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:960px){
+ body{padding-bottom:0}nav.bottom{display:none}.topnav{display:flex}
+ .grid{grid-template-columns:repeat(3,1fr)}.gems{grid-template-columns:repeat(4,1fr)}
+ .event{grid-template-columns:1fr 1.2fr}.event .ph{aspect-ratio:auto}.event .body{padding:44px;justify-content:center}
+ footer .cols{grid-template-columns:2fr 1fr 1fr}section.block{padding-top:120px}
+}
+</style>
 </head>
-<body class="fill">
-<a class="skip" href="#main">Skip to content</a>
+<body>
+<header class="top"><div class="wrap">
+  <a class="logo" href="#top"><img src="images/duban-mark.png" width="64" height="64" alt="">Duban</a>
+  <nav class="topnav"><a href="#gems">Gems</a><a href="#food">Food</a><a href="#stays">Stays</a><a href="#partner">Partner</a></nav>
+  <a class="btn btn-wa" style="min-height:38px;font-size:14px" id="topwa" href="#">WhatsApp</a>
+</div></header>
 
-<p class="ad-line" id="ad-line"><a href="#stays">List your stay</a></p>
-
-<header class="top glass">
-  <a href="#" class="logo" aria-label="Duban home"><img src="images/duban-mark.png" width="32" height="32" alt="Duban"></a>
-  <a class="quiet" href="https://wa.me/27645527661">WhatsApp</a>
-</header>
-
-<main id="main">
-  <section class="hero-bleed">
-    <picture>
-      <source media="(min-width: 768px)" srcset="images/duban/promenade-hero-wide-768.webp 768w, images/duban/promenade-hero-wide-1280.webp 1280w" sizes="100vw">
-      <img class="hero-photo fade-img" src="images/duban/promenade-hero-tall-720.webp" srcset="images/duban/promenade-hero-tall-480.webp 480w, images/duban/promenade-hero-tall-720.webp 720w, images/duban/promenade-hero-tall-1080.webp 1080w" sizes="100vw" width="720" height="1280" alt="Golden Mile promenade with Moses Mabhida Stadium" fetchpriority="high">
-    </picture>
-    <div class="hero-shade" aria-hidden="true"></div>
-    <div class="hero-inner">
-      <img class="hero-logo" src="images/duban-logo.jpg" width="88" height="88" alt="">
-      <h1>Durban.<br>All in one.</h1>
-      <p class="lead">Gems. Food. Stays.</p>
-      <a class="btn btn-light" href="#explore">Explore</a>
-      <p class="credit">Photo: Duban</p>
-    </div>
-  </section>
-
+<main id="top">
+<section class="hero">
+  <picture>
+    <source media="(min-width:900px)" srcset="images/promenade-hero-wide-1280.webp 1280w, images/promenade-hero-wide-1920.webp 1920w" sizes="100vw">
+    <img src="images/promenade-hero-tall-720.webp" srcset="images/promenade-hero-tall-480.webp 480w, images/promenade-hero-tall-720.webp 720w, images/promenade-hero-tall-1080.webp 1080w" sizes="100vw" width="720" height="1280" alt="Durban Golden Mile promenade and Moses Mabhida Stadium from above" fetchpriority="high">
+  </picture>
   <div class="wrap">
-    <section class="doors" aria-label="Sections">
-      <a class="door tint-green" href="#explore">
-        <img class="fade-img" src="images/durban/botanic.webp" srcset="images/durban/botanic-400.webp 400w, images/durban/botanic-800.webp 800w" sizes="(max-width:640px) 100vw, 36rem" width="800" height="600" alt="" loading="lazy">
-        <span class="door-shade" aria-hidden="true"></span>
-        <span class="door-copy"><b>Gems</b><span>Submit a spot</span><small>M. Purves · CC BY-SA 3.0</small></span>
-        <span class="door-arrow" aria-hidden="true">→</span>
-      </a>
-      <a class="door tint-sunset" href="#food">
-        <img class="fade-img" src="images/durban/victoria-market.webp" srcset="images/durban/victoria-market-400.webp 400w, images/durban/victoria-market-800.webp 800w" sizes="(max-width:640px) 100vw, 36rem" width="800" height="600" alt="" loading="lazy">
-        <span class="door-shade" aria-hidden="true"></span>
-        <span class="door-copy"><b>Food</b><span>Delivery by THUMA</span><small>Scotted400 · CC BY-SA 4.0</small></span>
-        <span class="door-arrow" aria-hidden="true">→</span>
-      </a>
-      <a class="door tint-ocean" href="#stays">
-        <img class="fade-img" src="images/duban/umhlanga-night-card-800.webp" srcset="images/duban/umhlanga-night-card-400.webp 400w, images/duban/umhlanga-night-card-800.webp 800w" sizes="(max-width:640px) 100vw, 36rem" width="800" height="600" alt="" loading="lazy">
-        <span class="door-shade" aria-hidden="true"></span>
-        <span class="door-copy"><b>Stays</b><span>List yours</span><small>Photo: Duban</small></span>
-        <span class="door-arrow" aria-hidden="true">→</span>
-      </a>
-    </section>
-
-    <section id="explore" class="block">
-      <h2>Explore Durban</h2>
-      <ul class="cards">
-        <li>
-          <a href="https://visitdurban.travel/page/central-beaches" target="_blank" rel="noreferrer">
-            <img class="fade-img" src="images/duban/durban-letters-card-400.webp" srcset="images/duban/durban-letters-card-400.webp 400w, images/duban/durban-letters-card-800.webp 800w" sizes="140px" width="400" height="256" alt="Golden Mile" loading="lazy">
-            <span><strong>Golden Mile</strong><small>Central Beachfront</small><em>Durban Tourism · Photo: Duban</em></span>
-          </a>
-        </li>
-        <li>
-          <a href="https://ushakamarine.com/" target="_blank" rel="noreferrer">
-            <img class="fade-img" src="images/duban/ushaka-gate-card-400.webp" srcset="images/duban/ushaka-gate-card-400.webp 400w, images/duban/ushaka-gate-card-800.webp 800w" sizes="140px" width="400" height="256" alt="uShaka Marine World" loading="lazy">
-            <span><strong>uShaka Marine World</strong><small>Point</small><em>uShaka · Photo: Duban</em></span>
-          </a>
-        </li>
-        <li>
-          <a href="https://visitdurban.travel/space/moses-mabhida-stadium" target="_blank" rel="noreferrer">
-            <img class="fade-img" src="images/durban/mabhida.webp" srcset="images/durban/mabhida-400.webp 400w, images/durban/mabhida-800.webp 800w" sizes="140px" width="400" height="256" alt="Moses Mabhida Stadium" loading="lazy">
-            <span><strong>Moses Mabhida Stadium</strong><small>Stamford Hill</small><em>Durban Tourism · SA Tourism / CC BY 2.0</em></span>
-          </a>
-        </li>
-        <li>
-          <a href="https://www.umhlangatourism.co.za/UMHLANGA-BROCHURE-2025.pdf" target="_blank" rel="noreferrer">
-            <img class="fade-img" src="images/duban/umhlanga-night-card-400.webp" srcset="images/duban/umhlanga-night-card-400.webp 400w, images/duban/umhlanga-night-card-800.webp 800w" sizes="140px" width="400" height="256" alt="Umhlanga Lighthouse" loading="lazy">
-            <span><strong>Umhlanga Promenade</strong><small>Umhlanga Rocks</small><em>Umhlanga Tourism · Photo: Duban</em></span>
-          </a>
-        </li>
-      </ul>
-    </section>
-
-    <section id="whats-on" class="block">
-      <h2>What’s on</h2>
-      <div class="night">
-        <img class="fade-img" src="images/duban/umhlanga-night-card-800.webp" srcset="images/duban/umhlanga-night-card-400.webp 400w, images/duban/umhlanga-night-card-800.webp 800w" sizes="(max-width:640px) 100vw, 36rem" width="800" height="1000" alt="Umhlanga Rocks sign at night" loading="lazy">
-        <span class="night-shade" aria-hidden="true"></span>
-        <b>Durban after dark</b><small>Photo: Duban</small>
-      </div>
-      <ul class="plain">
-        <li><a href="https://iol.co.za/entertainment/whats-on/durban/2026-10-22-durban-is-getting-spooky-five-halloween-events-to-get-your-blood-pumping/" target="_blank" rel="noreferrer"><time>30–31 Oct</time><strong>Halloween weekend</strong><em>IOL</em></a></li>
-        <li><a href="https://www.tsogosun.com/whatson/suncoast-durban-diwali-festival/" target="_blank" rel="noreferrer"><time>30 Oct – 1 Nov</time><strong>Durban Diwali Festival</strong><em>Tsogo Sun</em></a></li>
-        <li><a href="https://iol.co.za/entertainment/celebrity-news/2026-10-01-black-coffee-to-headline-africa-is-not-a-jungle-in-durban-in-november-2026/" target="_blank" rel="noreferrer"><time>7 Nov</time><strong>Africa Is Not A Jungle</strong><em>IOL</em></a></li>
-      </ul>
-    </section>
-
-    <section id="food" class="block">
-      <h2>Food</h2>
-      <p class="note">Delivery powered by THUMA.</p>
-      <a class="text-link" href="https://wa.me/27645527661?text=Hi%20Duban%20—%20partner%20as%20a%20merchant">List your shop</a>
-    </section>
-
-    <section id="stays" class="block">
-      <h2>Stays</h2>
-      <p class="note">Hotels, guesthouses, B&amp;Bs &amp; homes. Enquiry only.</p>
-      <a class="text-link" href="https://wa.me/27645527661?text=Hi%20Duban%20—%20I%20want%20to%20list%20my%20stay">List your stay</a>
-    </section>
-
-    <p class="foot"><a href="https://wa.me/27645527661">WhatsApp Duban</a></p>
+    <h1>Durban.<br><span>All in one.</span></h1>
+    <p>Gems. Food. Stays.</p>
+    <div class="cta"><a class="btn btn-light" href="#gems">Explore Durban</a></div>
   </div>
+</section>
+
+<section class="block" id="gems"><div class="wrap">
+  <div class="kicker">Gems &amp; What's on</div>
+  <h2>See Durban.</h2>
+  <p class="sub">The places locals take visitors.</p>
+  <div class="grid gems" id="gemGrid"></div>
+  <div id="eventSlot"></div>
+</div></section>
+
+<section class="block" id="food"><div class="wrap">
+  <div class="kicker">Food</div>
+  <h2>Eat Durban.</h2>
+  <p class="sub">Order from local kitchens on WhatsApp.</p>
+  <div class="grid" id="foodGrid"></div>
+  <p class="note">Delivery powered by <b>THUMA</b>.</p>
+</div></section>
+
+<section class="block" id="stays"><div class="wrap">
+  <div class="kicker">Stays</div>
+  <h2>Sleep Durban.</h2>
+  <p class="sub">Hotels, guesthouses, B&amp;Bs and homes. Enquiry only.</p>
+  <div class="grid" id="stayGrid"></div>
+</div></section>
+
+<section class="block" id="partner"><div class="wrap">
+  <div class="kicker">Partner with Duban</div>
+  <h2>Get seen.</h2>
+  <p class="sub">Put your business in front of people looking for Durban.</p>
+  <div class="grid" id="pkgGrid"></div>
+</div></section>
 </main>
 
-<nav class="taskbar glass" aria-label="Primary">
-  <a href="#main" class="on"><span aria-hidden="true">⌂</span>Home</a>
-  <a href="#explore"><span aria-hidden="true">◆</span>Gems</a>
-  <a href="#food"><span aria-hidden="true">▣</span>Food</a>
-  <a href="#stays"><span aria-hidden="true">⌂</span>Stays</a>
+<footer><div class="wrap">
+  <div class="cols">
+    <div><a class="logo" href="#top"><img src="images/duban-mark.png" width="64" height="64" alt="" loading="lazy">Duban</a>
+      <h4 style="margin-top:16px">About</h4>
+      <p>Duban is a simple guide to Durban — gems to see, food to order, places to stay. Durban. All in one.</p></div>
+    <div><h4>Contact</h4><p><a id="footwa" href="#">WhatsApp +27 64 552 7661</a></p></div>
+    <div><h4>Follow</h4><p><a id="tiktok" href="#" rel="noopener">TikTok @duban_durban031</a></p><p><a id="footwa2" href="#">WhatsApp</a></p></div>
+  </div>
+  <p class="credits" id="credits"></p>
+  <p class="made">Made in Durban.</p>
+  <p>© <span id="yr"></span> Duban</p>
+</div></footer>
+
+<nav class="bottom" aria-label="Sections">
+  <a href="#gems"><b>◆</b>Gems</a><a href="#food"><b>●</b>Food</a><a href="#stays"><b>▲</b>Stays</a><a href="#partner"><b>★</b>Partner</a><a class="wa" id="navwa" href="#"><b>✆</b>WhatsApp</a>
 </nav>
 
 <script>
 (function(){
-  var ads=[
-    {t:'List your stay',h:'#stays'},
-    {t:'List your shop · THUMA',h:'#food'},
-    {t:'Advertise · WhatsApp',h:'https://wa.me/27645527661?text=Hi%20Duban%20—%20I%20want%20to%20advertise'}
-  ];
-  var i=0, a=document.querySelector('#ad-line a');
-  setInterval(function(){ i=(i+1)%ads.length; a.textContent=ads[i].t; a.href=ads[i].h; },7000);
-  document.querySelectorAll('.fade-img').forEach(function(img){
-    if(img.complete) img.classList.add('is-ready');
-    else img.addEventListener('load', function(){ img.classList.add('is-ready'); });
-  });
+  const D = DUBAN;
+  const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const wa = msg => `https://wa.me/${D.whatsapp}?text=${encodeURIComponent(msg)}`;
+  const featFirst = a => [...a].sort((x,y)=>(y.featured?1:0)-(x.featured?1:0));
+  const photo = (it,i) => it.img
+    ? `<div class="ph"><img src="images/${esc(it.img)}" width="${it.w||400}" height="${it.h||300}" loading="lazy" decoding="async" alt="${esc(it.name)}"></div>`
+    : `<div class="ph g${i%3}" role="img" aria-label="Photo placeholder"></div>`;
+  const tags = it => `<div class="tags">${it.featured?'<span class="tag feat">Featured</span>':''}${it.placeholder?'<span class="tag">Sample</span>':''}</div>`;
+  const btn = (label,msg,cls="btn-wa") => `<a class="btn btn-sm ${cls}" href="${wa(msg)}" target="_blank" rel="noopener">${label}</a>`;
+  const addCard = (title,text,msg) => `<div class="card add"><h3>${title}</h3><p>${text}</p>${btn(title,msg,"btn-light")}</div>`;
+  const $ = id => document.getElementById(id);
+
+  $("foodGrid").innerHTML = featFirst(D.food).map((f,i)=>`<article class="card ${f.featured?'isfeat':''}">${photo(f,i)}${tags(f)}<div class="body"><h3>${esc(f.name)}</h3><div class="meta">${esc(f.area)} · ${esc(f.cuisine)}</div>${btn("Order via WhatsApp",`Hi Duban, I'd like to order from ${f.name} (${f.area}).`)}</div></article>`).join("")
+    + addCard("List your shop","Restaurant, takeaway or shop? Get on Duban.","Hi Duban, I'd like to list my shop/restaurant.");
+
+  $("stayGrid").innerHTML = featFirst(D.stays).map((s,i)=>`<article class="card ${s.featured?'isfeat':''}">${photo(s,i+1)}${tags(s)}<div class="body"><h3>${esc(s.name)}</h3><div class="meta">${esc(s.area)} · ${esc(s.type)}</div><div class="price">From ${esc(s.price)}</div>${btn("Enquire on WhatsApp",`Hi Duban, I'd like to enquire about ${s.name} (${s.area}).`)}</div></article>`).join("")
+    + addCard("List your stay","Hotel, guesthouse, B&amp;B or home? Get on Duban.","Hi Duban, I'd like to list my stay.");
+
+  $("gemGrid").innerHTML = D.gems.map((g,i)=>`<article class="card gem">${photo(g,i)}<div class="body"><h3>${esc(g.name)}</h3><div class="meta">${esc(g.area)}</div></div></article>`).join("");
+
+  const ev = D.events.find(e=>e.featured) || D.events[0];
+  $("eventSlot").innerHTML = (ev ? `<article class="event">${photo(ev,2)}<div class="body"><div class="kicker">Featured event</div><h3>${esc(ev.name)}</h3><div class="when">${esc(ev.date)} · ${esc(ev.place)}</div><p class="meta">${esc(ev.blurb)}${ev.link?` <a href="${esc(ev.link)}" target="_blank" rel="noopener">Source / details ↗</a>`:''}</p><div class="row">${btn("Promote your event","Hi Duban, I'd like to promote my event.","btn-wa")}</div></div></article>` : "");
+  $("eventSlot").querySelector(".btn")?.classList.remove("btn-sm");
+
+  $("pkgGrid").innerHTML = D.packages.map(p=>`<article class="card pkg ${p.featured?'isfeat':''}">${p.featured?'<div class="tags" style="position:static;padding:18px 26px 0"><span class="tag feat">Most seen</span></div>':''}<div class="body"><h3>${esc(p.name)}</h3><div class="big">${esc(p.price)}</div><ul>${p.points.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>${btn("Get "+esc(p.name),`Hi Duban, I'm interested in the ${p.name} package.`)}</div></article>`).join("");
+
+  const seen = new Set();
+  $("credits").innerHTML = "<b>Photo credits:</b> " + D.gems.filter(g=>g.credit && g.credit!=="Duban" && !seen.has(g.credit) && seen.add(g.credit))
+    .map(g=>`${esc(g.name)} — ${esc(g.credit)}, <a href="${g.licUrl}" target="_blank" rel="noopener">${g.lic}</a>, <a href="${g.src}" target="_blank" rel="noopener">Wikimedia Commons</a>`).join(" · ")
+    + " · Hero, Golden Mile, uShaka, Umhlanga &amp; event photos: Duban.";
+
+  const hello = wa("Hi Duban!");
+  ["topwa","footwa","footwa2","navwa"].forEach(id=>{const a=$(id);a.href=hello;a.target="_blank";a.rel="noopener"});
+  $("tiktok").href = D.tiktok; $("tiktok").target="_blank";
+  $("yr").textContent = new Date().getFullYear();
 })();
 </script>
 </body>
