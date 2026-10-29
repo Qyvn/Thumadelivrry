@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  experimental: { serverActions: { bodySizeLimit: "6mb" } },
   // Serverless SQLite demo mode copies data/demo.db to /tmp on cold start (see src/lib/db.ts);
   // make sure the snapshot is bundled with every server function.
   outputFileTracingIncludes: {

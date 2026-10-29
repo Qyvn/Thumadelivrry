@@ -68,3 +68,4 @@ public/images/durban/catalog.json
 # Owner originals + previews (kept locally, not deployed)
 assets/originals/
 assets/edited-previews/
+public/uploads/
