@@ -25,7 +25,7 @@ const DUBAN = {
 
   /* FOOD — restaurants & shops. Last card "List your shop" is automatic. */
   food: [
-    { name:"Your restaurant here", area:"Area", cuisine:"Cuisine", img:"victoria-market-400.webp", w:400, h:300, placeholder:true, featured:false },
+    { name:"Your restaurant here", area:"Area", cuisine:"Cuisine", img:"v2/victoria-market-800.webp", w:800, h:600, placeholder:true, featured:false },
     { name:"Your restaurant here", area:"Area", cuisine:"Cuisine", placeholder:true },
     { name:"Your shop here",       area:"Area", cuisine:"Cuisine", placeholder:true },
     { name:"Your restaurant here", area:"Area", cuisine:"Cuisine", placeholder:true },
@@ -35,7 +35,7 @@ const DUBAN = {
 
   /* STAYS — price as text, e.g. "R___ /night". Last card "List your stay" is automatic. */
   stays: [
-    { name:"Your stay here", area:"Area", type:"Guesthouse", price:"R___ /night", img:"umhlanga-night-card-400.webp", w:400, h:500, placeholder:true, featured:true },
+    { name:"Your stay here", area:"Area", type:"Guesthouse", price:"R___ /night", img:"v2/umhlanga-night-card-800.webp", w:800, h:1000, placeholder:true, featured:true },
     { name:"Your stay here", area:"Area", type:"Hotel",      price:"R___ /night", placeholder:true },
     { name:"Your stay here", area:"Area", type:"B&B",        price:"R___ /night", placeholder:true },
     { name:"Your stay here", area:"Area", type:"Apartment",  price:"R___ /night", placeholder:true }
@@ -46,18 +46,18 @@ const DUBAN = {
 
   /* GEMS fallback — live copy lives in site/gems.json (owner edits that). Real places. credit shown in the footer "Photo credits" line. */
   gems: [
-    { name:"Golden Mile", blurb:"The beachfront promenade — walk, cycle, swim.", cat:"Beach", area:"Beachfront", img:"durban-letters-card-400.webp", w:400, h:500, credit:"Duban" },
-    { name:"uShaka Marine World", blurb:"Marine park and aquarium at the Point.", cat:"Family", area:"Point", img:"ushaka-gate-card-400.webp", w:400, h:500, credit:"Duban" },
-    { name:"Moses Mabhida Stadium", blurb:"The arch over the city, built for 2010.", cat:"Landmark", area:"Stamford Hill", img:"mabhida-400.webp", w:400, h:300,
+    { name:"Golden Mile", blurb:"The beachfront promenade — walk, cycle, swim.", cat:"Beach", area:"Beachfront", img:"v2/durban-letters-card-800.webp", w:720, h:900, credit:"Duban" },
+    { name:"uShaka Marine World", blurb:"Marine park and aquarium at the Point.", cat:"Family", area:"Point", img:"v2/ushaka-gate-card-800.webp", w:800, h:1000, credit:"Duban" },
+    { name:"Moses Mabhida Stadium", blurb:"The arch over the city, built for 2010.", cat:"Landmark", area:"Stamford Hill", img:"v2/mabhida-800.webp", w:800, h:600,
       credit:"South African Tourism / Roger de la Harpe", lic:"CC BY 2.0", licUrl:"https://creativecommons.org/licenses/by/2.0", src:"https://commons.wikimedia.org/wiki/File:Moses_Mabhida_Stadium,_Durban,_KwaZulu_Natal,_South_Africa_(20513002075).jpg" },
-    { name:"Umhlanga Rocks", blurb:"Lighthouse, promenade and the town after dark.", cat:"Beach", area:"Umhlanga", img:"umhlanga-night-card-400.webp", w:400, h:500, credit:"Duban" },
-    { name:"Victoria Street Market", blurb:"Spices, curios and Durban flavour in town.", cat:"Culture", area:"CBD", img:"victoria-market-400.webp", w:400, h:300,
+    { name:"Umhlanga Rocks", blurb:"Lighthouse, promenade and the town after dark.", cat:"Beach", area:"Umhlanga", img:"v2/umhlanga-night-card-800.webp", w:800, h:1000, credit:"Duban" },
+    { name:"Victoria Street Market", blurb:"Spices, curios and Durban flavour in town.", cat:"Culture", area:"CBD", img:"v2/victoria-market-800.webp", w:800, h:600,
       credit:"Scotted400", lic:"CC BY-SA 4.0", licUrl:"https://creativecommons.org/licenses/by-sa/4.0", src:"https://commons.wikimedia.org/wiki/File:Victoria_Market,_Durban.jpg" },
-    { name:"Durban Botanic Gardens", blurb:"Africa's oldest surviving botanic garden — shade and cycads.", cat:"Nature", area:"Berea", img:"botanic-400.webp", w:400, h:300,
+    { name:"Durban Botanic Gardens", blurb:"Africa's oldest surviving botanic garden — shade and cycads.", cat:"Nature", area:"Berea", img:"v2/botanic-800.webp", w:800, h:600,
       credit:"M. Purves", lic:"CC BY-SA 3.0", licUrl:"https://creativecommons.org/licenses/by-sa/3.0", src:"https://commons.wikimedia.org/wiki/File:Durban_Botanic_cycads_and_trees.JPG" },
-    { name:"Florida Road", blurb:"Cafés, restaurants and nightlife in Morningside.", cat:"Culture", area:"Morningside", img:"florida-road-400.webp", w:400, h:233,
+    { name:"Florida Road", blurb:"Cafés, restaurants and nightlife in Morningside.", cat:"Culture", area:"Morningside", img:"v2/florida-road-800.webp", w:800, h:466,
       credit:"Dennis Sylvester Hurd", lic:"CC BY 2.0", licUrl:"https://creativecommons.org/licenses/by/2.0", src:"https://commons.wikimedia.org/wiki/File:Along_Florida_Road_(54331633898).jpg" },
-    { name:"Valley of a Thousand Hills", blurb:"Rolling hills and big views inland.", cat:"Nature", area:"Inland", img:"thousand-hills-400.webp", w:400, h:300,
+    { name:"Valley of a Thousand Hills", blurb:"Rolling hills and big views inland.", cat:"Nature", area:"Inland", img:"v2/thousand-hills-800.webp", w:800, h:600,
       credit:"Jean & Nathalie", lic:"CC BY 2.0", licUrl:"https://creativecommons.org/licenses/by/2.0", src:"https://commons.wikimedia.org/wiki/File:Valley_of_a_Thousand_Hills.jpg" }
   ],
 
@@ -65,10 +65,10 @@ const DUBAN = {
   events: [
     { name:"Durban Diwali Festival", date:"30 Oct – 1 Nov 2026", start:"2026-10-30T00:00:00+02:00", end:"2026-11-01T23:59:00+02:00", place:"Suncoast, beachfront",
       blurb:"Culture, food and fireworks.", link:"https://www.tsogosun.com/whatson/suncoast-durban-diwali-festival/",
-      img:"promenade-card-400.webp", w:400, h:500, featured:true },
+      img:"v2/promenade-card-800.webp", w:800, h:1000, featured:true },
     { name:"Africa Is Not A Jungle — Black Coffee", date:"Sat 7 Nov 2026", start:"2026-11-07T12:00:00+02:00", end:"2026-11-07T23:59:00+02:00", place:"Kings Park area · 18+",
       blurb:"Black Coffee headlines in Durban.", link:"https://iol.co.za/entertainment/celebrity-news/2026-10-01-black-coffee-to-headline-africa-is-not-a-jungle-in-durban-in-november-2026/",
-      img:"mabhida-400.webp", w:400, h:300, featured:true }
+      img:"v2/mabhida-800.webp", w:800, h:600, featured:true }
   ],
 
   /* PARTNER PACKAGES — replace R___ with your real prices. */
@@ -236,8 +236,8 @@ nav.bottom a{padding:12px 0 14px;font-size:13px;min-height:56px}
 <main id="top">
 <section class="hero">
   <picture>
-    <source media="(min-width:900px)" srcset="images/promenade-hero-wide-1280.webp 1280w, images/promenade-hero-wide-1920.webp 1920w" sizes="100vw">
-    <img src="images/promenade-hero-tall-720.webp" srcset="images/promenade-hero-tall-480.webp 480w, images/promenade-hero-tall-720.webp 720w, images/promenade-hero-tall-1080.webp 1080w" sizes="100vw" width="720" height="1280" alt="Durban Golden Mile promenade and Moses Mabhida Stadium from above" fetchpriority="high">
+    <source media="(min-width:900px)" srcset="images/v2/promenade-hero-wide-1280.webp 1280w, images/v2/promenade-hero-wide-1600.webp 1600w, images/v2/promenade-hero-wide-1920.webp 1692w" sizes="100vw">
+    <img src="images/v2/promenade-hero-tall-720.webp" srcset="images/v2/promenade-hero-tall-720.webp 720w, images/v2/promenade-hero-tall-1080.webp 1080w, images/v2/promenade-hero-tall-1440.webp 1427w" sizes="100vw" width="720" height="1280" alt="Durban Golden Mile promenade and Moses Mabhida Stadium from above" fetchpriority="high">
   </picture>
   <div class="wrap in">
     <h1><span class="l">Durban.</span><span class="l" style="background:linear-gradient(90deg,var(--gold),var(--blue) 60%,var(--lilac));-webkit-background-clip:text;background-clip:text;color:transparent">All in one.</span></h1>
@@ -333,7 +333,7 @@ nav.bottom a{padding:12px 0 14px;font-size:13px;min-height:56px}
   const wa = msg => `https://wa.me/${D.whatsapp}?text=${encodeURIComponent(msg)}`;
   const featFirst = a => [...a].sort((x,y)=>(y.featured?1:0)-(x.featured?1:0));
   const photo = (it,i) => it.img
-    ? `<div class="ph"><img src="images/${esc(it.img)}" width="${it.w||400}" height="${it.h||300}" loading="lazy" decoding="async" alt="${esc(it.name)}"></div>`
+    ? `<div class="ph"><img src="images/${esc(it.img)}"${/-800\.webp$/.test(it.img)?` srcset="images/${esc(it.img.replace("-800.webp","-400.webp"))} 400w, images/${esc(it.img)} ${it.w||800}w" sizes="(min-width:960px) 400px, (min-width:640px) 50vw, 80vw"`:""} width="${it.w||400}" height="${it.h||300}" loading="lazy" decoding="async" alt="${esc(it.name)}"></div>`
     : `<div class="ph inv g${i%3}" role="img" aria-label="Your photo here"><div class="ico">${it.icon||"✦"}</div><span>Your business here</span><small>Your photo goes here</small></div>`;
   const tags = it => `<div class="tags">${it.featured?'<span class="tag feat">Featured</span>':''}${it.placeholder?'<span class="tag">Sample</span>':''}</div>`;
   const btn = (label,msg,cls="btn-wa") => `<a class="btn btn-sm ${cls}" href="${wa(msg)}" target="_blank" rel="noopener">${label}</a>`;
