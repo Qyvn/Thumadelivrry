@@ -1,0 +1,47 @@
+{
+ "_howto": "Owner: edit on GitHub (pencil icon), then Commit changes — the site updates in ~1-2 min. Add a new {...} at the TOP of items, separated by commas. Fields: title, date (YYYY-MM-DD), blurb (one or two short lines), link (optional, full https:// URL), source (optional, who reported it). Newest dates show first. Only post real news with a source. Keep quotes and commas valid.",
+ "items": [
+  {
+   "title": "Durban Diwali Festival",
+   "date": "2026-10-30",
+   "blurb": "30 Oct – 1 Nov at Suncoast: culture, food and fireworks.",
+   "link": "https://www.tsogosun.com/whatson/suncoast-durban-diwali-festival/",
+   "source": "Tsogo Sun"
+  },
+  {
+   "title": "Halloween weekend around Durban",
+   "date": "2026-10-30",
+   "blurb": "30–31 Oct: Giba Gorge, Origin, After Dark @ 153 Florida and Ballito Horrors.",
+   "link": "https://iol.co.za/entertainment/whats-on/durban/2026-10-22-durban-is-getting-spooky-five-halloween-events-to-get-your-blood-pumping/",
+   "source": "IOL"
+  },
+  {
+   "title": "Bayede Tour and A Night With Mthunzi",
+   "date": "2026-10-30",
+   "blurb": "Both listed for 30 Oct on Durban Tourism's upcoming events.",
+   "link": "https://visitdurban.travel/page/upcoming-events",
+   "source": "Durban Tourism"
+  },
+  {
+   "title": "Black Coffee headlines Africa Is Not A Jungle",
+   "date": "2026-11-07",
+   "blurb": "Sat 7 Nov, Kings Park area. 18+.",
+   "link": "https://iol.co.za/entertainment/celebrity-news/2026-10-01-black-coffee-to-headline-africa-is-not-a-jungle-in-durban-in-november-2026/",
+   "source": "IOL"
+  },
+  {
+   "title": "Coastal and marine research conference at Durban ICC",
+   "date": "2026-10-27",
+   "blurb": "Announced by Unisa for late October.",
+   "link": "https://x.com/unisa/status/2115007280814927944",
+   "source": "Unisa on X"
+  },
+  {
+   "title": "Theatre by the Sea debuts",
+   "date": "2026-10-25",
+   "blurb": "Ocean-inspired performances beside the Port Natal Maritime Museum.",
+   "link": "https://iol.co.za/entertainment/events/2026-10-23-inaugural-theatre-by-the-sea-brings-cultural-and-ocean-inspired-performances-to-durban/",
+   "source": "IOL"
+  }
+ ]
+}

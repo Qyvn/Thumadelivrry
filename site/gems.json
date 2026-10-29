@@ -1,0 +1,100 @@
+{
+ "_howto": "Owner: edit on GitHub (pencil icon), then Commit changes — the site updates in ~1-2 min. One {...} per gem, separated by commas. Fields: name, area, cat (filter chip e.g. Beach/Nature/Culture), blurb (one short line), img (file name in site/images, upload via Add file > Upload files; WebP ~400px wide best), w/h (image pixel size), credit (photographer or Duban), lic/licUrl/src only for Wikimedia Commons photos. Keep quotes and commas valid.",
+ "gems": [
+  {
+   "name": "Golden Mile",
+   "cat": "Beach",
+   "area": "Beachfront",
+   "img": "durban-letters-card-400.webp",
+   "w": 400,
+   "h": 500,
+   "credit": "Duban",
+   "blurb": "The beachfront promenade — walk, cycle, swim."
+  },
+  {
+   "name": "uShaka Marine World",
+   "cat": "Family",
+   "area": "Point",
+   "img": "ushaka-gate-card-400.webp",
+   "w": 400,
+   "h": 500,
+   "credit": "Duban",
+   "blurb": "Marine park and aquarium at the Point."
+  },
+  {
+   "name": "Moses Mabhida Stadium",
+   "cat": "Landmark",
+   "area": "Stamford Hill",
+   "img": "mabhida-400.webp",
+   "w": 400,
+   "h": 300,
+   "credit": "South African Tourism / Roger de la Harpe",
+   "lic": "CC BY 2.0",
+   "licUrl": "https://creativecommons.org/licenses/by/2.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Moses_Mabhida_Stadium,_Durban,_KwaZulu_Natal,_South_Africa_(20513002075).jpg",
+   "blurb": "The arch over the city, built for 2010."
+  },
+  {
+   "name": "Umhlanga Rocks",
+   "cat": "Beach",
+   "area": "Umhlanga",
+   "img": "umhlanga-night-card-400.webp",
+   "w": 400,
+   "h": 500,
+   "credit": "Duban",
+   "blurb": "Lighthouse, promenade and the town after dark."
+  },
+  {
+   "name": "Victoria Street Market",
+   "cat": "Culture",
+   "area": "CBD",
+   "img": "victoria-market-400.webp",
+   "w": 400,
+   "h": 300,
+   "credit": "Scotted400",
+   "lic": "CC BY-SA 4.0",
+   "licUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Victoria_Market,_Durban.jpg",
+   "blurb": "Spices, curios and Durban flavour in town."
+  },
+  {
+   "name": "Durban Botanic Gardens",
+   "cat": "Nature",
+   "area": "Berea",
+   "img": "botanic-400.webp",
+   "w": 400,
+   "h": 300,
+   "credit": "M. Purves",
+   "lic": "CC BY-SA 3.0",
+   "licUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Durban_Botanic_cycads_and_trees.JPG",
+   "blurb": "Africa's oldest surviving botanic garden — shade and cycads."
+  },
+  {
+   "name": "Florida Road",
+   "cat": "Culture",
+   "area": "Morningside",
+   "img": "florida-road-400.webp",
+   "w": 400,
+   "h": 233,
+   "credit": "Dennis Sylvester Hurd",
+   "lic": "CC BY 2.0",
+   "licUrl": "https://creativecommons.org/licenses/by/2.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Along_Florida_Road_(54331633898).jpg",
+   "blurb": "Cafés, restaurants and nightlife in Morningside."
+  },
+  {
+   "name": "Valley of a Thousand Hills",
+   "cat": "Nature",
+   "area": "Inland",
+   "img": "thousand-hills-400.webp",
+   "w": 400,
+   "h": 300,
+   "credit": "Jean & Nathalie",
+   "lic": "CC BY 2.0",
+   "licUrl": "https://creativecommons.org/licenses/by/2.0",
+   "src": "https://commons.wikimedia.org/wiki/File:Valley_of_a_Thousand_Hills.jpg",
+   "blurb": "Rolling hills and big views inland."
+  }
+ ]
+}
